@@ -7,8 +7,8 @@ from app import db, login_manager
 
 
 miembros_roles = db.Table('miembros_roles',
-    db.Column('id_miembro', db.Integer, db.ForeignKey('miembros.id')),
-    db.Column('id_rol', db.Integer, db.ForeignKey('roles.id'))
+    db.Column('id_miembro', db.Integer, db.ForeignKey('miembros.id'),nullable=False),
+    db.Column('id_rol', db.Integer, db.ForeignKey('roles.id'),nullable=False)
 )
 
 
@@ -22,12 +22,12 @@ class Miembro(db.Model):
     __tablename__ = 'miembros'
 
     id = db.Column(db.Integer, primary_key=True)
-    id_familia = db.Column(db.Integer, db.ForeignKey('familias.id'))
+    id_familia = db.Column(db.Integer, db.ForeignKey('familias.id'),nullable=False)
     nombres = db.Column(db.String(100), index=True)
     apellidos = db.Column(db.String(100), index=True)
-    id_parentezco = db.Column(db.String(100), db.ForeignKey('parentezcos.id'))
+    id_parentezco = db.Column(db.Integer, db.ForeignKey('parentezcos.id'),nullable=False)
     email = db.Column(db.String(60), index=True, unique=True)
-    id_estado_civil = db.Column(db.String(100), db.ForeignKey('estados.id'))
+    id_estado_civil = db.Column(db.Integer, db.ForeignKey('estados.id'),nullable=False)
     direccion = db.Column(db.String(200))
     telefono_1 = db.Column(db.String(15))
     telefono_2 = db.Column(db.String(15))
@@ -35,12 +35,11 @@ class Miembro(db.Model):
     fecha_miembro = db.Column(db.DateTime)
     fecha_bautismo = db.Column(db.DateTime)
     asiste_regular = db.Column(db.Boolean, default=False)
-    id_grupo_casero = db.Column(db.String(100), db.ForeignKey('gruposcaseros.id'))
+    id_grupo_casero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'),nullable=False)
     observaciones = db.Column(db.String(500))
     
     def __repr__(self):
-        return '<>Miembro: {}>'.format(self.nombres, ' ', self.apellidos)
-
+        return '<Miembro: %s ' ' %s>' %(self.nombres,self.apellidos)
 
 class GrupoCasero(db.Model):
     """
@@ -50,10 +49,9 @@ class GrupoCasero(db.Model):
     __tablename__ = 'gruposcaseros'
 
     id = db.Column(db.Integer, primary_key=True)
-    nombre_grupo = db.Column(db.String(60), unique=True)
+    nombre_grupo = db.Column(db.String(60))
     descripcion_grupo = db.Column(db.String(200))
-    miembros = db.relationship('Miembro', backref='grupocasero',
-                                lazy='dynamic')
+    miembros = db.relationship('Miembro', backref='grupocasero', lazy='dynamic')
 
     def __repr__(self):
         return '<Grupo Casero: {}>'.format(self.nombre_grupo)
@@ -67,16 +65,61 @@ class Rol(db.Model):
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(60), unique=True)
+    nombre = db.Column(db.String(60))
     descripcion = db.Column(db.String(200))
-    miembros = db.relationship('Miembro', secondary=miembros_roles, 
-                                backref=db.backref('roles', lazy='dynamic'))
+    miembros = db.relationship('Miembro', secondary=miembros_roles, backref=db.backref('roles', lazy='dynamic'))
                             
 
     def __repr__(self):
         return '<Rol: {}>'.format(self.nombre)
 
+class Parentezco(db.Model):
+    """
+    Crea una tabla de parentezcos
+    """
 
+    __tablename__ = 'parentezcos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(60))
+    descripcion = db.Column(db.String(200))
+    miembros = db.relationship('Miembro', backref='parentezco',lazy='dynamic')
+                            
+
+    def __repr__(self):
+        return '<Parentezco: {}>'.format(self.nombre)
+
+class Estado(db.Model):
+    """
+    Crea una tabla de estados civiles
+    """
+
+    __tablename__ = 'estados'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(60))
+    descripcion = db.Column(db.String(200))
+    miembros = db.relationship('Miembro', backref='estado',lazy='dynamic')
+                            
+
+    def __repr__(self):
+        return '<Estado: {}>'.format(self.nombre)    
+
+class Familia(db.Model):
+    """
+    Crea una tabla familias
+    """
+
+    __tablename__ = 'familias'
+
+    id = db.Column(db.Integer, primary_key=True)
+    apellidos_familia = db.Column(db.String(60))
+    comentarios = db.Column(db.String(200))
+    miembros = db.relationship('Miembro', backref='familia',lazy='dynamic')
+                            
+    def __repr__(self):
+        return '<Familia: {}>'.format(self.apellidos_familia)    
+    
 class Usuario(UserMixin, db.Model):
     """
     Crear una tabla de usuarios de la aplicacion
@@ -90,8 +133,8 @@ class Usuario(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(60), index=True, unique=True)
     username = db.Column(db.String(60), index=True, unique=True)
-    first_name = db.Column(db.String(60), index=True)
-    last_name = db.Column(db.String(60), index=True)
+    first_name = db.Column(db.String(60))
+    last_name = db.Column(db.String(60))
     password_hash = db.Column(db.String(128))
     is_admin = db.Column(db.Boolean, default=False)
 
