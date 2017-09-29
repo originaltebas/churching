@@ -7,6 +7,7 @@ from wtforms.validators import DataRequired, Email, EqualTo
 
 from ..models import Usuario
 
+'''
 class RegistrationForm(FlaskForm):
     """
     Formulario temporal para registrar usuarios
@@ -30,6 +31,7 @@ class RegistrationForm(FlaskForm):
         if Usuario.query.filter_by(username=field.data).first():
             raise ValidationError(u'El usuario ya existe en la BD.')
 
+'''
 class LoginForm(FlaskForm):
     """
     Formulario para logarse en el sistema
