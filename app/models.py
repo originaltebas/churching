@@ -49,8 +49,9 @@ class GrupoCasero(db.Model):
     __tablename__ = 'gruposcaseros'
 
     id = db.Column(db.Integer, primary_key=True)
-    nombre_grupo = db.Column(db.String(60))
-    descripcion_grupo = db.Column(db.String(200))
+    nombre_grupo = db.Column(db.String(60),nullable=False)
+    descripcion_grupo = db.Column(db.String(200),nullable=False)
+    direccion_grupo = db.Column(db.String(200),nullable=False)
     miembros = db.relationship('Miembro', backref='grupocasero', lazy='dynamic')
 
     def __repr__(self):

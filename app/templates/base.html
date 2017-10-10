@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>{{ title }} | Project CH-Memebers</title>
+    <title>{{ title }} | Project CH-Members</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
@@ -28,7 +28,7 @@
         <li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>
         <li><a href="#">Miembros</a></li>
         <li><a href="#">Familias</a></li>
-        <li><a href="#">Grupos Caseros</a></li>
+        <li><a href="{{ url_for('extras.listar_gruposcaseros') }}">Grupos Caseros</a></li>
         <li><a href="#">Roles</a></li>
         <li><a href="#">Parentezcos</a></li>
         <li><a href="#">Estados</a></li>

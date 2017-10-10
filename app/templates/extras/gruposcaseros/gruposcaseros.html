@@ -1,0 +1,70 @@
+<!-- app/templates/extras/gruposcaseros/gruposcaseros.html -->
+
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Grupos Caseros{% endblock %}
+{% block body %}
+<div class="content-section">
+  <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <br/>
+        {{ utils.flashed_messages() }}
+        <br/>
+        <h1 style="text-align:center;">Grupos Caseros</h1>
+        {% if gruposcaseros %}
+          <hr class="intro-divider">
+          <div class="center">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th width="15%"> Nombre </th>
+                  <th width="40%"> Descripci&oacute;n </th>
+                  <th width="15%"> Cantidad de Asistentes </th>
+                  <th width="15%"> Modificar </th>
+                  <th width="15%"> Borrar </th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for grupocasero in gruposcaseros %}
+                <tr>
+                  <td> {{ grupocasero.nombre_grupo }} </td>
+                  <td> {{ grupocasero.descripcion_grupo }} </td>
+                  <td>
+                    {% if gruposcaseros.miembros %}
+                      {{ gruposcaseros.miembros.count() }}
+                    {% else %}
+                      0
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('extras.edit_grupocasero', id=grupocasero.id) }}">
+                      <i class="fa fa-pencil"></i> Modificar 
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{{ url_for('extras.delete_grupocasero', id=grupocasero.id) }}">
+                      <i class="fa fa-trash"></i> Borrar 
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div style="text-align: center">
+        {% else %}
+          <div style="text-align: center">
+            <h3> No se han agregado grupos caseros. </h3>
+            <hr class="intro-divider">
+        {% endif %}
+          <a href="{{ url_for('extras.add_grupocasero') }}" class="btn btn-default btn-lg">
+            <i class="fa fa-plus"></i>
+            Agregar Grupo Casero
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
