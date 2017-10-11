@@ -5,6 +5,7 @@
 <head>
     <title>{{ title }} | Project CH-Members</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">  
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 </head>
@@ -29,7 +30,7 @@
         <li><a href="#">Miembros</a></li>
         <li><a href="#">Familias</a></li>
         <li><a href="{{ url_for('extras.listar_gruposcaseros') }}">Grupos Caseros</a></li>
-        <li><a href="#">Roles</a></li>
+        <li><a href="{{ url_for('extras.listar_roles')}}">Roles</a></li>
         <li><a href="#">Parentezcos</a></li>
         <li><a href="#">Estados</a></li>
       {% else %}
