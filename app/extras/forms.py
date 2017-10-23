@@ -21,3 +21,29 @@ class FormRol(FlaskForm):
     nombre = StringField(u'Nombre', validators=[DataRequired()])
     descripcion = StringField(u'Descripción', validators=[DataRequired()])
     submit = SubmitField(u'Guardar')
+
+class FormEstado(FlaskForm):
+    """
+    Formulario para agregar y editar estados (casado, soltero, viudo, divorciado, etc)
+    """
+    nombre = StringField(u'Nombre', validators=[DataRequired()])
+    descripcion =StringField(u'Descripción', validators=[DataRequired()])
+    submit = SubmitField(u'Guardar')
+
+
+class FormParentezco(FlaskForm):
+    """
+    Formulario para agregar y editar parentezco (padre,madre,hijo,etc)
+    """
+    nombre = StringField(u'Nombre', validators=[DataRequired()])
+    descripcion =StringField(u'Descripción', validators=[DataRequired()])
+    submit = SubmitField(u'Guardar')
+
+
+class FormFamilia(FlaskForm):
+    """
+    Formulario para agregar y editar familia (Datos generales de la familia. Por Ejemplo Perez Perez)
+    """
+    nombre_familia = StringField(u'Nombre Familia', validators=[DataRequired()])
+    comentario =StringField(u'Comentarios', validators=[DataRequired()])
+    submit = SubmitField(u'Guardar')
