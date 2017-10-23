@@ -28,7 +28,7 @@
       {% if current_user.is_admin %}
         <li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>
         <li><a href="#">Miembros</a></li>
-        <li><a href="#">Familias</a></li>
+        <li><a href="{{ url_for('extras.listar_familias') }}">Familias</a></li>
         <li><a href="{{ url_for('extras.listar_gruposcaseros') }}">Grupos Caseros</a></li>
         <li><a href="{{ url_for('extras.listar_roles')}}">Roles</a></li>
         <li><a href="{{ url_for('extras.listar_parentezcos')}}">Parentezcos</a></li>

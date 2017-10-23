@@ -419,17 +419,17 @@ def listar_familias():
 
 @extras.route('/familias/add', methods=['GET', 'POST'])
 @login_required
-def add_familias():
+def add_familia():
     """
     Agregar un familias a la base de datos
     """
     check_admin()
 
-    add_familias = True
+    add_familia = True
 
     form = FormFamilia()
     if form.validate_on_submit():
-        familia = Familia(nombre_familia=form.nombre_familia.data, comentario=form.comentario.data)
+        familia = Familia(apellidos_familia=form.apellidos_familia.data, comentarios=form.comentarios.data)
 
         try:
             # add estado to the database
@@ -459,8 +459,8 @@ def edit_familia(id):
     familia = Familia.query.get_or_404(id)
     form = FormFamilia(obj=familia)
     if form.validate_on_submit():
-        familia.nombre_familia = form.nombre_familia.data
-        familia.comentario = form.comentario.data
+        familia.apellidos_familia = form.apellidos_familia.data
+        familia.comentarios = form.comentarios.data
         db.session.add(familia)
         db.session.commit()
         flash('Has modificado la familia en la base de datos.')
@@ -468,8 +468,8 @@ def edit_familia(id):
         # redirect to the roles page
         return redirect(url_for('extras.familias'))
 
-    form.comentario.data = familia.comentario
-    form.nombre_familia.data = familia.nombre_familia
+    form.comentarios.data = familia.comentarios
+    form.apellidos_familia.data = familia.apellidos_familia
     return render_template('admin/familias/familia.html', add_familia=add_familia, form=form, title="Modificar Familia")
 
 @extras.route('/familias/delete/<int:id>', methods=['GET', 'POST'])

@@ -18,7 +18,7 @@
             <table class="table table-striped table-bordered">
               <thead>
                 <tr>
-                  <th width="15%"> Nombre Familia </th>
+                  <th width="15%"> Apellidos Familia </th>
                   <th width="40%"> Comentarios </th>
                   <th width="15%"> # Personas </th>
                   <th width="15%"> Modificar </th>
@@ -28,8 +28,8 @@
               <tbody>
               {% for familia in familias %}
                 <tr>
-                  <td> {{ familia.nombre }} </td>
-                  <td> {{ familia.descripcion }} </td>
+                  <td> {{ familia.apellidos_familia }} </td>
+                  <td> {{ familia.comentarios }} </td>
                   <td>
                     {% if familia.miembros %}
                       {{ familia.miembros.count() }}
