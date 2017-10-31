@@ -1,8 +1,8 @@
-<!-- app/templates/extras/estados/estados.html -->
+<!-- app/templates/extras/tiposmiembros/tiposmiembros.html -->
 
 {% import "bootstrap/utils.html" as utils %}
 {% extends "base.html" %}
-{% block title %}Estados{% endblock %}
+{% block title %}Tipos de Miembros{% endblock %}
 {% block body %}
 <div class="content-section">
   <div class="outer">
@@ -11,8 +11,8 @@
         <br/>
         {{ utils.flashed_messages() }}
         <br/>
-        <h1 style="text-align:center;">Estados</h1>
-        {% if estados %}
+        <h1 style="text-align:center;">Tipos de Miembros</h1>
+        {% if tiposmiembros %}
           <hr class="intro-divider">
           <div class="center">
             <table class="table table-striped table-bordered">
@@ -26,24 +26,24 @@
                 </tr>
               </thead>
               <tbody>
-              {% for estado in estados %}
+              {% for tipomiembro in tiposmiembros %}
                 <tr>
-                  <td> {{ estado.nombre }} </td>
-                  <td> {{ estado.descripcion }} </td>
+                  <td> {{ tipomiembro.nombre }} </td>
+                  <td> {{ tipomiembro.descripcion }} </td>
                   <td>
-                    {% if estado.miembros %}
-                      {{ estado.miembros.count() }}
+                    {% if tipomiembro.miembros %}
+                      {{ tipomiembro.miembros.count() }}
                     {% else %}
                       0
                     {% endif %}
                   </td>
                   <td>
-                    <a href="{{ url_for('extras.edit_estado', id=estado.id) }}">
+                    <a href="{{ url_for('extras.edit_tipomiembro', id=tipomiembro.id) }}">
                       <i class="fa fa-pencil"></i> Modificar 
                     </a>
                   </td>
                   <td>
-                    <a href="{{ url_for('extras.delete_estado', id=estado.id) }}">
+                    <a href="{{ url_for('extras.delete_tipomiembro', id=tipomiembro.id) }}">
                       <i class="fa fa-trash"></i> Borrar 
                     </a>
                   </td>
@@ -55,12 +55,12 @@
           <div style="text-align: center">
         {% else %}
           <div style="text-align: center">
-            <h3> No se han agregado Estados. </h3>
+            <h3> No se ha agregado Tipos de Miembros. </h3>
             <hr class="intro-divider">
         {% endif %}
-          <a href="{{ url_for('extras.add_estado') }}" class="btn btn-default btn-lg">
+          <a href="{{ url_for('extras.add_tipomiembro') }}" class="btn btn-default btn-lg">
             <i class="fa fa-plus"></i>
-            Agregar Estado
+            Agregar Tipo de Miembro 
           </a>
         </div>
       </div>

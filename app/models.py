@@ -27,13 +27,14 @@ class Miembro(db.Model):
     apellidos = db.Column(db.String(100), index=True)
     id_parentezco = db.Column(db.Integer, db.ForeignKey('parentezcos.id'),nullable=False)
     email = db.Column(db.String(60), index=True, unique=True)
-    id_estado_civil = db.Column(db.Integer, db.ForeignKey('estados.id'),nullable=False)
+    id_estado_civil = db.Column(db.Integer, db.ForeignKey('estadosciviles.id'),nullable=False)
     direccion = db.Column(db.String(200))
     telefono_1 = db.Column(db.String(15))
     telefono_2 = db.Column(db.String(15))
     fecha_nac = db.Column(db.DateTime)
     fecha_miembro = db.Column(db.DateTime)
     fecha_bautismo = db.Column(db.DateTime)
+    id_tipo_miembro = db.Column(db.Integer, db.ForeignKey('tiposmiembros.id'),nullable=False)
     asiste_regular = db.Column(db.Boolean, default=False)
     id_grupo_casero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'),nullable=False)
     observaciones = db.Column(db.String(500))
@@ -90,12 +91,12 @@ class Parentezco(db.Model):
     def __repr__(self):
         return '<Parentezco: {}>'.format(self.nombre)
 
-class Estado(db.Model):
+class EstadoCivil(db.Model):
     """
     Crea una tabla de estados civiles
     """
 
-    __tablename__ = 'estados'
+    __tablename__ = 'estadosciviles'
 
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(60))
@@ -104,7 +105,23 @@ class Estado(db.Model):
                             
 
     def __repr__(self):
-        return '<Estado: {}>'.format(self.nombre)    
+        return '<Estado Civil: {}>'.format(self.nombre)    
+
+class TipoMiembro(db.Model):
+    """
+    Crea una tabla de tipos de miembros ( miembro, asistente regular, no viene, etc)
+    """
+
+    __tablename__ = 'tiposmiembros'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(60))
+    descripcion = db.Column(db.String(200))
+    miembros = db.relationship('Miembro', backref='estado',lazy='dynamic')
+                            
+
+    def __repr__(self):
+        return '<Tipo de Miembro: {}>'.format(self.nombre)   
 
 class Familia(db.Model):
     """

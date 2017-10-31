@@ -4,6 +4,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 class FormGrupoCasero(FlaskForm):
     """
@@ -22,9 +23,9 @@ class FormRol(FlaskForm):
     descripcion = StringField(u'Descripción', validators=[DataRequired()])
     submit = SubmitField(u'Guardar')
 
-class FormEstado(FlaskForm):
+class FormEstadoCivil(FlaskForm):
     """
-    Formulario para agregar y editar estados (casado, soltero, viudo, divorciado, etc)
+    Formulario para agregar y editar estados civiles (casado, soltero, viudo, divorciado, etc)
     """
     nombre = StringField(u'Nombre', validators=[DataRequired()])
     descripcion = StringField(u'Descripción', validators=[DataRequired()])
@@ -42,8 +43,18 @@ class FormParentezco(FlaskForm):
 
 class FormFamilia(FlaskForm):
     """
-    Formulario para agregar y editar familia (Datos generales de la familia. Por Ejemplo Perez Perez)
+    Formulario para agregar y editar familia 
+    (Datos generales de la familia. Por Ejemplo Perez Perez)
     """
     apellidos_familia = StringField(u'Apellidos de la Familia', validators=[DataRequired()])
     comentarios = StringField(u'Comentarios', validators=[DataRequired()])
     submit = SubmitField(u'Guardar')
+
+class FormTipoMiembro(FlaskForm):
+    """
+    Formulario para agregar y editar tipos de miembros de la iglesia (miembro, asistente regular, no viene, etc)
+    """
+    nombre = StringField(u'Nombre', validators=[DataRequired()])
+    descripcion = StringField(u'Descripción', validators=[DataRequired()])
+    submit = SubmitField(u'Guardar')
+    

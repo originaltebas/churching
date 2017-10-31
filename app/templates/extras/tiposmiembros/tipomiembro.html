@@ -1,12 +1,12 @@
-<!-- app/templates/extras/estados/estado.html -->
+<!-- app/templates/extras/tiposmiembros/tipomiembro.html -->
 
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
 {% block title %}
-    {% if add_estado %}
-        Agregar Estado
+    {% if add_tipomiembro %}
+        Agregar Tipo de Miembro
     {% else %}
-        Modificar Estado
+        Modificar Tipo de Miembro
     {% endif %}
 {% endblock %}
 {% block body %}
@@ -15,10 +15,10 @@
     <div class="middle">
       <div class="inner">
         <div class="center">
-            {% if add_estado %}
-                <h1>Agregar Estado</h1>
+            {% if add_tipomiembro %}
+                <h1>Agregar Tipo de Miembro</h1>
             {% else %}
-                <h1>Modificar Estado</h1>
+                <h1>Modificar Tipo de Miembro</h1>
             {% endif %}
             <br/>
             {{ wtf.quick_form(form) }}

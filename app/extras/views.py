@@ -7,8 +7,9 @@ from flask_login import current_user, login_required
 from . import extras
 from .. import db
 
-from forms import FormGrupoCasero, FormRol, FormEstado, FormParentezco, FormFamilia
-from ..models import GrupoCasero, Rol, Estado, Parentezco, Familia
+from forms import FormGrupoCasero, FormRol, FormEstadoCivil
+from forms import FormParentezco, FormFamilia, FormTipoMiembro
+from ..models import GrupoCasero, Rol, EstadoCivil, Parentezco, Familia, TipoMiembro
 
 def check_admin():
     """
@@ -19,7 +20,7 @@ def check_admin():
 
 # Department Views
 
-@extras.route('/gruposcaseros', methods=['GET', 'POST'])
+@extras.route('/gruposcaseros', methods = ['GET', 'POST'])
 @login_required
 def listar_gruposcaseros():
     """
@@ -29,9 +30,10 @@ def listar_gruposcaseros():
 
     gruposcaseros = GrupoCasero.query.all()
 
-    return render_template('extras/gruposcaseros/gruposcaseros.html', gruposcaseros=gruposcaseros, title="Grupos Caseros")
+    return render_template('extras/gruposcaseros/gruposcaseros.html', 
+                            gruposcaseros = gruposcaseros, title = "Grupos Caseros")
 
-@extras.route('/gruposcaseros/add', methods=['GET', 'POST'])
+@extras.route('/gruposcaseros/add', methods = ['GET', 'POST'])
 @login_required
 def add_grupocasero():
     """
@@ -43,7 +45,8 @@ def add_grupocasero():
 
     form = FormGrupoCasero()
     if form.validate_on_submit():
-        gruposcasero = GrupoCasero(nombre_grupo=form.nombre_grupo.data,descripcion_grupo=form.descripcion_grupo.data,direccion_grupo=form.direccion_grupo.data)
+        gruposcasero = GrupoCasero(nombre_grupo = form.nombre_grupo.data, descripcion_grupo = form.descripcion_grupo.data,
+                                   direccion_grupo = form.direccion_grupo.data)
         try:
             # add department to the database
             db.session.add(gruposcasero)
@@ -57,9 +60,10 @@ def add_grupocasero():
         return redirect(url_for('extras.listar_gruposcaseros'))
 
     # load department template
-    return render_template('extras/gruposcaseros/grupocasero.html', action="Add", add_grupocasero=add_grupocasero, form=form, title="Agregar Grupo Casero")
+    return render_template('extras/gruposcaseros/grupocasero.html', action = "Add", add_grupocasero = add_grupocasero, 
+                           form = form, title = "Agregar Grupo Casero")
 
-@extras.route('/gruposcaseros/edit/<int:id>', methods=['GET', 'POST'])
+@extras.route('/gruposcaseros/edit/<int:id>', methods = ['GET', 'POST'])
 @login_required
 def edit_grupocasero(id):
     """
@@ -70,7 +74,7 @@ def edit_grupocasero(id):
     add_grupocasero = False
 
     grupocasero = GrupoCasero.query.get_or_404(id)
-    form = FormGrupoCasero(obj=grupocasero)
+    form = FormGrupoCasero(obj = grupocasero)
     if form.validate_on_submit():
         grupocasero.nombre_grupo = form.nombre_grupo.data
         grupocasero.descripcion_grupo = form.descripcion_grupo.data
@@ -87,7 +91,7 @@ def edit_grupocasero(id):
                            add_grupocasero = add_grupocasero, form=form,
                            grupocasero = grupocasero, title="Modificar Grupo Casero")
 
-@extras.route('/gruposcaseros/delete/<int:id>', methods=['GET', 'POST'])
+@extras.route('/gruposcaseros/delete/<int:id>', methods = ['GET', 'POST'])
 @login_required
 def delete_grupocasero(id):
     """
@@ -103,7 +107,7 @@ def delete_grupocasero(id):
     # redirect to the departments page
     return redirect(url_for('extras.listar_gruposcaseros'))
 
-    return render_template(title="Borrar Grupos Caseros")
+    return render_template(title = "Borrar Grupos Caseros")
 
 
 """
@@ -208,95 +212,95 @@ AQUI FINALIZA CODIGO ROLES
 
 """
 -------------------------------------------------------------------------------------
-AQUI COMIENZA CODIGO ESTADO
+AQUI COMIENZA CODIGO ESTADO CIVILES
 """
 
-@extras.route('/estados')
+@extras.route('/estadosciviles')
 @login_required
-def listar_estados():
+def listar_estadosciviles():
     check_admin()
 
     """
-    Listar todos los estados
+    Listar todos los estados civiles
     """
-    estados = Estado.query.all()
-    return render_template('extras/estados/estados.html', estados=estados, title='Estados')
+    estadosciviles = EstadoCivil.query.all()
+    return render_template('extras/estadosciviles/estadosciviles.html', estadosciviles=estadosciviles, title='Estados Civiles')
 
-@extras.route('/estados/add', methods=['GET', 'POST'])
+@extras.route('/estadosciviles/add', methods=['GET', 'POST'])
 @login_required
-def add_estado():
+def add_estadocivil():
     """
-    Agregar un estado a la base de datos
+    Agregar un estado civile a la base de datos
     """
     check_admin()
 
-    add_estado = True
+    add_estadocivil = True
 
-    form = FormEstado()
+    form = FormEstadoCivil()
     if form.validate_on_submit():
-        estado = Estado(nombre=form.nombre.data, descripcion=form.descripcion.data)
+        estadocivil = EstadoCivil(nombre=form.nombre.data, descripcion=form.descripcion.data)
 
         try:
             # add estado to the database
-            db.session.add(estado)
+            db.session.add(estadocivil)
             db.session.commit()
-            flash('Has agregado un estado a la base de datos.')
+            flash('Has agregado un estado civil a la base de datos.')
         except:
             # in case role name already exists
-            flash('Error: el estado ya existe.')
+            flash('Error: el estado civil ya existe.')
 
         # redirect to the roles page
-        return redirect(url_for('extras.listar_estados'))
+        return redirect(url_for('extras.listar_estadosciviles'))
 
     # load role template
-    return render_template('extras/estados/estado.html', add_estado=add_estado, form=form, title='Agregar Estado')
+    return render_template('extras/estadosciviles/estadocivil.html', add_estadocivil=add_estadocivil, form=form, title='Agregar Estado Civil')
 
-@extras.route('/estados/edit/<int:id>', methods=['GET', 'POST'])
+@extras.route('/estadosciviles/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit_estado(id):
+def edit_estadocivil(id):
     """
-    Modificar un Estado
+    Modificar un Estado Civil
     """
     check_admin()
 
-    add_estado = False
+    add_estadocivil = False
 
-    estado = Estado.query.get_or_404(id)
-    form = FormEstado(obj=estado)
+    estadocivil = EstadoCivil.query.get_or_404(id)
+    form = FormEstadoCivil(obj=estadocivil)
     if form.validate_on_submit():
-        estado.nombre = form.nombre.data
-        estado.descripcion = form.descripcion.data
-        db.session.add(estado)
+        estadocivil.nombre = form.nombre.data
+        estadocivil.descripcion = form.descripcion.data
+        db.session.add(estadocivil)
         db.session.commit()
-        flash('Has modificado el estado en la base de datos.')
+        flash('Has modificado el estado civil en la base de datos.')
 
         # redirect to the roles page
-        return redirect(url_for('extras.listar_estados'))
+        return redirect(url_for('extras.listar_estadosciviles'))
 
-    form.descripcion.data = estado.descripcion
-    form.nombre.data = estado.nombre
-    return render_template('admin/estados/estado.html', add_estado=add_estado, form=form, title="Modificar Estado")
+    form.descripcion.data = estadocivil.descripcion
+    form.nombre.data = estadocivil.nombre
+    return render_template('admin/estadosciviles/estadocivil.html', add_estadocivil=add_estadocivil, form=form, title="Modificar Estado Civil")
 
-@extras.route('/estados/delete/<int:id>', methods=['GET', 'POST'])
+@extras.route('/estadosciviles/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def delete_estado(id):
+def delete_estadocivil(id):
     """
-    Borrar un estado de la base de datos
+    Borrar un estado civil de la base de datos
     """
     check_admin()
 
-    estado = Estado.query.get_or_404(id)
-    db.session.delete(estado)
+    estadocivil = EstadoCivil.query.get_or_404(id)
+    db.session.delete(estadocivil)
     db.session.commit()
-    flash('Has borrado el estado de la base de datos.')
+    flash('Has borrado el estado civil de la base de datos.')
 
     # redirect to the roles page
-    return redirect(url_for('extras.listar_estados'))
+    return redirect(url_for('extras.listar_estadosciviles'))
 
-    return render_template(title="Borrar Estado")
+    return render_template(title="Borrar Estado Civil")
 
 """
-AQUI FINALIZA CODIGO ESTADOS
+AQUI FINALIZA CODIGO ESTADOS CIVILES
 -------------------------------------------------------------------------------------
 """
 
@@ -330,7 +334,7 @@ def add_parentezco():
 
     add_parentezco = True
 
-    form = FormEstado()
+    form = FormParentezco()
     if form.validate_on_submit():
         parentezco = Parentezco(nombre=form.nombre.data, descripcion=form.descripcion.data)
 
@@ -489,3 +493,98 @@ def delete_familia(id):
     return redirect(url_for('extras.listar_familias'))
 
     return render_template(title="Borrar Familia")
+
+"""
+AQUI FINALIZA CODIGO FAMILIAS
+-------------------------------------------------------------------------------------
+"""
+
+"""
+-------------------------------------------------------------------------------------
+AQUI COMIENZA CODIGO TIPOS DE MIEMBROS
+SER REFIERE A ESTADOS DE LOS MIEMBROS EN LA IGLESIA: MIEMBROS, ASISTENTE REGULAR, NO ASISTE, ETC
+"""
+
+@extras.route('/tiposmiembros')
+@login_required
+def listar_tiposmiembros():
+    check_admin()
+
+    """
+    Listar todos los tipos de miembros
+    """
+    tiposmiembros = TipoMiembro.query.all()
+    return render_template('extras/tiposmiembros/tiposmiembros.html', tiposmiembros=tiposmiembros, title='Tipos de Miembros')
+
+@extras.route('/tiposmiembros/add', methods=['GET', 'POST'])
+@login_required
+def add_tipomiembro():
+    """
+    Agregar un tipo de miembro a la base de datos
+    """
+    check_admin()
+
+    add_tipomiembro = True
+
+    form = FormTipoMiembro()
+    if form.validate_on_submit():
+        tipomiembro = TipoMiembro(nombre=form.nombre.data, descripcion=form.descripcion.data)
+
+        try:
+            # add estado to the database
+            db.session.add(tipomiembro)
+            db.session.commit()
+            flash('Has agregado un tipo de miembro a la base de datos.')
+        except:
+            # in case role name already exists
+            flash('Error: el tipo de miembto ya existe.')
+
+        # redirect to the roles page
+        return redirect(url_for('extras.listar_tiposmiembros'))
+
+    # load role template
+    return render_template('extras/tiposmiembros/tipomiembro.html', add_tipomiembro=add_tipomiembro, form=form, title='Agregar un Tipo de Miembro')
+
+@extras.route('/tiposmiembros/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_tipomiembro(id):
+    """
+    Modificar un Tipo de Miembro
+    """
+    check_admin()
+
+    add_tipomiembro = False
+
+    tipomiembro = TipoMiembro.query.get_or_404(id)
+    form = FormTipoMiembro(obj=tipomiembro)
+    if form.validate_on_submit():
+        tipomiembro.nombre = form.nombre.data
+        tipomiembro.descripcion = form.descripcion.data
+        db.session.add(tipomiembro)
+        db.session.commit()
+        flash('Has modificado el tipo de miembro en la base de datos.')
+
+        # redirect to the roles page
+        return redirect(url_for('extras.listar_tiposmiembros'))
+
+    form.descripcion.data = tipomiembro.descripcion
+    form.nombre.data = tipomiembro.nombre
+    return render_template('admin/tiposmiembros/tipomiembro.html', add_tipomiembro=add_tipomiembro, form=form, title="Modificar Tipo de Miembro")
+
+@extras.route('/tiposmiembros/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_tipomiembro(id):
+    """
+    Borrar un tipo de miembro de la base de datos
+    """
+    check_admin()
+
+    tipomiembro = TipoMiembro.query.get_or_404(id)
+    db.session.delete(tipomiembro)
+    db.session.commit()
+    flash('Has borrado un tipo de miembro de la base de datos.')
+
+    # redirect to the roles page
+    return redirect(url_for('extras.listar_tiposmiembros'))
+
+    return render_template(title="Borrar Tipo de Miembro")

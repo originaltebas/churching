@@ -36,6 +36,6 @@ class LoginForm(FlaskForm):
     """
     Formulario para logarse en el sistema
     """
-    email = StringField(u'Email', validators=[DataRequired(), Email()])
-    password = PasswordField(u'Contraseña', validators=[DataRequired()])
+    email = StringField(u'Email', validators = [DataRequired(), Email()])
+    password = PasswordField(u'Contraseña', validators = [DataRequired()])
     submit = SubmitField(u'Aceptar')
