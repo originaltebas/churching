@@ -1,5 +1,5 @@
-# app/extras/views.py
-# coding: utf-8
+#app/extras/views.py
+#coding: utf-8
 
 from flask import abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
@@ -9,7 +9,11 @@ from .. import db
 
 from forms import FormGrupoCasero, FormRol, FormEstadoCivil
 from forms import FormParentezco, FormFamilia, FormTipoMiembro
-from ..models import GrupoCasero, Rol, EstadoCivil, Parentezco, Familia, TipoMiembro
+from forms import FormAsignacionMiembro
+
+from ..models import GrupoCasero, Rol, EstadoCivil
+from ..models import Familia, TipoMiembro, Parentezco
+from ..models import Miembro, miembros_roles
 
 def check_admin():
     """
@@ -30,7 +34,7 @@ def listar_gruposcaseros():
 
     gruposcaseros = GrupoCasero.query.all()
 
-    return render_template('extras/gruposcaseros/gruposcaseros.html', 
+    return render_template('extras/gruposcaseros/gruposcaseros.html',
                             gruposcaseros = gruposcaseros, title = "Grupos Caseros")
 
 @extras.route('/gruposcaseros/add', methods = ['GET', 'POST'])
@@ -60,7 +64,7 @@ def add_grupocasero():
         return redirect(url_for('extras.listar_gruposcaseros'))
 
     # load department template
-    return render_template('extras/gruposcaseros/grupocasero.html', action = "Add", add_grupocasero = add_grupocasero, 
+    return render_template('extras/gruposcaseros/grupocasero.html', action = "Add", add_grupocasero = add_grupocasero,
                            form = form, title = "Agregar Grupo Casero")
 
 @extras.route('/gruposcaseros/edit/<int:id>', methods = ['GET', 'POST'])
@@ -569,7 +573,7 @@ def edit_tipomiembro(id):
 
     form.descripcion.data = tipomiembro.descripcion
     form.nombre.data = tipomiembro.nombre
-    return render_template('admin/tiposmiembros/tipomiembro.html', add_tipomiembro=add_tipomiembro, form=form, title="Modificar Tipo de Miembro")
+    return render_template('extras/tiposmiembros/tipomiembro.html', add_tipomiembro=add_tipomiembro, form=form, title="Modificar Tipo de Miembro")
 
 @extras.route('/tiposmiembros/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -588,3 +592,181 @@ def delete_tipomiembro(id):
     return redirect(url_for('extras.listar_tiposmiembros'))
 
     return render_template(title="Borrar Tipo de Miembro")
+
+"""
+---
+--- Miembros
+---
+"""
+
+@extras.route('/miembros')
+@login_required
+def listar_miembros():
+    """
+    List all miembros
+    """
+    check_admin()
+
+    miembros = Miembro.query.all()
+    return render_template('extras/miembros/miembros.html',
+                           miembros=miembros, title='Miembros')
+
+@extras.route('/miembros/assign/<int:id>', methods=['GET', 'POST'])
+@login_required
+def assign_miembro(id):
+    """
+    Assign a familia, grupocasero, rol, parentezco, tipomiembro, estadocivil to a miembro
+    """
+    check_admin()
+
+    miembro = Miembro.query.get_or_404(id)
+
+    form = FormAsignacionMiembro(obj=miembro)
+
+    if form.validate_on_submit():
+        miembro.id_familia = form.familia.data
+        miembro.id_parentezco = form.parentezco.data
+        miembro.id_estadocivil = form.estadocivil.data
+        miembro.id_tipo_miembro = form.tipomiembro.data
+        miembro.id_grupo_casero = form.grupocasero.data
+        miembro.miembros_roles.id_rol = form.rol.data
+        miembro.miembros_roles.id_miembro = form.id.data
+
+        db.session.add(miembro)
+        db.session.commit()
+        flash('Has agregado los datos vinculados al miembro.')
+
+        # redirect to the roles page
+        return redirect(url_for('extras.listar_miembros'))
+
+    return render_template('extras/miembros/miembro.html',
+                           miembro=miembro, form=form,
+                           title='Asignación de datos a un Miembro')
+
+@extras.route('/miembros/add', methods=['GET', 'POST'])
+@login_required
+def add_miembro():
+    """
+    Agregar un miembro a la base de datos
+    """
+    check_admin()
+
+    add_miembro = True
+
+    form = FormMiembro()
+    miembro = Miembro()
+
+    if form.validate_on_submit():
+        miembro.nombres = form.nombres.data
+        miembro.apellidos = form.apellidos.data
+        miembro.email = form.email.data
+        miembro.direccion = form.direccion.data
+        miembro.telefono_1 = form.telefono_1.data
+        miembro.telefono_2 = form.telefono_2.data
+
+        miembro.fecha_nac = form.fecha_nac.data
+        miembro.fecha_bautismo = form.fecha_bautismo.data
+        miembro.fecha_miembro = form.fecha_miembro.data
+
+        miembro.id_familia = form.familia.data
+        miembro.id_parentezco = form.parentezco.data
+        miembro.id_estadocivil = form.estadocivil.data
+        miembro.id_tipo_miembro = form.tipomiembro.data
+        miembro.id_grupo_casero = form.grupocasero.data
+        miembro.miembros_roles.id_rol = form.rol.data
+        miembro.miembros_roles.id_miembro = form.id.data
+
+        try:
+            # add estado to the database
+            db.session.add(miembro)
+            db.session.commit()
+            flash('Has agregado un miembro a la base de datos.')
+        except:
+            # in case role name already exists
+            flash('Error: El miembro ya existe.')
+
+        # redirect to the roles page
+        return redirect(url_for('extras.listar_miembros'))
+
+    # load role template
+    return render_template('extras/miembros/miembro.html', add_miembro=add_miembro, form=form, title='Agregar un Miembro')
+
+@extras.route('/miembros/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_miembro(id):
+    """
+    Modificar un Miembro
+    """
+    check_admin()
+
+    add_miembro = False
+
+    miembro = Miembro.query.get_or_404(id)
+    form = FormMiembro(obj=miembro)
+
+    if form.validate_on_submit():
+        miembro.nombres = form.nombres.data
+        miembro.apellidos = form.apellidos.data
+        miembro.email = form.email.data
+        miembro.direccion = form.direccion.data
+        miembro.telefono_1 = form.telefono_1.data
+        miembro.telefono_2 = form.telefono_2.data
+
+        miembro.fecha_nac = form.fecha_nac.data
+        miembro.fecha_bautismo = form.fecha_bautismo.data
+        miembro.fecha_miembro = form.fecha_miembro.data
+
+        miembro.id_familia = form.familia.data
+        miembro.id_parentezco = form.parentezco.data
+        miembro.id_estadocivil = form.estadocivil.data
+        miembro.id_tipo_miembro = form.tipomiembro.data
+        miembro.id_grupo_casero = form.grupocasero.data
+        miembro.miembros_roles.id_rol = form.rol.data
+        miembro.miembros_roles.id_miembro = form.id.data
+
+        db.session.add(miembro)
+        db.session.commit()
+        flash('Has modificado el miembro en la base de datos.')
+
+        # redirect to the roles page
+        return redirect(url_for('extras.listar_miembros'))
+
+    form.nombres.data= miembro.nombres
+    form.apellidos.data = miembro.apellidos
+    form.email.data = miembro.email
+    form.direccion.data = miembro.direccion
+    form.telefono_1.data = miembro.telefono_1
+    form.telefono_2.data = miembro.telefono_2
+
+    form.fecha_nac.data = miembro.fecha_nac
+    form.fecha_bautismo.data = miembro.fecha_bautismo
+    form.fecha_miembro.data = miembro.fecha_miembro
+
+    form.familia.data = miembro.id_familia
+    form.parentezco.data = miembro.id_parentezco
+    form.estadocivil.data = miembro.id_estadocivil
+    form.tipomiembro.data = miembro.id_tipo_miembro
+    form.grupocasero.data = miembro.id_grupo_casero
+    form.rol.data = miembro.miembros_roles.id_rol
+    form.id.data = miembro.miembros_roles.id_miembro
+
+    return render_template('extras/miembros/miembro.html', add_miembro=add_miembro, form=form, title="Modificar Miembro")
+
+@extras.route('/miembros/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_miembro(id):
+    """
+    Borrar un  miembro de la base de datos
+    """
+    check_admin()
+
+    miembro = Miembro.query.get_or_404(id)
+
+    db.session.delete(miembro)
+    db.session.commit()
+    flash('Has borrado un miembro de la base de datos.')
+
+    # redirect to the roles page
+    return redirect(url_for('extras.listar_miembros'))
+
+    return render_template(title="Borrar Miembro")

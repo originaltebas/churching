@@ -35,7 +35,6 @@ class Miembro(db.Model):
     fecha_miembro = db.Column(db.DateTime)
     fecha_bautismo = db.Column(db.DateTime)
     id_tipo_miembro = db.Column(db.Integer, db.ForeignKey('tiposmiembros.id'),nullable=False)
-    asiste_regular = db.Column(db.Boolean, default=False)
     id_grupo_casero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'),nullable=False)
     observaciones = db.Column(db.String(500))
     
@@ -117,7 +116,7 @@ class TipoMiembro(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(60))
     descripcion = db.Column(db.String(200))
-    miembros = db.relationship('Miembro', backref='estado',lazy='dynamic')
+    miembros = db.relationship('Miembro', backref='tipomiembro',lazy='dynamic')
                             
 
     def __repr__(self):

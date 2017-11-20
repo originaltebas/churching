@@ -5,11 +5,11 @@ from flask import flash, redirect, render_template, url_for
 from flask_login import login_required, login_user, logout_user
 
 from . import auth
-from forms import LoginForm #, RegistrationForm
+from forms import LoginForm , RegistrationForm
 from .. import db
 from ..models import Usuario
 
-'''
+
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     """
@@ -35,11 +35,11 @@ def register():
     # load registration template
     return render_template('auth/register.html', form=form, title=u'Register')
 
-'''
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     """
-    GEstiona las solicitudes de login
+    Gestiona las solicitudes de login
     Loguea un usuario
     """
     form = LoginForm()
