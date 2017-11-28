@@ -25,6 +25,7 @@ class Miembro(db.Model):
     id_familia = db.Column(db.Integer, db.ForeignKey('familias.id'),nullable=False)
     nombres = db.Column(db.String(100), index=True)
     apellidos = db.Column(db.String(100), index=True)
+    dni_doc = db.Column(db.String(20))
     id_parentezco = db.Column(db.Integer, db.ForeignKey('parentezcos.id'),nullable=False)
     email = db.Column(db.String(60), index=True, unique=True)
     id_estado_civil = db.Column(db.Integer, db.ForeignKey('estadosciviles.id'),nullable=False)
@@ -32,12 +33,14 @@ class Miembro(db.Model):
     telefono_1 = db.Column(db.String(15))
     telefono_2 = db.Column(db.String(15))
     fecha_nac = db.Column(db.DateTime)
+    fecha_inicio_icecha = db.Column(db.DateTime)
     fecha_miembro = db.Column(db.DateTime)
     fecha_bautismo = db.Column(db.DateTime)
+    lugar_bautismo = db.Column(db.String(50))
     id_tipo_miembro = db.Column(db.Integer, db.ForeignKey('tiposmiembros.id'),nullable=False)
-    id_grupo_casero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'),nullable=False)
+    id_grupo_casero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'))
     observaciones = db.Column(db.String(500))
-    
+
     def __repr__(self):
         return '<Miembro: %s ' ' %s>' %(self.nombres,self.apellidos)
 
@@ -69,7 +72,7 @@ class Rol(db.Model):
     nombre = db.Column(db.String(60))
     descripcion = db.Column(db.String(200))
     miembros = db.relationship('Miembro', secondary=miembros_roles, backref=db.backref('roles', lazy='dynamic'))
-                            
+
 
     def __repr__(self):
         return '<Rol: {}>'.format(self.nombre)
@@ -85,7 +88,7 @@ class Parentezco(db.Model):
     nombre = db.Column(db.String(60))
     descripcion = db.Column(db.String(200))
     miembros = db.relationship('Miembro', backref='parentezco',lazy='dynamic')
-                            
+
 
     def __repr__(self):
         return '<Parentezco: {}>'.format(self.nombre)
@@ -101,10 +104,10 @@ class EstadoCivil(db.Model):
     nombre = db.Column(db.String(60))
     descripcion = db.Column(db.String(200))
     miembros = db.relationship('Miembro', backref='estado',lazy='dynamic')
-                            
+
 
     def __repr__(self):
-        return '<Estado Civil: {}>'.format(self.nombre)    
+        return '<Estado Civil: {}>'.format(self.nombre)
 
 class TipoMiembro(db.Model):
     """
@@ -117,10 +120,10 @@ class TipoMiembro(db.Model):
     nombre = db.Column(db.String(60))
     descripcion = db.Column(db.String(200))
     miembros = db.relationship('Miembro', backref='tipomiembro',lazy='dynamic')
-                            
+
 
     def __repr__(self):
-        return '<Tipo de Miembro: {}>'.format(self.nombre)   
+        return '<Tipo de Miembro: {}>'.format(self.nombre)
 
 class Familia(db.Model):
     """
@@ -132,11 +135,27 @@ class Familia(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     apellidos_familia = db.Column(db.String(60))
     comentarios = db.Column(db.String(200))
+    id_tipofamilia = db.Column(db.Integer, db.ForeignKey('tiposfamilias.id'))
     miembros = db.relationship('Miembro', backref='familia',lazy='dynamic')
-                            
+
     def __repr__(self):
-        return '<Familia: {}>'.format(self.apellidos_familia)    
-    
+        return '<Familia: {}>'.format(self.apellidos_familia)
+
+class TipoFamilia(db.Model):
+    """
+    Crea una tabla tipo familia- nucleares (padre,madre,hijos), monoparentales, extendidas(nuclear+parientes), otras
+    """
+    __tablename__ = 'tiposfamilias'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(60))
+    descripcion = db.Column(db.String(200))
+    familias = db.relationship('Familia', backref='tipofamilia',lazy='dynamic')
+
+    def __repr__(self):
+        return '<Tipo de Familia: {}>'.format(self.nombre)
+
+
 class Usuario(UserMixin, db.Model):
     """
     Crear una tabla de usuarios de la aplicacion
@@ -146,7 +165,7 @@ class Usuario(UserMixin, db.Model):
     # as is the name of the model
     __tablename__ = 'usuarios'
 
-    
+
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(60), index=True, unique=True)
     username = db.Column(db.String(60), index=True, unique=True)
