@@ -11,6 +11,13 @@ miembros_roles = db.Table('miembros_roles',
     db.Column('id_rol', db.Integer, db.ForeignKey('roles.id'),nullable=False)
 )
 
+miembros_parientes = db.Table('miembros_parientes',
+    db.Column('id_miembro_origen', db.Integer, db.ForeignKey('miembros.id'),nullable=False),
+    db.Column('id_miembro_destino', db.Integer, db.ForeignKey('miembros.id'),nullable=False),
+    db.Column('id_parentezco', db.Integer, db.ForeignKey('parentezcos.id'),nullable=False)
+)
+
+
 
 class Miembro(db.Model):
     """
@@ -26,7 +33,6 @@ class Miembro(db.Model):
     nombres = db.Column(db.String(100), index=True)
     apellidos = db.Column(db.String(100), index=True)
     dni_doc = db.Column(db.String(20))
-    id_parentezco = db.Column(db.Integer, db.ForeignKey('parentezcos.id'),nullable=False)
     email = db.Column(db.String(60), index=True, unique=True)
     id_estado_civil = db.Column(db.Integer, db.ForeignKey('estadosciviles.id'),nullable=False)
     direccion = db.Column(db.String(200))
@@ -40,6 +46,12 @@ class Miembro(db.Model):
     id_tipo_miembro = db.Column(db.Integer, db.ForeignKey('tiposmiembros.id'),nullable=False)
     id_grupo_casero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'))
     observaciones = db.Column(db.String(500))
+
+    pariente_origen = db.relationship(
+        'Miembro', secondary=miembros_parientes,
+        primaryjoin=(miembros_parientes.c.id_miembro_destino == id),
+        secondaryjoin=(miembros_parientes.c.id_miembro_origen == id),
+        backref=db.backref('pariente_destino', lazy='dynamic'), lazy='dynamic')
 
     def __repr__(self):
         return '<Miembro: %s ' ' %s>' %(self.nombres,self.apellidos)
@@ -79,7 +91,8 @@ class Rol(db.Model):
 
 class Parentezco(db.Model):
     """
-    Crea una tabla de parentezcos
+    Crea una tabla de parentezcos (padre, madre, hermano, nieto, abuelo)
+    se carga todas las relaciones que tenga cada persona con otros de la iglesia
     """
 
     __tablename__ = 'parentezcos'
@@ -87,8 +100,6 @@ class Parentezco(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(60))
     descripcion = db.Column(db.String(200))
-    miembros = db.relationship('Miembro', backref='parentezco',lazy='dynamic')
-
 
     def __repr__(self):
         return '<Parentezco: {}>'.format(self.nombre)
