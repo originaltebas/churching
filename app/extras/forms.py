@@ -1,14 +1,15 @@
+# -*- coding: UTF-8 -*-
 # app/extras/forms.py
-#coding: utf-8
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField, DateField
 from wtforms.validators import DataRequired, Email, Optional, NumberRange
-from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
 
-
-from ..models import Familia, Parentezco, TipoMiembro
+from ..models import Familia, TipoParentezco, TipoMiembro
 from ..models import Rol, GrupoCasero, EstadoCivil
+
 
 class FormGrupoCasero(FlaskForm):
     """
@@ -47,7 +48,7 @@ class FormParentezco(FlaskForm):
 
 class FormFamilia(FlaskForm):
     """
-    Formulario para agregar y editar familia 
+    Formulario para agregar y editar familia
     (Datos generales de la familia. Por Ejemplo Perez Perez)
     """
     apellidos_familia = StringField(u'Apellidos de la Familia', validators=[DataRequired()])
@@ -67,7 +68,7 @@ class FormAsignacionMiembro(FlaskForm):
     """
     Form for admin to para asignar Familia, Parentezco, GrupoCasero, TipoMiembro y EstadoCivil
     """
-    id = HiddenField('id') 
+    id = HiddenField('id')
 
     familia = QuerySelectField(query_factory=lambda: Familia.query.all(),
                                get_label="apellidos_familia")
@@ -87,24 +88,24 @@ class FormAsignacionMiembro(FlaskForm):
     rol = QuerySelectMultipleField(query_factory=lambda: Rol.query.all(),
                                    get_label="nombre")
 
-    submit = SubmitField(u'Guardar')    
+    submit = SubmitField(u'Guardar')
 
 
 class FormMiembro(FlaskForm):
     """
     Formulario para agregar y editar tipos de miembros de la iglesia (miembro, asistente regular, no viene, etc)
     """
-    
-    
+
+
     nombres = StringField(u'Nombre(s)', validators = [DataRequired()])
     apellidos = StringField(u'Apellidos(s)', validators = [DataRequired()])
     email = StringField(u'Email', validators = [Optional(), Email()])
     direccion = StringField(u'Dirección', validators = [DataRequired()])
     telefono_1 = StringField(u'Teléfono Fijo', validators = [Optional(), NumberRange(min=80000000, max=99999999, message=u'Escriba un nro. de teléfono válido')])
     telefono_2 = StringField(u'Teléfono Móvil', validators = [Optional(), NumberRange(min=80000000, max=99999999, message=u'Escriba un nro. de teléfono válido')])
-    
+
     fecha_nac = DateField(u'Fecha de Nacimiento', validators = [DataRequired()])
-    fecha_bautismo = DateField(u'Fecha de Bautismo', validators = [Optional()])   
+    fecha_bautismo = DateField(u'Fecha de Bautismo', validators = [Optional()])
     fecha_miembro = DateField(u'Fecha Membresía', validators = [Optional()])
 
     observaciones = StringField(u'Observaciones', validators = [Optional()])

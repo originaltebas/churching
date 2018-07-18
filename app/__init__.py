@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 # app/__init__.py
 
 # third-party imports

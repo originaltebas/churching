@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 # app/models.py
 
 from flask_login import UserMixin

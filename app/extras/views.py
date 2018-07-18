@@ -12,8 +12,8 @@ from forms import FormParentezco, FormFamilia, FormTipoMiembro
 from forms import FormAsignacionMiembro
 
 from ..models import GrupoCasero, Rol, EstadoCivil
-from ..models import Familia, TipoMiembro, Parentezco
-from ..models import Miembro, miembros_roles
+from ..models import Familia, TipoMiembro, TipoParentezco
+from ..models import Miembro, miembros_parientes
 
 def check_admin():
     """
