@@ -1,2 +1,0 @@
-export FLASK_set -g -xCONFIG=development
-export FLASK_APP=run.py
