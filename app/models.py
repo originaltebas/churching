@@ -6,17 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
 
-miembros_parientes = db.Table(
-                              'asoc_miembros_parientes',
-                              db.metadata,
-                              db.Column('asoc_id_miembro',
-                                        db.Integer,
-                                        db.ForeignKey('miembros.id')),
-                              db.Column('asoc_id_pariente',
-                                        db.Integer,
-                                        db.ForeignKey('parientes.id'))
-)
-
 
 class Miembro(db.Model):
     "TABLA BASE DEL MODELO - MIEMBROS DE LA IGLESIA"
@@ -60,6 +49,11 @@ class Miembro(db.Model):
                                nullable=False)
     grupocasero = db.relationship("GrupoCasero", back_populates="miembro")
 
+    # Grupo Casero
+    id_rolfamiliar = db.Column(db.Integer, db.ForeignKey('rolesfamiliares.id'),
+                               nullable=False)
+    rolfamiliar = db.relationship("RolFamiliar", back_populates="miembro")
+
     # RELACIONES 0:N // 1:N // N:N
     # FAMILIAS  1:N
     familias = db.relationship("Familia", back_populates="miembro")
@@ -75,10 +69,6 @@ class Miembro(db.Model):
 
     # SEGUIMIENTOS 1:N
     seguimientos = db.relationship("Seguimiento", back_populates="miembro")
-
-    # PARIENTES N:N
-    parientes = db.relationship("Pariente", secondary=miembros_parientes,
-                                back_populates="miembros")
 
     def __repr__(self):
         return '<Miembro: %s ' ' %s>' % (self.nombres, self.apellidos)
@@ -103,13 +93,13 @@ class Direccion(db.Model):
     provincia_via = db.Column(db.String(20), nullable=False)
     pais_via = db.Column(db.String(20), nullable=False)
 
-    # RELACIONES 1:1 [FOREINGKEYS]
+    # RELACIONES 1:1 [BACKPOPULATES]
     miembro = db.relationship('Miembro', uselist=False,
                               back_populates='direccion')
-    familia = db.relationship('Miembro', uselist=False,
-                              back_populates='familia')
-    grupocasero = db.relationship('Miembro', uselist=False,
-                                  back_populates='grupocasero')
+    familia = db.relationship('Familia', uselist=False,
+                              back_populates='direccion')
+    grupocasero = db.relationship('GrupoCasero', uselist=False,
+                                  back_populates='direccion')
 
     def __repr__(self):
         return '<Direccion: %s ' ' %s ' ' %s>' % (self.tipo_via,
@@ -130,7 +120,7 @@ class EstadoCivil(db.Model):
     nombre_estado = db.Column(db.String(60), nullable=False)
     descripcion_estado = db.Column(db.String(200))
 
-    # RELACIONES 1:1 [FOREINGKEYS]
+    # RELACIONES 1:1 [BACKPOPULATE]
     miembro = db.relationship('Miembro', uselist=False,
                               back_populates='estadocivil')
 
@@ -139,7 +129,7 @@ class EstadoCivil(db.Model):
 
 
 class TipoMiembro(db.Model):
-    "TABLA TIPO DE ESTADO CIVIL"
+    "TABLA TIPO DE MIEMBRO. EJ. ASISTENTE REGULAR, MIEMBRO, VISITANTE, ETC."
 
     # NOMBRE DE TABLA EN MYSQL
     __tablename__ = 'tiposmiembros'
@@ -151,7 +141,7 @@ class TipoMiembro(db.Model):
     nombre_tipomiembro = db.Column(db.String(60), nullable=False)
     descripcion_tipomiembro = db.Column(db.String(200))
 
-    # RELACIONES 1:1 [FOREINGKEYS]
+    # RELACIONES 1:1 [BACKPOPULATE]
     miembro = db.relationship('Miembro', uselist=False,
                               back_populates='tipomiembro')
 
@@ -175,6 +165,9 @@ class GrupoCasero(db.Model):
     # RELACIONES 1:1 [FOREINGKEYS]
     id_direccion = db.Column(db.Integer, db.ForeignKey('direcciones.id'),
                              nullable=False)
+    direccion = db.relationship("Direccion", back_populates="GrupoCasero")
+
+    # RELACIONES 1:1 [BACKPOPULATE]
     miembro = db.relationship('Miembro', uselist=False,
                               back_populates='grupocasero')
 
@@ -196,8 +189,15 @@ class Familia(db.Model):
     descripcion_familia = db.Column(db.String(200))
 
     # RELACIONES 1:1 [FOREINGKEYS]
+    # Direccion
     id_direccion = db.Column(db.Integer, db.ForeignKey('direcciones.id'),
                              nullable=False)
+    direccion = db.relationship("Direccion", back_populates="familia")
+
+    # Tipo Familia
+    id_tipofamilia = db.Column(db.Integer, db.ForeignKey('tiposfamilias.id'),
+                               nullable=False)
+    tipofamilia = db.relationship("TipoFamilia", back_populates="familia")
 
     # RELACIONES 0:N // 1:N // N:N
     # MIEMBROS  N:1
@@ -206,6 +206,28 @@ class Familia(db.Model):
 
     def __repr__(self):
         return '<Familia: {}>'.format(self.apellidos_familia)
+
+
+class TipoFamilia(db.Model):
+    "TIPO DE FAMILIA.EJ: ESTANDAR, MONOPARENTAL,"
+    "MULTIFAMILIAR, SOLTERO/SOLO/VIUDO, NO SABE"
+
+    # NOMBRE DE TABLA EN MYSQL
+    __tablename__ = 'tiposfamilias'
+
+    # CLAVE PRIMARIA
+    id = db.Column(db.Integer, primary_key=True)
+
+    # CAMPOS DESCRIPTIVOS
+    tipo_familia = db.Column(db.String(60), nullable=False)
+    descripcion_tipo_familia = db.Column(db.String(200))
+
+    # RELACIONES 1:1 [BACKPOPULATE]
+    familia = db.relationship('Familia', uselist=False,
+                              back_populates='tipofamilia')
+
+    def __repr__(self):
+        return '<Tipo Familia: {}>'.format(self.tipo_familia)
 
 
 class Telefono(db.Model):
@@ -231,7 +253,9 @@ class Telefono(db.Model):
 
 
 class Rol(db.Model):
-    "TABLA DE TELEFONOS FIJOS Y MOVILES"
+    "TABLA DE ROL DENTRO DE LA IGLESIA"
+    "EJ. PASTOR, ANCIANO; DIACONO, LIDER GRUPO CASERO"
+    "PARTICIPA EN: OBRA SOCIAL, MUSICA; SONIDO; UJIERES"
 
     # NOMBRE DE TABLA EN MYSQL
     __tablename__ = 'roles'
@@ -252,50 +276,30 @@ class Rol(db.Model):
         return '<Rol: {}>'.format(self.nombre)
 
 
-class Pariente(db.Model):
-    "TABLA ids de miembros para relacionarlos con ellos misma."
-    "miembros parientes de miembros"
+class RolFamiliar(db.Model):
+    "TABLA DE TIPOS DE ROLES FAM (padre, madre, hijo, abuelo, amigo)"
+    "En lugar de pasar por familia directamente relaciono con miembros"
+    "ya que un miembro solo podrá tener 1 rol familiar"
+    "En el caso que vivan Padres, hijos y nietos se relaciona así"
+    "Abuelos --> Padres --> Hijos --> Amigos --> Otros"
 
     # NOMBRE DE TABLA EN MYSQL
-    __tablename__ = 'parientes'
+    __tablename__ = 'rolesfamiliares'
 
     # CLAVE PRIMARIA
     id = db.Column(db.Integer, primary_key=True)
 
     # CAMPOS DESCRIPTIVOS
-    descripcion_pariente = db.Column(db.String(200))
+    nombre_rolfam = db.Column(db.String(60), nullable=False)
+    descripcion_rolfam = db.Column(db.String(200))
 
-    # RELACIONES N:N
-    miembros = db.relationship("Miembro", secondary=miembros_parientes,
-                               back_populates="parientes")
-
-    # RELACIONES 1:1 [FOREINGKEYS]
-    # TipoParentezco
-    id_tipopariente = db.Column(db.Integer, db.ForeignKey('parentezcos.id'),
-                                nullable=False)
-    tipopariente = db.relationship("TipoParentezco", back_populates="pariente")
-
-
-class TipoParentezco(db.Model):
-    "TABLA DE TIPOS DE PARENTEZCO (padre, madre, hermano, nieto, abuelo)"
-
-    # NOMBRE DE TABLA EN MYSQL
-    __tablename__ = 'parentezcos'
-
-    # CLAVE PRIMARIA
-    id = db.Column(db.Integer, primary_key=True)
-
-    # CAMPOS DESCRIPTIVOS
-    nombre_parentezco = db.Column(db.String(60), nullable=False)
-    descripcion_parentezco = db.Column(db.String(200))
-
-    # RELACIONES 1:1 [FOREINGKEYS]
-    # Pariente
-    pariente = db.relationship('Pariente', uselist=False,
-                               back_populates='tipoparentezco')
+    # RELACIONES 1:1 [BACKPOPULATE]
+    # Miembro
+    miembro = db.relationship('Miembro', uselist=False,
+                              back_populates='rolfamiliar')
 
     def __repr__(self):
-        return '<Parentezco: {}>'.format(self.nombre_parentezco)
+        return '<Rol Familiar: {}>'.format(self.nombre_rolfam)
 
 
 class Asistencia(db.Model):
@@ -363,20 +367,20 @@ class Usuario(UserMixin, db.Model):
     @property
     def password(self):
         """
-        Prevent pasword from being accessed
+        Para evitar que se acceda a la contraseña
         """
-        raise AttributeError('password is not a readable attribute.')
+        raise AttributeError('La contraseña no es un atributo de lectura.')
 
     @password.setter
     def password(self, password):
         """
-        Set password to a hashed password
+        Establecer la contraseña a hash
         """
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
         """
-        Check if hashed password matches actual password
+        Controlar si la contraseña coincide
         """
         return check_password_hash(self.password_hash, password)
 
