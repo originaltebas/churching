@@ -6,16 +6,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
 
+
 # Tablas intemedias para Relaciones N:N
 # Miembros con Roles (1 miembro->varios roles, 1 rol -> varios miembros)
 relacion_miembros_roles = db.Table('relacion_miembros_roles',
                                    db.Column('id_miembro',
                                              db.Integer,
-                                             db.ForeignKey('miembro.id'),
+                                             db.ForeignKey('miembros.id'),
                                              primary_key=True),
                                    db.Column('id_rol',
                                              db.Integer,
-                                             db.ForeignKey('rol.id'),
+                                             db.ForeignKey('roles.id'),
                                              primary_key=True)
                                    )
 
@@ -60,7 +61,7 @@ class Miembro(db.Model):
     id_rolfamiliar = db.Column(db.Integer, db.ForeignKey('rolesfamiliares.id'),
                                nullable=False)
     # Familia (1 familia, muchos miembros)
-    id_familia = db.Column(db.integer, db.ForeignKey('familias.id'),
+    id_familia = db.Column(db.Integer, db.ForeignKey('familias.id'),
                            nullable=False)
 
     # RELACIONES N:1 [BACKREF]
@@ -263,7 +264,7 @@ class Asistencia(db.Model):
     asistio = db.Column(db.Boolean, nullable=False)
 
     # 1 miembro muchas asistencias
-    id_miembro = db.Column(db.integer, db.ForeignKey('miembros.id'),
+    id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'),
                            nullable=False)
 
     def __repr__(self):
@@ -286,7 +287,7 @@ class Seguimiento(db.Model):
     comentarios_seg = db.Column(db.Boolean, nullable=False)
 
     # 1 miembro muchos seguimientos
-    id_miembro = db.Column(db.integer, db.ForeignKey('miembros.id'),
+    id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'),
                            nullable=False)
 
     def __repr__(self):
