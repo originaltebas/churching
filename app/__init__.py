@@ -34,7 +34,7 @@ def create_app(config_name):
     from app import models
 
     from .extras import extras as extras_blueprint
-    app.register_blueprint(extras_blueprint, url_prefix='/extras')
+    app.register_blueprint(extras_blueprint)
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)

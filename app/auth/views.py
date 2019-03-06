@@ -4,10 +4,10 @@
 from flask import flash, redirect, render_template, url_for
 from flask_login import login_required, login_user, logout_user
 
-from . import auth
-from forms import LoginForm , RegistrationForm
-from .. import db
-from ..models import Usuario
+from app.auth import auth
+from app.auth.forms import LoginForm, RegistrationForm
+from app import db
+from app.models import Usuario
 
 
 @auth.route('/register', methods=['GET', 'POST'])
@@ -19,10 +19,10 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         usuario = Usuario(email=form.email.data,
-                            username=form.username.data,
-                            first_name=form.first_name.data,
-                            last_name=form.last_name.data,
-                            password=form.password.data)
+                          username=form.username.data,
+                          first_name=form.first_name.data,
+                          last_name=form.last_name.data,
+                          password=form.password.data)
 
         # add usuario to the database
         db.session.add(usuario)
@@ -51,7 +51,7 @@ def login():
         if usuario is not None and usuario.verify_password(form.password.data):
             login_user(usuario)
 
-           # redirect to the appropriate dashboard page
+        # redirect to the appropriate dashboard page
             if usuario.is_admin:
                 return redirect(url_for('home.admin_dashboard'))
             else:
@@ -63,6 +63,7 @@ def login():
 
     # load login template
     return render_template('auth/login.html', form=form, title=u'Login')
+
 
 @auth.route('/logout')
 @login_required

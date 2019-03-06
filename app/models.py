@@ -6,6 +6,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
 
+# Tablas intemedias para Relaciones N:N
+# Miembros con Roles (1 miembro->varios roles, 1 rol -> varios miembros)
+relacion_miembros_roles = db.Table('relacion_miembros_roles',
+                                   db.Column('id_miembro',
+                                             db.Integer,
+                                             db.ForeignKey('miembro.id'),
+                                             primary_key=True),
+                                   db.Column('id_rol',
+                                             db.Integer,
+                                             db.ForeignKey('rol.id'),
+                                             primary_key=True)
+                                   )
+
 
 class Miembro(db.Model):
     "TABLA BASE DEL MODELO - MIEMBROS DE LA IGLESIA"
@@ -21,6 +34,8 @@ class Miembro(db.Model):
     apellidos = db.Column(db.String(100), index=True, nullable=False)
     dni_doc = db.Column(db.String(20))
     email = db.Column(db.String(60), index=True, unique=True)
+    telefono_movil = db.Column(db.String(15))
+    telefono_fijo = db.Column(db.String(15))
     fecha_nac = db.Column(db.DateTime, nullable=False)
     fecha_inicio_icecha = db.Column(db.DateTime)
     fecha_miembro = db.Column(db.DateTime)
@@ -28,47 +43,37 @@ class Miembro(db.Model):
     lugar_bautismo = db.Column(db.String(50))
     observaciones = db.Column(db.String(500))
 
-    # RELACIONES 1:1 [FOREINGKEYS]
-    # Direccion
+    # RELACIONES N:1 [FOREINGKEYS]
+    # Direccion (1 direccion para N miembros [la familia])
     id_direccion = db.Column(db.Integer, db.ForeignKey('direcciones.id'),
                              nullable=False)
-    direccion = db.relationship("Direccion", back_populates="miembro")
-
-    # Estado Civil
+    # Estado Civil (1 estado civil para muchos miembros)
     id_estadoscivil = db.Column(db.Integer, db.ForeignKey('estadosciviles.id'),
                                 nullable=False)
-    estadocivil = db.relationship("EstadoCivil", back_populates="miembro")
-
-    # Tipo de Miembro
+    # Tipo de Miembro (1 tipo de miembro para muchos miembros)
     id_tipomiembro = db.Column(db.Integer, db.ForeignKey('tiposmiembros.id'),
                                nullable=False)
-    tipomiembro = db.relationship("TipoMiembro", back_populates="miembro")
-
-    # Grupo Casero
+    # Grupo Casero (1 grupo casero, muchos miembros)
     id_grupocasero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'),
                                nullable=False)
-    grupocasero = db.relationship("GrupoCasero", back_populates="miembro")
-
-    # Grupo Casero
+    # Rol Familiar (1 rol, muchos miembros)
     id_rolfamiliar = db.Column(db.Integer, db.ForeignKey('rolesfamiliares.id'),
                                nullable=False)
-    rolfamiliar = db.relationship("RolFamiliar", back_populates="miembro")
+    # Familia (1 familia, muchos miembros)
+    id_familia = db.Column(db.integer, db.ForeignKey('familias.id'),
+                           nullable=False)
 
-    # RELACIONES 0:N // 1:N // N:N
-    # FAMILIAS  1:N
-    familias = db.relationship("Familia", back_populates="miembro")
+    # RELACIONES N:1 [BACKREF]
+    # Asistencia (1 miembro, muchas asistencias)
+    asistencias = db.relationship('Asistencia', backref='miembro', lazy=True)
+    # Seguimiento (1 miembro, muchos Seguimientos)
+    seguimientos = db.relationship('Seguimiento', backref='miembro', lazy=True)
 
-    # TELEFONOS 1:N
-    telefonos = db.relationship("Telefono", back_populates="miembro")
-
-    # ROLES 1:N
-    roles = db.relationship("Rol", back_populates="miembro")
-
-    # ASISTENCIAS 1:N
-    asistencias = db.relationship("Asistencia", back_populates="miembro")
-
-    # SEGUIMIENTOS 1:N
-    seguimientos = db.relationship("Seguimiento", back_populates="miembro")
+    # RELACIONES N:N [TABLA INTERMEDIA]
+    # Roles (1 miembros puede tener varios roles: ej: anciano, tesorero,
+    # ministerio alabanza, etc)
+    roles = db.relationship("Rol", secondary=relacion_miembros_roles,
+                            back_populates="miembro")
 
     def __repr__(self):
         return '<Miembro: %s ' ' %s>' % (self.nombres, self.apellidos)
@@ -93,13 +98,13 @@ class Direccion(db.Model):
     provincia_via = db.Column(db.String(20), nullable=False)
     pais_via = db.Column(db.String(20), nullable=False)
 
-    # RELACIONES 1:1 [BACKPOPULATES]
-    miembro = db.relationship('Miembro', uselist=False,
-                              back_populates='direccion')
-    familia = db.relationship('Familia', uselist=False,
-                              back_populates='direccion')
-    grupocasero = db.relationship('GrupoCasero', uselist=False,
-                                  back_populates='direccion')
+    # RELACIONES 1:N [BACKREF]
+    miembros = db.relationship('Miembro', backref='direccion', lazy=True)
+
+    gruposcaseros = db.relationship('GrupoCasero', backref='direccion',
+                                    lazy=True)
+
+    familias = db.relationship('Familia', backref='direccion', lazy=True)
 
     def __repr__(self):
         return '<Direccion: %s ' ' %s ' ' %s>' % (self.tipo_via,
@@ -120,9 +125,8 @@ class EstadoCivil(db.Model):
     nombre_estado = db.Column(db.String(60), nullable=False)
     descripcion_estado = db.Column(db.String(200))
 
-    # RELACIONES 1:1 [BACKPOPULATE]
-    miembro = db.relationship('Miembro', uselist=False,
-                              back_populates='estadocivil')
+    # RELACIONES 1:N [BACKREF]
+    miembros = db.relationship('Miembro', backref='estadocivil', lazy=True)
 
     def __repr__(self):
         return '<Estado Civil: {}>'.format(self.nombre_estado)
@@ -141,9 +145,8 @@ class TipoMiembro(db.Model):
     nombre_tipomiembro = db.Column(db.String(60), nullable=False)
     descripcion_tipomiembro = db.Column(db.String(200))
 
-    # RELACIONES 1:1 [BACKPOPULATE]
-    miembro = db.relationship('Miembro', uselist=False,
-                              back_populates='tipomiembro')
+    # RELACIONES 1:N [BACKREF]
+    miembros = db.relationship('Miembro', backref='tipomiembro', lazy=True)
 
     def __repr__(self):
         return '<Tipo de Miembro: {}>'.format(self.nombre)
@@ -162,118 +165,14 @@ class GrupoCasero(db.Model):
     nombre_grupo = db.Column(db.String(60), nullable=False)
     descripcion_grupo = db.Column(db.String(200))
 
-    # RELACIONES 1:1 [FOREINGKEYS]
+    # RELACIONES N:1 [FOREINGKEYS] (1 direccion, varios grupos)
     id_direccion = db.Column(db.Integer, db.ForeignKey('direcciones.id'),
                              nullable=False)
-    direccion = db.relationship("Direccion", back_populates="GrupoCasero")
-
-    # RELACIONES 1:1 [BACKPOPULATE]
-    miembro = db.relationship('Miembro', uselist=False,
-                              back_populates='grupocasero')
+    # RELACIONES 1:N [BACKREF] (1 grupo muchos miembros)
+    miembros = db.relationship('Miembro', backref='grupocasero', lazy=True)
 
     def __repr__(self):
         return '<Grupo Casero: {}>'.format(self.nombre_grupo)
-
-
-class Familia(db.Model):
-    "TABLA DE FAMILIAS"
-
-    # NOMBRE DE TABLA EN MYSQL
-    __tablename__ = 'familias'
-
-    # CLAVE PRIMARIA
-    id = db.Column(db.Integer, primary_key=True)
-
-    # CAMPOS DESCRIPTIVOS
-    apellidos_familia = db.Column(db.String(60), nullable=False)
-    descripcion_familia = db.Column(db.String(200))
-
-    # RELACIONES 1:1 [FOREINGKEYS]
-    # Direccion
-    id_direccion = db.Column(db.Integer, db.ForeignKey('direcciones.id'),
-                             nullable=False)
-    direccion = db.relationship("Direccion", back_populates="familia")
-
-    # Tipo Familia
-    id_tipofamilia = db.Column(db.Integer, db.ForeignKey('tiposfamilias.id'),
-                               nullable=False)
-    tipofamilia = db.relationship("TipoFamilia", back_populates="familia")
-
-    # RELACIONES 0:N // 1:N // N:N
-    # MIEMBROS  N:1
-    id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'))
-    miembro = db.relationship('Miembro', back_populates='familias')
-
-    def __repr__(self):
-        return '<Familia: {}>'.format(self.apellidos_familia)
-
-
-class TipoFamilia(db.Model):
-    "TIPO DE FAMILIA.EJ: ESTANDAR, MONOPARENTAL,"
-    "MULTIFAMILIAR, SOLTERO/SOLO/VIUDO, NO SABE"
-
-    # NOMBRE DE TABLA EN MYSQL
-    __tablename__ = 'tiposfamilias'
-
-    # CLAVE PRIMARIA
-    id = db.Column(db.Integer, primary_key=True)
-
-    # CAMPOS DESCRIPTIVOS
-    tipo_familia = db.Column(db.String(60), nullable=False)
-    descripcion_tipo_familia = db.Column(db.String(200))
-
-    # RELACIONES 1:1 [BACKPOPULATE]
-    familia = db.relationship('Familia', uselist=False,
-                              back_populates='tipofamilia')
-
-    def __repr__(self):
-        return '<Tipo Familia: {}>'.format(self.tipo_familia)
-
-
-class Telefono(db.Model):
-    "TABLA DE TELEFONOS FIJOS Y MOVILES"
-
-    # NOMBRE DE TABLA EN MYSQL
-    __tablename__ = 'telefonos'
-
-    # CLAVE PRIMARIA
-    id = db.Column(db.Integer, primary_key=True)
-
-    # CAMPOS DESCRIPTIVOS
-    numero_tel = db.Column(db.String(20), nullable=False)
-    tipo_tel = db.Column(db.String(20), nullable=False)  # movil,casa,trabajo
-
-    # RELACIONES 0:N // 1:N // N:N
-    # MIEMBROS  N:1
-    id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'))
-    miembro = db.relationship('Miembro', back_populates='telefonos')
-
-    def __repr__(self):
-        return '<Telefono: {}>'.format(self.numero)
-
-
-class Rol(db.Model):
-    "TABLA DE ROL DENTRO DE LA IGLESIA"
-    "EJ. PASTOR, ANCIANO; DIACONO, LIDER GRUPO CASERO"
-    "PARTICIPA EN: OBRA SOCIAL, MUSICA; SONIDO; UJIERES"
-
-    # NOMBRE DE TABLA EN MYSQL
-    __tablename__ = 'roles'
-
-    # CLAVE PRIMARIA
-    id = db.Column(db.Integer, primary_key=True)
-
-    # CAMPOS DESCRIPTIVOS
-    nombre_rol = db.Column(db.String(60), nullable=False)
-    descripcion_rol = db.Column(db.String(200))
-
-    # RELACIONES 0:N // 1:N // N:N
-    # MIEMBROS  N:1
-    id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'))
-    miembro = db.relationship('Miembro', back_populates='roles')
-
-    def __repr__(self):
-        return '<Rol: {}>'.format(self.nombre)
 
 
 class RolFamiliar(db.Model):
@@ -293,13 +192,61 @@ class RolFamiliar(db.Model):
     nombre_rolfam = db.Column(db.String(60), nullable=False)
     descripcion_rolfam = db.Column(db.String(200))
 
-    # RELACIONES 1:1 [BACKPOPULATE]
-    # Miembro
-    miembro = db.relationship('Miembro', uselist=False,
-                              back_populates='rolfamiliar')
+    # RELACIONES 1:N [BACKREF] (1 rolfamiliar muchos miembros)
+    miembros = db.relationship('Miembro', backref='rolfamiliar', lazy=True)
 
     def __repr__(self):
         return '<Rol Familiar: {}>'.format(self.nombre_rolfam)
+
+
+class Familia(db.Model):
+    "TABLA DE FAMILIAS"
+
+    # NOMBRE DE TABLA EN MYSQL
+    __tablename__ = 'familias'
+
+    # CLAVE PRIMARIA
+    id = db.Column(db.Integer, primary_key=True)
+
+    # CAMPOS DESCRIPTIVOS
+    apellidos_familia = db.Column(db.String(60), nullable=False)
+    descripcion_familia = db.Column(db.String(200))
+    telefono_familia = db.Column(db.String(15))
+
+    # RELACIONES 1:n [FOREINGKEYS]
+    # Direccion
+    id_direccion = db.Column(db.Integer, db.ForeignKey('direcciones.id'),
+                             nullable=False)
+    # Tipo Familia
+    id_tipofamilia = db.Column(db.Integer, db.ForeignKey('tiposfamilias.id'),
+                               nullable=False)
+
+    # RELACIONES 1:N [BACKREF] (1 familia muchos miembros)
+    miembros = db.relationship('Miembro', backref='familia', lazy=True)
+
+    def __repr__(self):
+        return '<Familia: {}>'.format(self.apellidos_familia)
+
+
+class TipoFamilia(db.Model):
+    "TIPO DE FAMILIA.EJ: ESTANDAR, MONOPARENTAL,"
+    "MULTIFAMILIAR, SOLTERO/SOLO/VIUDO, NO SABE"
+
+    # NOMBRE DE TABLA EN MYSQL
+    __tablename__ = 'tiposfamilias'
+
+    # CLAVE PRIMARIA
+    id = db.Column(db.Integer, primary_key=True)
+
+    # CAMPOS DESCRIPTIVOS
+    tipo_familia = db.Column(db.String(60), nullable=False)
+    descripcion_tipo_familia = db.Column(db.String(200))
+
+    # RELACIONES 1:N [BACKREF] (1 familia muchos miembros)
+    familias = db.relationship('Familia', backref='tipofamilia', lazy=True)
+
+    def __repr__(self):
+        return '<Tipo Familia: {}>'.format(self.tipo_familia)
 
 
 class Asistencia(db.Model):
@@ -315,9 +262,9 @@ class Asistencia(db.Model):
     fecha_culto = db.Column(db.DateTime, nullable=False)
     asistio = db.Column(db.Boolean, nullable=False)
 
-    # MIEMBROS  N:1
-    id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'))
-    miembro = db.relationship('Miembro', back_populates='asistencias')
+    # 1 miembro muchas asistencias
+    id_miembro = db.Column(db.integer, db.ForeignKey('miembros.id'),
+                           nullable=False)
 
     def __repr__(self):
         return '<Asistencia: %s>' '%s' % (self.fecha_culto,
@@ -338,13 +285,38 @@ class Seguimiento(db.Model):
     fecha_seg = db.Column(db.DateTime, nullable=False)
     comentarios_seg = db.Column(db.Boolean, nullable=False)
 
-    # MIEMBROS  N:1
-    id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'))
-    miembro = db.relationship('Miembro', back_populates='seguimientos')
+    # 1 miembro muchos seguimientos
+    id_miembro = db.Column(db.integer, db.ForeignKey('miembros.id'),
+                           nullable=False)
 
     def __repr__(self):
         return '<Seguimiento: %s>' '%s' % (self.fecha_seg,
                                            self.comentarios_seg)
+
+
+class Rol(db.Model):
+    "TABLA DE ROL DENTRO DE LA IGLESIA"
+    "EJ. PASTOR, ANCIANO; DIACONO, LIDER GRUPO CASERO"
+    "PARTICIPA EN: OBRA SOCIAL, MUSICA; SONIDO; UJIERES"
+
+    # NOMBRE DE TABLA EN MYSQL
+    __tablename__ = 'roles'
+
+    # CLAVE PRIMARIA
+    id = db.Column(db.Integer, primary_key=True)
+
+    # CAMPOS DESCRIPTIVOS
+    nombre_rol = db.Column(db.String(60), nullable=False)
+    descripcion_rol = db.Column(db.String(200))
+
+    # RELACIONES N:N [TABLA INTERMEDIA]
+    # Miembro (1 miembros puede tener varios roles: ej: anciano, tesorero,
+    # ministerio alabanza, etc)
+    miembros = db.relationship("Miembro", secondary=relacion_miembros_roles,
+                               back_populates="rol")
+
+    def __repr__(self):
+        return '<Rol: {}>'.format(self.nombre)
 
 
 class Usuario(UserMixin, db.Model):
