@@ -74,7 +74,7 @@ class Miembro(db.Model):
     # Roles (1 miembros puede tener varios roles: ej: anciano, tesorero,
     # ministerio alabanza, etc)
     roles = db.relationship("Rol", secondary=relacion_miembros_roles,
-                            back_populates="miembro")
+                            back_populates="miembros")
 
     def __repr__(self):
         return '<Miembro: %s ' ' %s>' % (self.nombres, self.apellidos)
@@ -314,7 +314,7 @@ class Rol(db.Model):
     # Miembro (1 miembros puede tener varios roles: ej: anciano, tesorero,
     # ministerio alabanza, etc)
     miembros = db.relationship("Miembro", secondary=relacion_miembros_roles,
-                               back_populates="rol")
+                               back_populates="roles")
 
     def __repr__(self):
         return '<Rol: {}>'.format(self.nombre)
