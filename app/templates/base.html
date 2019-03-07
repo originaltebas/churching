@@ -1,80 +1,86 @@
 <!-- app/templates/base.html -->
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
-    <title>{{ title }} | Project Churching</title>
-    <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+  <title>{{ title }} </title>
+
+  <!-- Custom fonts for this template-->
+  <link href="{{ url_for('static', filename='fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}" rel="stylesheet">
+
 </head>
 
-<body>
-    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
-        <div class="container topnav">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Cambiar navegaci&oacute;n</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand topnav" href="{{ url_for('home.homepage') }}">Proyecto Churching</a>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <!-- Modify nav bar menu -->
-                <ul class="nav navbar-nav navbar-right">
-                    {% if current_user.is_authenticated %} {% if current_user.is_admin %}
-                        <li>
-                            <a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a>
-                        </li>
-                        {% else %}
-                        <li>
-                            <a href="{{ url_for('home.home_no_admin') }}">Home NOADMIN</a>
-                        </li>
-                        {% endif %}
-                        <li>
-                            <a href="{{ url_for('auth.logout') }}">Logout</a>
-                        </li>
-                        <li>
-                            <a><i class="fa fa-user"></i> Hola, {{ current_user.username }}!</a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a href="{{ url_for('home.homepage') }}">Inicio</a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('auth.login') }}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="wrapper">
-        {% block body %} {% endblock %}
+{% block body %}
+{% endblock %}
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+      <div class="copyright text-center my-auto">
+        <span>Copyright &copy; Churching 2019 - Iglesia Cristiana Evang&eacute;lica de Chamart&iacute;n</span>
+      </div>
     </div>
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <ul class="list-inline">
-                        <li><a href="{{ url_for('home.homepage') }}">Inicio</a></li>
-                        <li class="footer-menu-divider">⋅</li>
-                        <li><a href="{{ url_for('auth.register') }}">Registro</a></li>
-                        <li class="footer-menu-divider">⋅</li>
-                        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                    </ul>
-                    <p class="footer-copyright text-center py-3">© 2018 Gesti&oacute;n de los miembros de la Iglesia de Chamart&iacute;n</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+  </footer>
+  <!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+<i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">¿Listo para salir?</h5>
+      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">Pincha en "Logout" para finalizar la sesi&oacute;n</div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+      <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Logout</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{{ url_for('static', filename='jquery-easing/jquery.easing.min.js') }}"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
+
+<!-- Page level plugins -->
+<script src="{{ url_for('static', filename='chart.js/Chart.min.js') }}"></script>
+
+<!-- Page level custom scripts -->
+<script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
+<script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
 </body>
 
 </html>
