@@ -6,6 +6,7 @@ from flask_login import current_user, login_required
 
 from . import home
 
+
 @home.route('/')
 def homepage():
     """
@@ -23,6 +24,7 @@ def dashboard():
     """
     return render_template('home/home_no_admin.html',
                            title="Panel de Control - No Admin")
+
 
 @home.route('/dashboard')
 @login_required

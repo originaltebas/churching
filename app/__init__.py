@@ -42,16 +42,16 @@ def create_app(config_name):
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
 
-    from .miembros import miembros as miembros_blueprint
-    app.register_blueprint(miembros_blueprint)
+#    from .miembros import miembros as miembros_blueprint
+#    app.register_blueprint(miembros_blueprint)
 
-    from .familias import familia as familias_blueprint
-    app.register_blueprint(familias_blueprint)
+#    from .familias import familia as familias_blueprint
+#    app.register_blueprint(familias_blueprint)
 
-    from .gruposcaseros import gruposcaseros as gruposcaseros_blueprint
-    app.register_blueprint(gruposcaseros_blueprint)
+#    from .gruposcaseros import gruposcaseros as gruposcaseros_blueprint
+#    app.register_blueprint(gruposcaseros_blueprint)
 
-    from .extras import extras as extras_blueprint
-    app.register_blueprint(extras_blueprint)
+#    from .extras import extras as extras_blueprint
+#    app.register_blueprint(extras_blueprint)
 
     return app
