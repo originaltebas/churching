@@ -22,7 +22,7 @@ def homepage():
 
 @home.route('/noadmin')
 @login_required
-def dashboard():
+def noadmin():
     """
     Pagina de Usuario NO ADMIN logado. Por ahora no muestra nada.
     Solo un mensaje diciendo que no es admin
@@ -33,7 +33,7 @@ def dashboard():
 
 @home.route('/dashboard')
 @login_required
-def admin_dashboard():
+def dashboard():
     """
     Pagina de panel de control de administracion
     Esta es la pagina principal de donde se va a todos lados

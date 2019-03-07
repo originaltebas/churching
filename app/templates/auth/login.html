@@ -25,7 +25,8 @@
                       <h1 class="h4 text-gray-900 mb-4">Bienvenido</h1>
                       {{ utils.flashed_messages() }}
                     </div>
-                    <form class="user" method="POST" role="form">
+                    <form class="user" method="POST" role="form" action="">
+                        {{ form.csrf_token }}
                       <div class="form-group">
                           {{form.email.label}}
                           {{ form.email(class_="form-control form-control-user") }}
@@ -34,7 +35,7 @@
                           {{form.password.label}}
                           {{ form.password(class_="form-control form-control-user") }}
                       </div>
-                      <input type="submit" class="btn btn-primary btn-user btn-block" value="Login"/>
+                      <input type="submit" id="submit" name="submit" class="btn btn-primary btn-user btn-block" value="Login"/>
                     </form>
                     <hr>
                     <div class="text-center">
