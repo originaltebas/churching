@@ -296,9 +296,14 @@ class Seguimiento(db.Model):
 
 
 class Rol(db.Model):
-    "TABLA DE ROL DENTRO DE LA IGLESIA"
-    "EJ. PASTOR, ANCIANO; DIACONO, LIDER GRUPO CASERO"
-    "PARTICIPA EN: OBRA SOCIAL, MUSICA; SONIDO; UJIERES"
+    """
+    TABLA DE ROL DENTRO DE LA IGLESIA
+    EJ. PASTOR, ANCIANO; DIACONO, LIDER GRUPO CASERO
+    PARTICIPA EN: OBRA SOCIAL, MUSICA; SONIDO; UJIERES
+    CREO QUE PUEDO HACER ALGO TIPO: TAGS, es decir agrego por ejemplo
+    ministerio de alabaza, pero tambien guitarrista ministerio de alabanza, sonidista, etc
+    y los roles serían como las veces de etiquetas.
+    """
 
     # NOMBRE DE TABLA EN MYSQL
     __tablename__ = 'roles'
@@ -308,6 +313,9 @@ class Rol(db.Model):
 
     # CAMPOS DESCRIPTIVOS
     nombre_rol = db.Column(db.String(60), nullable=False)
+    # tipo rol (ej. pastor) o tipo ministerio (ej. obra social), o clase (ej. 3-5años)
+    # si es rol es un cargo, si es un ministerio es que participa en...
+    tipo_rol = db.Column(db.String(60), nullable=False)
     descripcion_rol = db.Column(db.String(200))
 
     # RELACIONES N:N [TABLA INTERMEDIA]

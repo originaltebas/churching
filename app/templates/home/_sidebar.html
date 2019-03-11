@@ -1,117 +1,265 @@
 <!-- app/templates/_sidebar.html -->
 
 <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-          <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-cross"></i>
-          </div>
-          <div class="sidebar-brand-text mx-3">Churching<sup></sup></div>
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+  <!-- Sidebar - Brand -->
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <div class="sidebar-brand-icon rotate-n-15">
+      <i class="fas fa-cross"></i>
+    </div>
+    <div class="sidebar-brand-text mx-3">Churching<sup></sup></div>
+  </a>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
+
+  <!-- Nav Item - Dashboard -->
+  <li class="nav-item active">
+    <a class="nav-link" href="index.html">
+      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <span>Panel de Control</span>
+    </a>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Gesti&Oacute;n de Personas
+  </div>
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFam" aria-expanded="true" aria-controls="collapseTwo">
+      <i class="fas fa-fw fa-users"></i>
+      <span>Familias</span>
+    </a>
+    <div id="collapseFam" class="collapse" aria-labelledby="headingFam" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear Familia
         </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Modificar Familia o Composici&oacute;n
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Borrar Familia
+        </a>
+      </div>
+    </div>
+  </li>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePer" aria-expanded="true" aria-controls="collapseTwo">
+      <i class="fas fa-fw fa-user"></i>
+      <span>Personas</span>
+    </a>
+    <div id="collapsePer" class="collapse" aria-labelledby="headingPer" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear Persona
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Modificar Persona
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Borrar Persona
+        </a>
+      </div>
+    </div>
+  </li>
 
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item active">
-          <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Panel de Control</span>
-          </a>
-        </li>
+  <!-- Divider -->
+  <hr class="sidebar-divider">
 
-        <!-- Divider -->
-        <hr class="sidebar-divider">
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Gesti&Oacute;n de Grupos y Ministerios
+  </div>
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-          Interface
-        </div>
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGGCC" aria-expanded="true" aria-controls="collapsePages">
+      <i class="fas fa-fw fa-people-carry"></i>
+      <span>Grupos Caseros</span>
+    </a>
+    <div id="collapseGGCC" class="collapse" aria-labelledby="headingGGCC" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear Grupo Casero
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Modificar Grupo Casero o Composici&oacute;n
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Borrar Grupo Casero
+        </a>
+      </div>
+    </div>
+  </li>
 
-        <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Components</span>
-          </a>
-          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">Custom Components:</h6>
-              <a class="collapse-item" href="buttons.html">Buttons</a>
-              <a class="collapse-item" href="cards.html">Cards</a>
-            </div>
-          </div>
-        </li>
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRol" aria-expanded="true" aria-controls="collapsePages">
+      <i class="fas fa-fw fa-dice-d20"></i>
+      <span>Roles</span>
+    </a>
+    <div id="collapseRol" class="collapse" aria-labelledby="headingRol" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear Rol
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Modificar Rol
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Borrar Rol
+        </a>
+      </div>
+    </div>
+  </li>
 
-        <!-- Nav Item - Utilities Collapse Menu -->
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Utilities</span>
-          </a>
-          <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">Custom Utilities:</h6>
-              <a class="collapse-item" href="utilities-color.html">Colors</a>
-              <a class="collapse-item" href="utilities-border.html">Borders</a>
-              <a class="collapse-item" href="utilities-animation.html">Animations</a>
-              <a class="collapse-item" href="utilities-other.html">Other</a>
-            </div>
-          </div>
-        </li>
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMin" aria-expanded="true" aria-controls="collapsePages">
+      <i class="fas fa-fw fa-project-diagram"></i>
+      <span>Ministerios</span>
+    </a>
+    <div id="collapseMin" class="collapse" aria-labelledby="headingMin" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear Ministerio
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Modificar Ministerio
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Borrar Ministerio
+        </a>
+      </div>
+    </div>
+  </li>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider">
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClas" aria-expanded="true" aria-controls="collapsePages">
+      <i class="fas fa-fw fa-object-group"></i>
+      <span>Clases y Grupos</span>
+    </a>
+    <div id="collapseClas" class="collapse" aria-labelledby="headingClas" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear Clase o Grupo
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Modificar Clase o Grupo
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Borrar Clase o Grupo
+        </a>
+      </div>
+    </div>
+  </li>
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-          Addons
-        </div>
+  <!-- Divider -->
+  <hr class="sidebar-divider">
 
-        <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-fw fa-folder"></i>
-            <span>Pages</span>
-          </a>
-          <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">Login Screens:</h6>
-              <a class="collapse-item" href="login.html">Login</a>
-              <a class="collapse-item" href="register.html">Register</a>
-              <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-              <div class="collapse-divider"></div>
-              <h6 class="collapse-header">Other Pages:</h6>
-              <a class="collapse-item" href="404.html">404 Page</a>
-              <a class="collapse-item" href="blank.html">Blank Page</a>
-            </div>
-          </div>
-        </li>
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Gesti&Oacute;n de Datos Extras
+  </div>
 
-        <!-- Nav Item - Charts -->
-        <li class="nav-item">
-          <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Charts</span>
-          </a>
-        </li>
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCat" aria-expanded="true" aria-controls="collapsePages">
+      <i class="fas fa-fw fa-database"></i>
+      <span>Categor&iacute;as</span>
+    </a>
+    <div id="collapseCat" class="collapse" aria-labelledby="headingCat" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-ring fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear, modificar o borrar [Estado Civil]
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-user-tag fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear, modificar o borrar [Tipo de Miembro]
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-baby fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear, modificar o borrar [Rol Familiar]
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-tags fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear, modificar o borrar [Tipo de Familia]
+        </a>
+      </div>
+    </div>
+  </li>
 
-        <!-- Nav Item - Tables -->
-        <li class="nav-item">
-          <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Tables</span>
-          </a>
-        </li>
+  <!-- Divider -->
+  <hr class="sidebar-divider">
 
-        <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block">
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Seguimiento y Ausencias
+  </div>
 
-        <!-- Sidebar Toggler (Sidebar) -->
-        <div class="text-center d-none d-md-inline">
-          <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div>
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSeg" aria-expanded="true" aria-controls="collapsePages">
+      <i class="fas fa-fw fa-compass"></i>
+      <span>Seguimientos</span>
+    </a>
+    <div id="collapseSeg" class="collapse" aria-labelledby="headingSeg" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear una entrada de Seguimiento
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-glasses fa-sm fa-fw mr-2 text-gray-400"></i>
+          Revisar entradas de Seguimiento
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear una entrada de asistencia
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-calendar fa-sm fa-fw mr-2 text-gray-400"></i>
+          Revisar ausencias a reuniones
+        </a>
+      </div>
+    </div>
+  </li>
 
-      </ul>
-      <!-- End of Sidebar -->
+  <!-- Divider -->
+  <hr class="sidebar-divider d-none d-md-block">
+
+  <!-- Sidebar Toggler (Sidebar) -->
+  <div class="text-center d-none d-md-inline">
+    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+  </div>
+
+</ul>
+<!-- End of Sidebar -->
