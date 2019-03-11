@@ -50,8 +50,8 @@ def login():
         usuario = Usuario.query.filter_by(email=form.email.data).first()
         if usuario is not None and usuario.verify_password(form.password.data):
             login_user(usuario)
-
-        # redirect to the appropriate dashboard page
+            flash('Te has logado correctamente')
+            # redirect to the appropriate dashboard page
             if usuario.is_admin:
                 return redirect(url_for('home.dashboard'))
             else:

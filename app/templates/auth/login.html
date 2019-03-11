@@ -4,6 +4,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
 {% block title %}Churching - Login{% endblock %}
+
 {% block body %}
 <body class="bg-gradient-primary">
 
@@ -23,7 +24,11 @@
                   <div class="p-5">
                     <div class="text-center">
                       <h1 class="h4 text-gray-900 mb-4">Bienvenido</h1>
-                      {{ utils.flashed_messages() }}
+                      {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                          {{ message }}
+                        {% endif %}
+                      {% endwith %}
                     </div>
                     <form class="user" method="POST" role="form" action="">
                         {{ form.csrf_token }}
@@ -52,4 +57,5 @@
       </div>
 
     </div>
+
 {% endblock %}
