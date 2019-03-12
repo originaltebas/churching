@@ -13,3 +13,12 @@ class EstadoCivilForm(FlaskForm):
     nombre_ec = StringField(u'Nombre', validators=[DataRequired()])
     descripcion_ec = StringField(u'Descripción')
     submit = SubmitField(u'Aceptar')
+
+
+class TipoMiembroForm(FlaskForm):
+    """
+    Form para agregar o modificar Tipo de Miembro
+    """
+    nombre_tm = StringField(u'Nombre', validators=[DataRequired()])
+    descripcion_tm = StringField(u'Descripción')
+    submit = SubmitField(u'Aceptar')

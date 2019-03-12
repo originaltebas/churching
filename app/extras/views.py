@@ -6,9 +6,9 @@ from flask import redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from app.extras import extras
-from app.extras.forms import EstadoCivilForm
+from app.extras.forms import EstadoCivilForm, TipoMiembroForm
 from app import db
-from app.models import EstadoCivil
+from app.models import EstadoCivil, TipoMiembro
 
 
 def check_admin():
@@ -126,3 +126,114 @@ def borrar_estadocivil(id):
     return redirect(url_for('extras.ver_estadosciviles'))
 
     return render_template(title="Borrar Estado Civil")
+
+
+
+# SECCION: *****TIPOS DE MIEMBROS*****
+
+@extras.route('/extras/tiposmiembros', methods=['GET', 'POST'])
+@login_required
+def ver_tiposmiembros():
+    """
+    Ver una lista de todos los tipos de miembros de la iglesia
+    con la opción de modificar, borrar o agregar uno nuevo
+    """
+    check_admin()
+
+    # de arranque carga el listado
+    flag_listar = True
+
+    query_tmiembro = TipoMiembro.query.all()
+
+    return render_template('extras/tiposmiembros/base_tiposmiembros.html',
+                           tiposmiembros=query_tmiembro,
+                           flag_listar=flag_listar,
+                           title=u"Gestión de Tipos de Miembros")
+
+
+@extras.route('/extras/tiposmiembros/crear', methods=['GET', 'POST'])
+@login_required
+def crear_tipomiembro():
+    """
+    Agregar un Tipo de Miembro a la Base de Datos
+    """
+    check_admin()
+
+    # Variable para el template. Para decirle si es Alta o Modif
+    flag_crear = True
+    flag_listar = False
+
+    form = TipoMiembroForm()
+    if form.validate_on_submit():
+        obj_tmiembro = TipoMiembro(nombre_tipomiembro=form.nombre_tm.data,
+                                   descripcion_tipomiembro=form.descripcion_tm.data)
+        try:
+            # add department to the database
+            db.session.add(obj_tmiembro)
+            db.session.commit()
+            flash('Se han guardado los datos correctamente.', 'db')
+        except Exception as e:
+            # in case department name already exists
+            flash('Error:', e)
+
+        # redirect to departments page
+        return redirect(url_for('extras.ver_tiposmiembros'))
+
+    # load department template
+    return render_template(
+                'extras/tiposmiembros/base_tiposmiembros.html',
+                action="Crear", add_tipomiembro=flag_crear,
+                flag_listar=flag_listar,
+                form=form, title="Crear Tipo de Miembro")
+
+
+@extras.route('/extras/tiposmiembros/modif/<int:id>', methods=['GET', 'POST'])
+@login_required
+def modif_tipomiembro(id):
+    """
+    Modificar un tipo de miembro
+    """
+    check_admin()
+
+    flag_crear = False
+    flag_listar = False
+
+    obj_tmiembro = TipoMiembro.query.get_or_404(id)
+    form = TipoMiembroForm(obj=obj_tmiembro)
+    if form.validate_on_submit():
+        obj_tmiembro.nombre_tipomiembro = form.nombre_tm.data
+        obj_tmiembro.descripcion_tipomiembro = form.descripcion_tm.data
+        db.session.commit()
+        flash('Has modificado los datos correctamente.', 'db')
+
+        # redirect to the departments page
+        return redirect(url_for('extras.ver_tiposmiembros'))
+
+    form.nombre_tm.data = obj_tmiembro.nombre_tipomiembro
+    form.descripcion_tm.data = obj_tmiembro.descripcion_tipomiembro
+    return render_template(
+                'extras/tiposmiembros/base_tiposmiembros.html',
+                action="Modificar",
+                add_tipomiebro=flag_crear, flag_listar=flag_listar,
+                form=form, tipomiembro=obj_tmiembro,
+                title="Modificar Tipo de Miembro")
+
+
+@extras.route('/extras/tiposmiembros/borrar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def borrar_tipomiembro(id):
+    """
+    Borrar un tipo de miembros
+    """
+    check_admin()
+
+    obj_tmiembro = TipoMiembro.query.get_or_404(id)
+    db.session.delete(obj_tmiembro)
+    db.session.commit()
+    flash('Has borrado los datos correctamente.', 'db')
+
+    # redirect to the departments page
+    return redirect(url_for('extras.ver_tiposmiembros'))
+
+    return render_template(title="Borrar Tipo de Miembro")
+
