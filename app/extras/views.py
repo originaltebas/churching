@@ -1,23 +1,14 @@
 # app/extras/views.py
 # coding: utf-8
 
-from app.extras import extras
-from app import db
-
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash
+from flask import redirect, render_template, url_for
 from flask_login import current_user, login_required
 
-from app.extras.forms import FormMiembro
-# ,
-
-# FormTipoMiembro, FormEstadoCivil
-# from forms import FormRol, FormFamilia, FormTipoFamilia
-# from forms import FormRolFamiliar, FormDireccion, FormTelefono
-# from forms import FormAsistencia, FormSeguimiento, FormGrupoCasero
-
-# from ..models import GrupoCasero, Rol, EstadoCivil
-# from ..models import Familia, TipoMiembro, TipoParentezco
-from app.models import Miembro
+from app.extras import extras
+from app.extras.forms import EstadoCivilForm
+from app import db
+from app.models import EstadoCivil
 
 
 def check_admin():
@@ -28,123 +19,110 @@ def check_admin():
         abort(403)
 
 
-"""
- VISTAS DE MIEMBROS
-"""
-# LISTAR MIEMBROS
-@extras.route('/miembros')
+# SECCION: *****ESTADOS CIVILES*****
+
+@extras.route('/extras/estadosciviles', methods=['GET', 'POST'])
 @login_required
-def listar_miembros():
+def ver_estadosciviles():
+    """
+    Ver una lista de todos los estados civiles
+    con la opción de modificar, borrar o agregar uno nuevo
+    """
     check_admin()
 
-    new_miembros = Miembro.query.all()
-    return render_template('extras/miembros/listar_miembros.html',
-                           miembros=new_miembros, title='Miembros')
+    # de arranque carga el listado
+    flag_listar = True
 
-# AGREGAR UN MIEMBRO
-@extras.route('/miembros/add', methods=['GET', 'POST'])
+    query_ecivil = EstadoCivil.query.all()
+
+    return render_template('extras/estadosciviles/base_estadosciviles.html',
+                           estadosciviles=query_ecivil,
+                           flag_listar=flag_listar,
+                           title=u"Gestión de Estados Civiles")
+
+
+@extras.route('/extras/estadosciviles/crear', methods=['GET', 'POST'])
 @login_required
-def add_miembro():
+def crear_estadocivil():
+    """
+    Agregar un Estado Civil a la Base de Datos
+    """
     check_admin()
 
-    add_miembro = True
+    # Variable para el template. Para decirle si es Alta o Modif
+    flag_crear = True
+    flag_listar = False
 
-    form = FormMiembro()
-    new_miembro = Miembro()
-
-    try:
-        # add estado to the database
-        db.session.add(new_miembro)
-        db.session.commit()
-        flash('Has agregado un miembro a la base de datos.')
-    except:
-        # in case role name already exists
-        flash('Error: El miembro ya existe.')
-
-    # redirect to the roles page
-    return redirect(url_for('extras.listar_miembros'))
-
-    # load role template
-    return render_template('extras/miembros/miembro.html',
-                           add_miembro=add_miembro, form=form,
-                           title='Agregar un Miembro')
-
-
-"""
-@extras.route('/miembros/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_miembro(id):
-    check_admin()
-
-    add_miembro = False
-
-    miembro = Miembro.query.get_or_404(id)
-    form = FormMiembro(obj=miembro)
-
+    form = EstadoCivilForm()
     if form.validate_on_submit():
-        miembro.nombres = form.nombres.data
-        miembro.apellidos = form.apellidos.data
-        miembro.email = form.email.data
-        miembro.direccion = form.direccion.data
-        miembro.telefono_1 = form.telefono_1.data
-        miembro.telefono_2 = form.telefono_2.data
+        obj_ecivil = EstadoCivil(nombre_estado=form.nombre_ec.data,
+                                 descripcion_estado=form.descripcion_ec.data)
+        try:
+            # add department to the database
+            db.session.add(obj_ecivil)
+            db.session.commit()
+            flash('Se han guardado los datos correctamente.','db')
+        except Exception as e:
+            # in case department name already exists
+            flash('Error:', e)
 
-        miembro.fecha_nac = form.fecha_nac.data
-        miembro.fecha_bautismo = form.fecha_bautismo.data
-        miembro.fecha_miembro = form.fecha_miembro.data
+        # redirect to departments page
+        return redirect(url_for('extras.ver_estadosciviles'))
 
-        miembro.id_familia = form.familia.data
-        miembro.id_parentezco = form.parentezco.data
-        miembro.id_estadocivil = form.estadocivil.data
-        miembro.id_tipo_miembro = form.tipomiembro.data
-        miembro.id_grupo_casero = form.grupocasero.data
-        miembro.miembros_roles.id_rol = form.rol.data
-        miembro.miembros_roles.id_miembro = form.id.data
-
-        db.session.add(miembro)
-        db.session.commit()
-        flash('Has modificado el miembro en la base de datos.')
-
-        # redirect to the roles page
-        return redirect(url_for('extras.listar_miembros'))
-
-    form.nombres.data= miembro.nombres
-    form.apellidos.data = miembro.apellidos
-    form.email.data = miembro.email
-    form.direccion.data = miembro.direccion
-    form.telefono_1.data = miembro.telefono_1
-    form.telefono_2.data = miembro.telefono_2
-
-    form.fecha_nac.data = miembro.fecha_nac
-    form.fecha_bautismo.data = miembro.fecha_bautismo
-    form.fecha_miembro.data = miembro.fecha_miembro
-
-    form.familia.data = miembro.id_familia
-    form.parentezco.data = miembro.id_parentezco
-    form.estadocivil.data = miembro.id_estadocivil
-    form.tipomiembro.data = miembro.id_tipo_miembro
-    form.grupocasero.data = miembro.id_grupo_casero
-    form.rol.data = miembro.miembros_roles.id_rol
-    form.id.data = miembro.miembros_roles.id_miembro
-
-    return render_template('extras/miembros/miembro.html',
-                           add_miembro=add_miembro,
-                           form=form, title="Modificar Miembro")
+    # load department template
+    return render_template(
+                'extras/estadosciviles/base_estadosciviles.html',
+                action="Crear", add_estadocivil=flag_crear,
+                flag_listar=flag_listar,
+                form=form, title="Crear Estado Civil")
 
 
-@extras.route('/miembros/delete/<int:id>', methods=['GET', 'POST'])
+@extras.route('/extras/estadosciviles/modif/<int:id>', methods=['GET', 'POST'])
 @login_required
-def delete_miembro(id):
+def modif_estadocivil(id):
+    """
+    Modificar un estado civil
+    """
     check_admin()
 
-    miembro = Miembro.query.get_or_404(id)
+    flag_crear = False
+    flag_listar = False
 
-    db.session.delete(miembro)
+    obj_ecivil = EstadoCivil.query.get_or_404(id)
+    form = EstadoCivilForm(obj=obj_ecivil)
+    if form.validate_on_submit():
+        obj_ecivil.nombre_estado = form.nombre_ec.data
+        obj_ecivil.descripcion_estado = form.descripcion_ec.data
+        db.session.commit()
+        flash('Has modificado el estado civil correctamente.', 'db')
+
+        # redirect to the departments page
+        return redirect(url_for('extras.ver_estadosciviles'))
+
+    form.nombre_ec.data = obj_ecivil.nombre_estado
+    form.descripcion_ec.data = obj_ecivil.descripcion_estado
+    return render_template(
+                'extras/estadosciviles/base_estadosciviles.html',
+                action="Modificar",
+                add_estadocivil=flag_crear, flag_listar=flag_listar,
+                form=form, estadocivil=obj_ecivil,
+                title="Modificar Estado Civil")
+
+
+@extras.route('/extras/estadosciviles/borrar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def borrar_estadocivil(id):
+    """
+    Borrar un estado civil
+    """
+    check_admin()
+
+    obj_ecivil = EstadoCivil.query.get_or_404(id)
+    db.session.delete(obj_ecivil)
     db.session.commit()
-    flash('Has borrado un miembro de la base de datos.')
+    flash('Has borrado el Estado Civil correctamente.', 'db')
 
-    # redirect to the roles page
-    return redirect(url_for('extras.listar_miembros'))
+    # redirect to the departments page
+    return redirect(url_for('extras.ver_estadosciviles'))
 
-    return render_template(title="Borrar Miembro")
-"""
+    return render_template(title="Borrar Estado Civil")

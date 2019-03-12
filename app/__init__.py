@@ -53,7 +53,7 @@ def create_app(config_name):
 #    from .gruposcaseros import gruposcaseros as gruposcaseros_blueprint
 #    app.register_blueprint(gruposcaseros_blueprint)
 
-#    from .extras import extras as extras_blueprint
-#    app.register_blueprint(extras_blueprint)
+    from .extras import extras as extras_blueprint
+    app.register_blueprint(extras_blueprint)
 
     return app

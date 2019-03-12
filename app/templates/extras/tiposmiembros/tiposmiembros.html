@@ -9,7 +9,11 @@
     <div class="middle">
       <div class="inner">
         <br/>
-        {{ utils.flashed_messages() }}
+        {% with errors = get_flashed_messages(category_filter=["user"]) %}
+        {% if messages %}
+          {{ message }}
+        {% endif %}
+      {% endwith %}
         <br/>
         <h1 style="text-align:center;">Tipos de Miembros</h1>
         {% if tiposmiembros %}
@@ -39,12 +43,12 @@
                   </td>
                   <td>
                     <a href="{{ url_for('extras.edit_tipomiembro', id=tipomiembro.id) }}">
-                      <i class="fa fa-pencil"></i> Modificar 
+                      <i class="fa fa-pencil"></i> Modificar
                     </a>
                   </td>
                   <td>
                     <a href="{{ url_for('extras.delete_tipomiembro', id=tipomiembro.id) }}">
-                      <i class="fa fa-trash"></i> Borrar 
+                      <i class="fa fa-trash"></i> Borrar
                     </a>
                   </td>
                 </tr>
@@ -60,7 +64,7 @@
         {% endif %}
           <a href="{{ url_for('extras.add_tipomiembro') }}" class="btn btn-default btn-lg">
             <i class="fa fa-plus"></i>
-            Agregar Tipo de Miembro 
+            Agregar Tipo de Miembro
           </a>
         </div>
       </div>

@@ -11589,19 +11589,19 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("https://source.unsplash.com/K4mSJ7kc0As/600x800");
+  background: url("../img/photo-1518020382113-a7e8fc38eac9.jpeg");
   background-position: center;
   background-size: cover;
 }
 
 .bg-register-image {
-  background: url("https://source.unsplash.com/Mv9hjnEUHR4/600x800");
+  background: url("../img/photo-1517849845537-4d257902454a.jpeg");
   background-position: center;
   background-size: cover;
 }
 
 .bg-password-image {
-  background: url("https://source.unsplash.com/oWTW-jNGl9I/600x800");
+  background: url("../img/photo-1517519014922-8fc06b814a0e.jpeg");
   background-position: center;
   background-size: cover;
 }

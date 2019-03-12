@@ -3,19 +3,19 @@
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+  <div class="sidebar-brand d-flex align-items-center justify-content-center">
     <div class="sidebar-brand-icon rotate-n-15">
       <i class="fas fa-cross"></i>
     </div>
     <div class="sidebar-brand-text mx-3">Churching<sup></sup></div>
-  </a>
+  </div>
 
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
 
   <!-- Nav Item - Dashboard -->
   <li class="nav-item active">
-    <a class="nav-link" href="index.html">
+    <a class="nav-link" href="{{url_for("home.dashboard")}}">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Panel de Control</span>
     </a>
@@ -197,9 +197,9 @@
     </a>
     <div id="collapseCat" class="collapse" aria-labelledby="headingCat" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item text-wrap" href="buttons.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_estadosciviles') }}">
           <i class="fas fa-ring fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear, modificar o borrar [Estado Civil]
+          Crear, modificar o borrar un [Estado Civil]
         </a>
         <a class="collapse-item text-wrap" href="buttons.html">
           <i class="fas fa-user-tag fa-sm fa-fw mr-2 text-gray-400"></i>

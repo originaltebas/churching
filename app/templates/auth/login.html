@@ -6,56 +6,57 @@
 {% block title %}Churching - Login{% endblock %}
 
 {% block body %}
-<body class="bg-gradient-primary">
+<!--<body class="bg-gradient-primary">-->
 
-    <div class="container">
+<div style="width: 100%;height:100vh;" class="bg-gradient-primary">
+  <div class="container ">
 
-      <!-- Outer Row -->
-      <div class="row justify-content-center">
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
-        <div class="col-xl-10 col-lg-12 col-md-9">
+      <div class="col-xl-10 col-lg-12 col-md-9">
 
-          <div class="card o-hidden border-0 shadow-lg my-5">
-            <div class="card-body p-0">
-              <!-- Nested Row within Card Body -->
-              <div class="row">
-                <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                <div class="col-lg-6">
-                  <div class="p-5">
-                    <div class="text-center">
-                      <h1 class="h4 text-gray-900 mb-4">Bienvenido</h1>
-                      {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                          {{ message }}
-                        {% endif %}
-                      {% endwith %}
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Bienvenido</h1>
+                    {% with errors = get_flashed_messages(category_filter=["user"]) %}
+                      {% if messages %}
+                        {{ message }}
+                      {% endif %}
+                    {% endwith %}
+                  </div>
+                  <form class="user" method="POST" role="form" action="">
+                    {{ form.csrf_token }}
+                    <div class="form-group">
+                      {{form.email.label}}
+                      {{ form.email(class_="form-control form-control-user") }}
                     </div>
-                    <form class="user" method="POST" role="form" action="">
-                        {{ form.csrf_token }}
-                      <div class="form-group">
-                          {{form.email.label}}
-                          {{ form.email(class_="form-control form-control-user") }}
-                      </div>
-                      <div class="form-group">
-                          {{form.password.label}}
-                          {{ form.password(class_="form-control form-control-user") }}
-                      </div>
-                      <input type="submit" id="submit" name="submit" class="btn btn-primary btn-user btn-block" value="Login"/>
-                    </form>
-                    <hr>
-                    <div class="text-center">
-                      <a class="small" href="{{ url_for('auth.register') }}">Registrarse</a>
+                    <div class="form-group">
+                      {{form.password.label}}
+                      {{ form.password(class_="form-control form-control-user") }}
                     </div>
+                    <input type="submit" id="submit" name="submit" class="btn btn-primary btn-user btn-block" value="Login" />
+                  </form>
+                  <hr>
+                  <div class="text-center">
+                    <a class="small" href="{{ url_for('auth.register') }}">Registrarse</a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
 
       </div>
 
     </div>
+  </div>
+</div>
 
 {% endblock %}
