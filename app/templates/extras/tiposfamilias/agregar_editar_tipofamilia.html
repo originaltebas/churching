@@ -3,10 +3,10 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
 {% block title %}
-    {% if add_rolfamiliar %}
-        Agregar Rol Familiar
+    {% if add_tipofamilia %}
+        Agregar Tipo de Familia
     {% else %}
-        Modificar Rol Familiar
+        Modificar Tipo de Familia
     {% endif %}
 {% endblock %}
 {% block body %}
@@ -15,10 +15,10 @@
  <div class="card shadow mb-4 col-10">
     <div class="card-header py-3">
       <h4 class="m-0 font-weight-bold text-primary text-center">
-        {% if add_rolfamiliar %}
-          Agregar Rol Familiar
+        {% if add_tipofamilia %}
+          Agregar Tipo de Familia
         {% else %}
-          Modificar Rol Familiar
+          Modificar Tipo de Familia
         {% endif %}
       </h4>
     </div>
@@ -26,12 +26,12 @@
         <form class="user" method="POST" role="form" action="">
             {{ form.csrf_token }}
             <div class="form-group">
-              {{form.nombre_rf.label}}
-              {{ form.nombre_rf(class_="form-control form-control-user") }}
+              {{form.nombre_tf.label}}
+              {{ form.nombre_tf(class_="form-control form-control-user") }}
             </div>
             <div class="form-group">
-              {{ form.descripcion_rf.label }}
-              {{ form.descripcion_rf(class_="form-control form-control-user") }}
+              {{ form.descripcion_tf.label }}
+              {{ form.descripcion_tf(class_="form-control form-control-user") }}
             </div>
             <div class="row">
             <div class="col-4"></div>

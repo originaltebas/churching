@@ -3,7 +3,7 @@
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
-{% block title %}Churching - Roles Familiares{% endblock %}
+{% block title %}Churching - Tipos de Familias{% endblock %}
 
 {% block body %}
 {% if current_user.is_authenticated %}
@@ -20,9 +20,9 @@
     {% include "home/_topbar.html" %}
 
     {% if flag_listar %}
-      {% include "extras/rolesfamiliares/tabla_rolesfamiliares.html" %}
+      {% include "extras/tiposfamilias/tabla_tiposfamilias.html" %}
     {% else %}
-      {% include "extras/rolesfamiliares/agregar_editar_rolfamiliar.html" %}
+      {% include "extras/tiposfamilias/agregar_editar_tipofamilia.html" %}
     {% endif %}
   </div>
   <!-- End of Main Content -->
