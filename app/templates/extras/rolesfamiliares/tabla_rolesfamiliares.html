@@ -1,0 +1,89 @@
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Roles Familiares</h1>
+    <p class="mb-4">En esta secci&oacute;n se puede crear, modificar y borrar los roles familiares que
+        postariormente se asociar&aacute;n a miembros de la iglesia como clasificaci&oacute;n.</a>.</p>
+        {% with errors = get_flashed_messages(category_filter=["db"]) %}
+        {% if messages %}
+          {{ message }}
+        {% endif %}
+      {% endwith %}
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Roles Familiares actualmente en la Base de Datos</h6>
+        </div>
+        {% if rolesfamiliares %}
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-dark">
+                        <tr class="text-center">
+                            <th scope="col">Id</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Descripci&oacute;n</th>
+                            <th scope="col"># de Personas</th>
+                            <th scope="col">Modificar</th>
+                            <th scope="col">Borrar</th>
+                        </tr>
+                    </thead>
+                    <tfoot class="thead-dark">
+                        <tr class="text-center">
+                            <th scope="col">Id</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Descripci&oacute;n</th>
+                            <th scope="col"># de Personas</th>
+                            <th scope="col">Modificar</th>
+                            <th scope="col">Borrar</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for rolfamiliar in rolesfamiliares %}
+                        <tr>
+                            <td scope="row" class="text-center"> {{ rolfamiliar.id }} </td>
+                            <td> {{ rolfamiliar.nombre_rolfam }} </td>
+                            <td> {{ rolfamiliar.descripcion_rolfam }} </td>
+                            <td class="text-center">
+                                {% if rolfamiliar.miembros %}
+                                {{ rolfamiliar.miembros.count() }}
+                                {% else %}
+                                0
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ url_for('extras.modif_rolfamiliar', id=rolfamiliar.id) }}">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ url_for('extras.borrar_rolfamiliar', id=rolfamiliar.id) }}">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <div class="text-center">
+        <h3> No se han agregado Roles Familiares. </h3>
+        <hr class="intro-divider">
+        </div>
+    {% endif %}
+
+    <div class="col-12 text-center">
+        <button onclick="window.location.href='{{url_for("extras.crear_rolfamiliar")}}'" class="text-center btn btn-primary btn-icon-split btn-lg">
+            <span class="icon text-white-50">
+                <i class="fa fa-plus centered"></i>
+            </span>
+            <span class="text">Agregar Rol Familiar</span>
+        </button>
+    </div>
+
+</div>
+<!-- /.container-fluid -->

@@ -22,3 +22,12 @@ class TipoMiembroForm(FlaskForm):
     nombre_tm = StringField(u'Nombre', validators=[DataRequired()])
     descripcion_tm = StringField(u'Descripción')
     submit = SubmitField(u'Aceptar')
+
+
+class RolFamiliarForm(FlaskForm):
+    """
+    Form para agregar o modificar Tipo de Miembro
+    """
+    nombre_rf = StringField(u'Nombre', validators=[DataRequired()])
+    descripcion_rf = StringField(u'Descripción')
+    submit = SubmitField(u'Aceptar')
