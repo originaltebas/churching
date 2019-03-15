@@ -95,15 +95,11 @@
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item text-wrap" href="buttons.html">
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear Grupo Casero
+          Gestionar Grupo Casero
         </a>
         <a class="collapse-item text-wrap" href="buttons.html">
           <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
-          Modificar Grupo Casero o Composici&oacute;n
-        </a>
-        <a class="collapse-item text-wrap" href="cards.html">
-          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Borrar Grupo Casero
+          Agregar integrantes
         </a>
       </div>
     </div>
@@ -112,70 +108,22 @@
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRol" aria-expanded="true" aria-controls="collapsePages">
-      <i class="fas fa-fw fa-dice-d20"></i>
-      <span>Roles</span>
+      <i class="fas fa-fw fa-bullseye"></i>
+      <span>Responsabiliades</span>
     </a>
     <div id="collapseRol" class="collapse" aria-labelledby="headingRol" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item text-wrap" href="buttons.html">
-          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear Rol
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.ver_roles', flag='R') }}">
+          <i class="fas fa-dice-d20 fa-sm fa-fw mr-2 text-gray-500"></i>
+          Gestionar Roles
         </a>
-        <a class="collapse-item text-wrap" href="buttons.html">
-          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
-          Modificar Rol
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.ver_roles', flag='M') }}">
+          <i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-500"></i>
+          Gestionar Ministerios
         </a>
-        <a class="collapse-item text-wrap" href="cards.html">
-          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Borrar Rol
-        </a>
-      </div>
-    </div>
-  </li>
-
-  <!-- Nav Item - Pages Collapse Menu -->
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMin" aria-expanded="true" aria-controls="collapsePages">
-      <i class="fas fa-fw fa-project-diagram"></i>
-      <span>Ministerios</span>
-    </a>
-    <div id="collapseMin" class="collapse" aria-labelledby="headingMin" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item text-wrap" href="buttons.html">
-          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear Ministerio
-        </a>
-        <a class="collapse-item text-wrap" href="buttons.html">
-          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
-          Modificar Ministerio
-        </a>
-        <a class="collapse-item text-wrap" href="cards.html">
-          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Borrar Ministerio
-        </a>
-      </div>
-    </div>
-  </li>
-
-  <!-- Nav Item - Pages Collapse Menu -->
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClas" aria-expanded="true" aria-controls="collapsePages">
-      <i class="fas fa-fw fa-object-group"></i>
-      <span>Clases y Grupos</span>
-    </a>
-    <div id="collapseClas" class="collapse" aria-labelledby="headingClas" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item text-wrap" href="buttons.html">
-          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear Clase o Grupo
-        </a>
-        <a class="collapse-item text-wrap" href="buttons.html">
-          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
-          Modificar Clase o Grupo
-        </a>
-        <a class="collapse-item text-wrap" href="cards.html">
-          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Borrar Clase o Grupo
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.ver_roles', flag='C') }}">
+          <i class="fas fa-chalkboard-teacher  fa-sm fa-fw mr-2 text-gray-500"></i>
+          Gestionar Clases
         </a>
       </div>
     </div>
@@ -199,19 +147,19 @@
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_estadosciviles') }}">
           <i class="fas fa-ring fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear, modificar o borrar un [Estado Civil]
+          Gestionar Estados Civiles
         </a>
         <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_tiposmiembros') }}">
           <i class="fas fa-user-tag fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear, modificar o borrar [Tipo de Miembro]
+          Gestionar Tipos de Miembros
         </a>
         <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_rolesfamiliares') }}">
           <i class="fas fa-baby fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear, modificar o borrar [Rol Familiar]
+          Gestionar Roles Familiares
         </a>
         <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_tiposfamilias') }}">
           <i class="fas fa-tags fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear, modificar o borrar [Tipo de Familia]
+          Gestionar Tipos de Familias
         </a>
       </div>
     </div>

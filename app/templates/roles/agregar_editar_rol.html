@@ -1,0 +1,60 @@
+<!-- app/templates/extras/estadosciviles/agregar_editar_estadocivil.html -->
+
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+
+{%  if (flag_tiporol=='R') %}
+{%     set nombre = 'Rol' %}
+{%  elif (flag_tiporol=='M') %}
+{%     set nombre = 'Ministerio' %}
+{%  elif (flag_tiporol=='C') %}
+{%     set nombre = 'Clase' %}
+{% endif %}
+{% if add_rol %}
+{%     set modo ='Agregar' %}
+{% else %}
+{%     set modo ='Modificar' %}
+{% endif %}
+{% block title %}
+    {{modo}} {{nombre}}
+{% endblock %}
+{% block body %}
+ <!-- Basic Card Example -->
+ <div class="col-1"></div>
+ <div class="card shadow mb-4 col-10">
+    <div class="card-header py-3">
+      <h4 class="m-0 font-weight-bold text-primary text-center">
+      {% if add_rol %}
+          Agregar {{nombre}}
+      {% else %}
+          Modificar {{nombre}}
+      {% endif %}
+        </h4>
+    </div>
+    <div class="card-body">
+        <form class="user" method="POST" role="form" action="">
+            {{ form.csrf_token }}
+            <div class="form-group">
+              {{form.nombre_rol.label}}
+              {{ form.nombre_rol(class_="form-control form-control-user") }}
+            </div>
+            <div class="form-group">
+              {{form.descripcion_rol.label}}
+              {{ form.descripcion_rol(class_="form-control form-control-user") }}
+            </div>
+            <div class="form-group">
+                {{form.tipo_rol.label}}
+                {{ form.tipo_rol(class_="form-control form-control-user",readonly=true,value=nombre) }}
+              </div>
+              <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+              <input type="submit" id="submit" name="submit" class="btn btn-primary btn-user btn-block" value={{modo}} /></div>
+            <div class="col-4"></div>
+            </div>
+          </form>
+
+          </div>
+        </div>
+        <div class="col-1"></div>
+{% endblock %}

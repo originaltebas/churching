@@ -53,6 +53,9 @@ def create_app(config_name):
 #    from .gruposcaseros import gruposcaseros as gruposcaseros_blueprint
 #    app.register_blueprint(gruposcaseros_blueprint)
 
+    from .roles import roles as roles_blueprint
+    app.register_blueprint(roles_blueprint)
+
     from .extras import extras as extras_blueprint
     app.register_blueprint(extras_blueprint)
 
