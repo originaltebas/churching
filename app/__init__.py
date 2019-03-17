@@ -2,6 +2,7 @@
 # app/__init__.py
 
 # third-party imports
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -21,6 +22,7 @@ def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
+    app._static_folder = os.path.abspath("app/static/")
 
     Bootstrap(app)
     db.init_app(app)
@@ -42,16 +44,16 @@ def create_app(config_name):
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
 
-#    from .miembros import miembros as miembros_blueprint
-#    app.register_blueprint(miembros_blueprint)
+    from .ggcc import ggcc as ggcc_blueprint
+    app.register_blueprint(ggcc_blueprint)
 
 #    from .familias import familia as familias_blueprint
 #    app.register_blueprint(familias_blueprint)
 
-#    from .gruposcaseros import gruposcaseros as gruposcaseros_blueprint
-#    app.register_blueprint(gruposcaseros_blueprint)
+    from .roles import roles as roles_blueprint
+    app.register_blueprint(roles_blueprint)
 
-#    from .extras import extras as extras_blueprint
-#    app.register_blueprint(extras_blueprint)
+    from .extras import extras as extras_blueprint
+    app.register_blueprint(extras_blueprint)
 
     return app

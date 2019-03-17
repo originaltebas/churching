@@ -27,7 +27,7 @@ def register():
         # add usuario to the database
         db.session.add(usuario)
         db.session.commit()
-        flash(u'Se ha creado correctamente el usuario.')
+        flash(u'Se ha creado correctamente el usuario.', 'user')
 
         # redirect to the login page
         return redirect(url_for('auth.login'))
@@ -50,16 +50,16 @@ def login():
         usuario = Usuario.query.filter_by(email=form.email.data).first()
         if usuario is not None and usuario.verify_password(form.password.data):
             login_user(usuario)
-
-        # redirect to the appropriate dashboard page
+            flash('Te has logado correctamente', 'user')
+            # redirect to the appropriate dashboard page
             if usuario.is_admin:
-                return redirect(url_for('home.admin_dashboard'))
-            else:
                 return redirect(url_for('home.dashboard'))
+            else:
+                return redirect(url_for('home.noadmin'))
 
         # when login details are incorrect
         else:
-            flash(u'Email o contrase&ntilde;a invalidos.')
+            flash(u'Email o contrase&ntilde;a invalidos.', 'user')
 
     # load login template
     return render_template('auth/login.html', form=form, title=u'Login')
@@ -72,7 +72,7 @@ def logout():
     Gestiona los logouts
     """
     logout_user()
-    flash(u'Has salido correctamente.')
+    flash(u'Has salido correctamente.', 'user')
 
     # redirect to the login page
     return redirect(url_for('auth.login'))

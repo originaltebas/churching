@@ -1,0 +1,169 @@
+<!-- app/templates/extras/estadosciviles/agregar_editar_estadocivil.html -->
+
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+
+{% set nombre = 'Grupo Casero' %}
+
+{% if add_ggcc %}
+{% set modo ='Agregar' %}
+{% else %}
+{% set modo ='Modificar' %}
+{% endif %}
+
+
+{% block title %}
+{{modo}} {{nombre}}
+{% endblock %}
+
+{% block body %}
+<!-- Basic Card Example -->
+<div class="col-1"></div>
+
+<div class="card shadow mb-4 col-10">
+  <div class="card-header py-3">
+    <h4 class="m-0 font-weight-bold text-primary text-center"> {{modo}} {{nombre}} </h4>
+  </div>
+  <div class="card-body">
+    <form class="user" method="POST" role="form" action="">
+      {{ form.csrf_token }}
+      {{ form.NewDirFlag(value="True") }}
+      {{ form.idDir }}
+      <div class="form-group">
+        {{ form.nombre_grupo.label(class_="pl-3") }}
+        {{ form.nombre_grupo(class_="form-control form-control-user") }}
+      </div>
+      <div class="form-group">
+        {{ form.descripcion_grupo.label(class_="pl-3") }}
+        {{ form.descripcion_grupo(class_="form-control form-control-user") }}
+      </div>
+
+      <div class="form-group">
+        <div class="lead text-justify font-weight-bold pt-3 pb-1">Puedes crear una nueva direcci&oacute;n o seleccionar una
+          existente de la tabla. Si seleccionas
+          una existente se copiaran los datos automaticamente.</p>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          {{ form.tipo_via.label(class_="pl-3") }}
+          {{ form.tipo_via(class_="form-control form-control-user") }}
+        </div>
+        <div class="col-sm-6">
+          {{ form.nombre_via.label(class_="pl-3") }}
+          {{ form.nombre_via(class_="form-control form-control-user") }}
+        </div>
+        <div class="col-sm-3">
+          {{ form.nro_via.label(class_="pl-3") }}
+          {{ form.nro_via(class_="form-control form-control-user") }}
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          {{ form.portalescalotros_via.label(class_="pl-3") }}
+          {{ form.portalescalotros_via(class_="form-control form-control-user") }}
+        </div>
+        <div class="col-sm-3">
+          {{ form.cp_via.label(class_="pl-3") }}
+          {{ form.cp_via(class_="form-control form-control-user") }}
+        </div>
+        <div class="col-sm-6">
+          {{ form.ciudad_via.label(class_="pl-3") }}
+          {{ form.ciudad_via(class_="form-control form-control-user") }}
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          {{ form.provincia_via.label(class_="pl-3") }}
+          {{ form.provincia_via(class_="form-control form-control-user") }}
+        </div>
+        <div class="col-sm-3">
+          {{ form.pais_via.label(class_="pl-3") }}
+          {{ form.pais_via(class_="form-control form-control-user") }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+          <input type="submit" id="submit" name="submit" class="btn btn-lg btn-primary btn-user btn-block" value={{modo}} />
+        </div>
+        <div class="col-4"></div>
+      </div>
+    </form>
+
+    {% if direcciones %}
+    <h3 class="mt-5 mb-2 text-center">
+      Tabla de Direcciones
+    </h3>
+    <div class="table-responsive mt-2">
+      <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+        <thead class="thead-dark">
+          <tr class="text-center">
+            <th scope="col">Id</th>
+            <th scope="col" colspan=8>Direccion</th>
+            <th scope="col"># de Grupos</th>
+            <th scope="col">Asignar</th>
+          </tr>
+        </thead>
+        <tfoot class="thead-dark">
+          <tr class="text-center">
+            <th scope="col">Id</th>
+            <th scope="col" colspan=8 >Direccion</th>
+            <th scope="col"># de Grupos</th>
+            <th scope="col">Asignar</th>
+          </tr>
+        </tfoot>
+        <tbody>
+          {% for direccion in direcciones %}
+          <tr>
+            <td scope="row" class="text-center dir-id"> {{ direccion.id }} </td>
+            <td class="text-center">
+              {{ direccion.tipo_via }}
+            </td>
+            <td class="text-center">
+              {{ direccion.nombre_via }}
+            </td>
+            <td class="text-center">
+              {{ direccion.nro_via }}
+            </td>
+            <td class="text-center">
+              {{ direccion.portalescalotros_via }}
+            </td>
+            <td class="text-center">
+              {{ direccion.cp_via }}
+            </td>
+            <td class="text-center">
+              {{ direccion.ciudad_via }}
+            </td>
+            <td class="text-center">
+               {{ direccion.provincia_via }}
+              </td>
+              <td class="text-center">
+                  {{direccion.pais_via }}
+              </td>
+            <td class="text-center">
+              {% if direccion.gruposcaseros %}
+              {{ direccion.gruposcaseros.count() }}
+              {% else %}
+              0
+              {% endif %}
+            </td>
+            <td class="text-center">
+              <a href="#" class="asignar-dir">
+                <i class="fa fa-edit"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<div class="col-1"></div>
+{% endblock %}

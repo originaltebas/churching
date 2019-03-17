@@ -1,0 +1,219 @@
+<!-- app/templates/_sidebar.html -->
+
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+  <!-- Sidebar - Brand -->
+  <div class="sidebar-brand d-flex align-items-center justify-content-center">
+    <div class="sidebar-brand-icon rotate-n-15">
+      <i class="fas fa-cross"></i>
+    </div>
+    <div class="sidebar-brand-text mx-3">Churching<sup></sup></div>
+  </div>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
+
+  <!-- Nav Item - Dashboard -->
+  <li class="nav-item active">
+    <a class="nav-link" href="{{url_for("home.dashboard")}}">
+      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <span>Panel de Control</span>
+    </a>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Gesti&Oacute;n de Personas
+  </div>
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFam" aria-expanded="true"
+      aria-controls="collapseTwo">
+      <i class="fas fa-fw fa-users"></i>
+      <span>Familias</span>
+    </a>
+    <div id="collapseFam" class="collapse" aria-labelledby="headingFam" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear Familia
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Modificar Familia o Composici&oacute;n
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Borrar Familia
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePer" aria-expanded="true"
+      aria-controls="collapseTwo">
+      <i class="fas fa-fw fa-user"></i>
+      <span>Personas</span>
+    </a>
+    <div id="collapsePer" class="collapse" aria-labelledby="headingPer" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear Persona
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Modificar Persona
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Borrar Persona
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Gesti&Oacute;n de Grupos y Ministerios
+  </div>
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGGCC" aria-expanded="true"
+      aria-controls="collapsePages">
+      <i class="fas fa-fw fa-people-carry"></i>
+      <span>Grupos Caseros</span>
+    </a>
+    <div id="collapseGGCC" class="collapse" aria-labelledby="headingGGCC" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="{{ url_for('ggcc.ver_ggcc') }}">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Gestionar Grupo Casero
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          Agregar integrantes
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRol" aria-expanded="true"
+      aria-controls="collapsePages">
+      <i class="fas fa-fw fa-bullseye"></i>
+      <span>Responsabiliades</span>
+    </a>
+    <div id="collapseRol" class="collapse" aria-labelledby="headingRol" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.ver_roles', flag='R') }}">
+          <i class="fas fa-dice-d20 fa-sm fa-fw mr-2 text-gray-500"></i>
+          Gestionar Roles
+        </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.ver_roles', flag='M') }}">
+          <i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-500"></i>
+          Gestionar Ministerios
+        </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.ver_roles', flag='C') }}">
+          <i class="fas fa-chalkboard-teacher  fa-sm fa-fw mr-2 text-gray-500"></i>
+          Gestionar Clases
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Gesti&Oacute;n de Datos Extras
+  </div>
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCat" aria-expanded="true"
+      aria-controls="collapsePages">
+      <i class="fas fa-fw fa-database"></i>
+      <span>Categor&iacute;as</span>
+    </a>
+    <div id="collapseCat" class="collapse" aria-labelledby="headingCat" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_estadosciviles') }}">
+          <i class="fas fa-ring fa-sm fa-fw mr-2 text-gray-400"></i>
+          Gestionar Estados Civiles
+        </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_tiposmiembros') }}">
+          <i class="fas fa-user-tag fa-sm fa-fw mr-2 text-gray-400"></i>
+          Gestionar Tipos de Miembros
+        </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_rolesfamiliares') }}">
+          <i class="fas fa-baby fa-sm fa-fw mr-2 text-gray-400"></i>
+          Gestionar Roles Familiares
+        </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('extras.ver_tiposfamilias') }}">
+          <i class="fas fa-tags fa-sm fa-fw mr-2 text-gray-400"></i>
+          Gestionar Tipos de Familias
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Seguimiento y Ausencias
+  </div>
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSeg" aria-expanded="true"
+      aria-controls="collapsePages">
+      <i class="fas fa-fw fa-compass"></i>
+      <span>Seguimientos</span>
+    </a>
+    <div id="collapseSeg" class="collapse" aria-labelledby="headingSeg" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear una entrada de Seguimiento
+        </a>
+        <a class="collapse-item text-wrap" href="buttons.html">
+          <i class="fas fa-glasses fa-sm fa-fw mr-2 text-gray-400"></i>
+          Revisar entradas de Seguimiento
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Crear una entrada de asistencia
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-calendar fa-sm fa-fw mr-2 text-gray-400"></i>
+          Revisar ausencias a reuniones
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider d-none d-md-block">
+
+  <!-- Sidebar Toggler (Sidebar) -->
+  <div class="text-center d-none d-md-inline">
+    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+  </div>
+
+</ul>
+<!-- End of Sidebar -->

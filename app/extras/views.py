@@ -1,23 +1,15 @@
 # app/extras/views.py
 # coding: utf-8
 
-from app.extras import extras
-from app import db
-
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash
+from flask import redirect, render_template, url_for
 from flask_login import current_user, login_required
 
-from app.extras.forms import FormMiembro
-# ,
-
-# FormTipoMiembro, FormEstadoCivil
-# from forms import FormRol, FormFamilia, FormTipoFamilia
-# from forms import FormRolFamiliar, FormDireccion, FormTelefono
-# from forms import FormAsistencia, FormSeguimiento, FormGrupoCasero
-
-# from ..models import GrupoCasero, Rol, EstadoCivil
-# from ..models import Familia, TipoMiembro, TipoParentezco
-from app.models import Miembro
+from app.extras import extras
+from app.extras.forms import EstadoCivilForm, TipoMiembroForm, RolFamiliarForm
+from app.extras.forms import TipoFamiliaForm
+from app import db
+from app.models import EstadoCivil, TipoMiembro, RolFamiliar, TipoFamilia
 
 
 def check_admin():
@@ -28,123 +20,445 @@ def check_admin():
         abort(403)
 
 
-"""
- VISTAS DE MIEMBROS
-"""
-# LISTAR MIEMBROS
-@extras.route('/miembros')
+# SECCION: *****ESTADOS CIVILES*****
+
+@extras.route('/extras/estadosciviles', methods=['GET', 'POST'])
 @login_required
-def listar_miembros():
+def ver_estadosciviles():
+    """
+    Ver una lista de todos los estados civiles
+    con la opción de modificar, borrar o agregar uno nuevo
+    """
     check_admin()
 
-    new_miembros = Miembro.query.all()
-    return render_template('extras/miembros/listar_miembros.html',
-                           miembros=new_miembros, title='Miembros')
+    # de arranque carga el listado
+    flag_listar = True
 
-# AGREGAR UN MIEMBRO
-@extras.route('/miembros/add', methods=['GET', 'POST'])
+    query_ecivil = EstadoCivil.query.all()
+
+    return render_template('extras/estadosciviles/base_estadosciviles.html',
+                           estadosciviles=query_ecivil,
+                           flag_listar=flag_listar,
+                           title=u"Gestión de Estados Civiles")
+
+
+@extras.route('/extras/estadosciviles/crear', methods=['GET', 'POST'])
 @login_required
-def add_miembro():
+def crear_estadocivil():
+    """
+    Agregar un Estado Civil a la Base de Datos
+    """
     check_admin()
 
-    add_miembro = True
+    # Variable para el template. Para decirle si es Alta o Modif
+    flag_crear = True
+    flag_listar = False
 
-    form = FormMiembro()
-    new_miembro = Miembro()
-
-    try:
-        # add estado to the database
-        db.session.add(new_miembro)
-        db.session.commit()
-        flash('Has agregado un miembro a la base de datos.')
-    except:
-        # in case role name already exists
-        flash('Error: El miembro ya existe.')
-
-    # redirect to the roles page
-    return redirect(url_for('extras.listar_miembros'))
-
-    # load role template
-    return render_template('extras/miembros/miembro.html',
-                           add_miembro=add_miembro, form=form,
-                           title='Agregar un Miembro')
-
-
-"""
-@extras.route('/miembros/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_miembro(id):
-    check_admin()
-
-    add_miembro = False
-
-    miembro = Miembro.query.get_or_404(id)
-    form = FormMiembro(obj=miembro)
-
+    form = EstadoCivilForm()
     if form.validate_on_submit():
-        miembro.nombres = form.nombres.data
-        miembro.apellidos = form.apellidos.data
-        miembro.email = form.email.data
-        miembro.direccion = form.direccion.data
-        miembro.telefono_1 = form.telefono_1.data
-        miembro.telefono_2 = form.telefono_2.data
+        obj_ecivil = EstadoCivil(nombre_estado=form.nombre_ec.data,
+                                 descripcion_estado=form.descripcion_ec.data)
+        try:
+            # add department to the database
+            db.session.add(obj_ecivil)
+            db.session.commit()
+            flash('Has guardado los datos correctamente.', 'db')
+        except Exception as e:
+            # in case department name already exists
+            flash('Error:', e)
 
-        miembro.fecha_nac = form.fecha_nac.data
-        miembro.fecha_bautismo = form.fecha_bautismo.data
-        miembro.fecha_miembro = form.fecha_miembro.data
+        # redirect to departments page
+        return redirect(url_for('extras.ver_estadosciviles'))
 
-        miembro.id_familia = form.familia.data
-        miembro.id_parentezco = form.parentezco.data
-        miembro.id_estadocivil = form.estadocivil.data
-        miembro.id_tipo_miembro = form.tipomiembro.data
-        miembro.id_grupo_casero = form.grupocasero.data
-        miembro.miembros_roles.id_rol = form.rol.data
-        miembro.miembros_roles.id_miembro = form.id.data
-
-        db.session.add(miembro)
-        db.session.commit()
-        flash('Has modificado el miembro en la base de datos.')
-
-        # redirect to the roles page
-        return redirect(url_for('extras.listar_miembros'))
-
-    form.nombres.data= miembro.nombres
-    form.apellidos.data = miembro.apellidos
-    form.email.data = miembro.email
-    form.direccion.data = miembro.direccion
-    form.telefono_1.data = miembro.telefono_1
-    form.telefono_2.data = miembro.telefono_2
-
-    form.fecha_nac.data = miembro.fecha_nac
-    form.fecha_bautismo.data = miembro.fecha_bautismo
-    form.fecha_miembro.data = miembro.fecha_miembro
-
-    form.familia.data = miembro.id_familia
-    form.parentezco.data = miembro.id_parentezco
-    form.estadocivil.data = miembro.id_estadocivil
-    form.tipomiembro.data = miembro.id_tipo_miembro
-    form.grupocasero.data = miembro.id_grupo_casero
-    form.rol.data = miembro.miembros_roles.id_rol
-    form.id.data = miembro.miembros_roles.id_miembro
-
-    return render_template('extras/miembros/miembro.html',
-                           add_miembro=add_miembro,
-                           form=form, title="Modificar Miembro")
+    # load department template
+    return render_template(
+                'extras/estadosciviles/base_estadosciviles.html',
+                action="Crear", add_estadocivil=flag_crear,
+                flag_listar=flag_listar,
+                form=form, title="Crear Estado Civil")
 
 
-@extras.route('/miembros/delete/<int:id>', methods=['GET', 'POST'])
+@extras.route('/extras/estadosciviles/modif/<int:id>', methods=['GET', 'POST'])
 @login_required
-def delete_miembro(id):
+def modif_estadocivil(id):
+    """
+    Modificar un estado civil
+    """
     check_admin()
 
-    miembro = Miembro.query.get_or_404(id)
+    flag_crear = False
+    flag_listar = False
 
-    db.session.delete(miembro)
+    obj_ecivil = EstadoCivil.query.get_or_404(id)
+    form = EstadoCivilForm(obj=obj_ecivil)
+    if form.validate_on_submit():
+        obj_ecivil.nombre_estado = form.nombre_ec.data
+        obj_ecivil.descripcion_estado = form.descripcion_ec.data
+        db.session.commit()
+        flash('Has modificado los datos correctamente.', 'db')
+
+        # redirect to the departments page
+        return redirect(url_for('extras.ver_estadosciviles'))
+
+    form.nombre_ec.data = obj_ecivil.nombre_estado
+    form.descripcion_ec.data = obj_ecivil.descripcion_estado
+    return render_template(
+                'extras/estadosciviles/base_estadosciviles.html',
+                action="Modificar",
+                add_estadocivil=flag_crear, flag_listar=flag_listar,
+                form=form, estadocivil=obj_ecivil,
+                title="Modificar Estado Civil")
+
+
+@extras.route('/extras/estadosciviles/borrar/<int:id>',
+              methods=['GET', 'POST'])
+@login_required
+def borrar_estadocivil(id):
+    """
+    Borrar un estado civil
+    """
+    check_admin()
+
+    obj_ecivil = EstadoCivil.query.get_or_404(id)
+    db.session.delete(obj_ecivil)
     db.session.commit()
-    flash('Has borrado un miembro de la base de datos.')
+    flash('Has borrado los datos correctamente.', 'db')
 
-    # redirect to the roles page
-    return redirect(url_for('extras.listar_miembros'))
+    # redirect to the departments page
+    return redirect(url_for('extras.ver_estadosciviles'))
 
-    return render_template(title="Borrar Miembro")
-"""
+    return render_template(title="Borrar Estado Civil")
+
+
+# SECCION: *****TIPOS DE MIEMBROS*****
+
+@extras.route('/extras/tiposmiembros', methods=['GET', 'POST'])
+@login_required
+def ver_tiposmiembros():
+    """
+    Ver una lista de todos los tipos de miembros de la iglesia
+    con la opción de modificar, borrar o agregar uno nuevo
+    """
+    check_admin()
+
+    # de arranque carga el listado
+    flag_listar = True
+
+    query_tmiembro = TipoMiembro.query.all()
+
+    return render_template('extras/tiposmiembros/base_tiposmiembros.html',
+                           tiposmiembros=query_tmiembro,
+                           flag_listar=flag_listar,
+                           title=u"Gestión de Tipos de Miembros")
+
+
+@extras.route('/extras/tiposmiembros/crear', methods=['GET', 'POST'])
+@login_required
+def crear_tipomiembro():
+    """
+    Agregar un Tipo de Miembro a la Base de Datos
+    """
+    check_admin()
+
+    # Variable para el template. Para decirle si es Alta o Modif
+    flag_crear = True
+    flag_listar = False
+
+    form = TipoMiembroForm()
+    if form.validate_on_submit():
+        obj_tmiembro = TipoMiembro(
+                            nombre_tipomiembro=form.nombre_tm.data,
+                            descripcion_tipomiembro=form.descripcion_tm.data)
+        try:
+            # add department to the database
+            db.session.add(obj_tmiembro)
+            db.session.commit()
+            flash('Has guardado los datos correctamente.', 'db')
+        except Exception as e:
+            # in case department name already exists
+            flash('Error:', e)
+
+        # redirect to departments page
+        return redirect(url_for('extras.ver_tiposmiembros'))
+
+    # load department template
+    return render_template(
+                'extras/tiposmiembros/base_tiposmiembros.html',
+                action="Crear", add_tipomiembro=flag_crear,
+                flag_listar=flag_listar,
+                form=form, title="Crear Tipo de Miembro")
+
+
+@extras.route('/extras/tiposmiembros/modif/<int:id>', methods=['GET', 'POST'])
+@login_required
+def modif_tipomiembro(id):
+    """
+    Modificar un tipo de miembro
+    """
+    check_admin()
+
+    flag_crear = False
+    flag_listar = False
+
+    obj_tmiembro = TipoMiembro.query.get_or_404(id)
+    form = TipoMiembroForm(obj=obj_tmiembro)
+    if form.validate_on_submit():
+        obj_tmiembro.nombre_tipomiembro = form.nombre_tm.data
+        obj_tmiembro.descripcion_tipomiembro = form.descripcion_tm.data
+        db.session.commit()
+        flash('Has modificado los datos correctamente.', 'db')
+
+        # redirect to the departments page
+        return redirect(url_for('extras.ver_tiposmiembros'))
+
+    form.nombre_tm.data = obj_tmiembro.nombre_tipomiembro
+    form.descripcion_tm.data = obj_tmiembro.descripcion_tipomiembro
+    return render_template(
+                'extras/tiposmiembros/base_tiposmiembros.html',
+                action="Modificar",
+                add_tipomiembro=flag_crear, flag_listar=flag_listar,
+                form=form, tipomiembro=obj_tmiembro,
+                title="Modificar Tipo de Miembro")
+
+
+@extras.route('/extras/tiposmiembros/borrar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def borrar_tipomiembro(id):
+    """
+    Borrar un tipo de miembros
+    """
+    check_admin()
+
+    obj_tmiembro = TipoMiembro.query.get_or_404(id)
+    db.session.delete(obj_tmiembro)
+    db.session.commit()
+    flash('Has borrado los datos correctamente.', 'db')
+
+    # redirect to the departments page
+    return redirect(url_for('extras.ver_tiposmiembros'))
+
+    return render_template(title="Borrar Tipo de Miembro")
+
+
+# SECCION: ***** ROLES FAMILIARES *****
+
+@extras.route('/extras/rolesfamiliares', methods=['GET', 'POST'])
+@login_required
+def ver_rolesfamiliares():
+    """
+    Ver una lista de todos los roles familiares de la iglesia
+    con la opción de modificar, borrar o agregar uno nuevo
+    """
+    check_admin()
+
+    # de arranque carga el listado
+    flag_listar = True
+
+    query_rfamiliar = RolFamiliar.query.all()
+
+    return render_template('extras/rolesfamiliares/base_rolesfamiliares.html',
+                           rolesfamiliares=query_rfamiliar,
+                           flag_listar=flag_listar,
+                           title=u"Gestión de Roles Familiares")
+
+
+@extras.route('/extras/rolesfamiliares/crear', methods=['GET', 'POST'])
+@login_required
+def crear_rolfamiliar():
+    """
+    Agregar un Rol Familiar a la Base de Datos
+    """
+    check_admin()
+
+    # Variable para el template. Para decirle si es Alta o Modif
+    flag_crear = True
+    flag_listar = False
+
+    form = RolFamiliarForm()
+    if form.validate_on_submit():
+        obj_rfamiliar = RolFamiliar(
+                            nombre_rolfam=form.nombre_rf.data,
+                            descripcion_rolfam=form.descripcion_rf.data)
+        try:
+            # add department to the database
+            db.session.add(obj_rfamiliar)
+            db.session.commit()
+            flash('Has guardado los datos correctamente.', 'db')
+        except Exception as e:
+            # in case department name already exists
+            flash('Error:', e)
+
+        # redirect to departments page
+        return redirect(url_for('extras.ver_rolesfamiliares'))
+
+    # load department template
+    return render_template(
+                'extras/rolesfamiliares/base_rolesfamiliares.html',
+                action="Crear", add_rolfamiliar=flag_crear,
+                flag_listar=flag_listar,
+                form=form, title="Crear Rol Familiar")
+
+
+@extras.route('/extras/rolesfamiliares/modif/<int:id>',
+              methods=['GET', 'POST'])
+@login_required
+def modif_rolfamiliar(id):
+    """
+    Modificar un rol familiar
+    """
+    check_admin()
+
+    flag_crear = False
+    flag_listar = False
+
+    obj_rfamiliar = RolFamiliar.query.get_or_404(id)
+    form = RolFamiliarForm(obj=obj_rfamiliar)
+    if form.validate_on_submit():
+        obj_rfamiliar.nombre_rolfam = form.nombre_rf.data
+        obj_rfamiliar.descripcion_rolfam = form.descripcion_rf.data
+        db.session.commit()
+        flash('Has modificado los datos correctamente.', 'db')
+
+        # redirect to the departments page
+        return redirect(url_for('extras.ver_rolesfamiliares'))
+
+    form.nombre_rf.data = obj_rfamiliar.nombre_rolfam
+    form.descripcion_rf.data = obj_rfamiliar.descripcion_rolfam
+    return render_template(
+                'extras/rolesfamiliares/base_rolesfamiliares.html',
+                action="Modificar",
+                add_rolfamiliar=flag_crear, flag_listar=flag_listar,
+                form=form, rolfamiliar=obj_rfamiliar,
+                title="Modificar Rol Familiar")
+
+
+@extras.route('/extras/rolesfamiliares/borrar/<int:id>',
+              methods=['GET', 'POST'])
+@login_required
+def borrar_rolfamiliar(id):
+    """
+    Borrar un rol familiar
+    """
+    check_admin()
+
+    obj_rfamiliar = RolFamiliar.query.get_or_404(id)
+    db.session.delete(obj_rfamiliar)
+    db.session.commit()
+    flash('Has borrado los datos correctamente.', 'db')
+
+    # redirect to the departments page
+    return redirect(url_for('extras.ver_rolesfamiliares'))
+
+    return render_template(title="Borrar Rol Familiar")
+
+
+# SECCION: ***** TIPOS DE FAMILIA *****
+
+@extras.route('/extras/tiposfamilias', methods=['GET', 'POST'])
+@login_required
+def ver_tiposfamilias():
+    """
+    Ver una lista de todos los tipos de familias de la iglesia
+    con la opción de modificar, borrar o agregar uno nuevo
+    """
+    check_admin()
+
+    # de arranque carga el listado
+    flag_listar = True
+
+    query_tfamilia = TipoFamilia.query.all()
+
+    return render_template('extras/tiposfamilias/base_tiposfamilias.html',
+                           tiposfamilias=query_tfamilia,
+                           flag_listar=flag_listar,
+                           title=u"Gestión de Tipos de Familias")
+
+
+@extras.route('/extras/tiposfamilias/crear', methods=['GET', 'POST'])
+@login_required
+def crear_tipofamilia():
+    """
+    Agregar un Tipo de Familia a la Base de Datos
+    """
+    check_admin()
+
+    # Variable para el template. Para decirle si es Alta o Modif
+    flag_crear = True
+    flag_listar = False
+
+    form = TipoFamiliaForm()
+    if form.validate_on_submit():
+        obj_tfamilia = TipoFamilia(
+                            tipo_familia=form.nombre_tf.data,
+                            descripcion_tipo_familia=form.descripcion_tf.data)
+        try:
+            # add department to the database
+            db.session.add(obj_tfamilia)
+            db.session.commit()
+            flash('Has guardado los datos correctamente.', 'db')
+        except Exception as e:
+            # in case department name already exists
+            flash('Error:', e)
+
+        # redirect to departments page
+        return redirect(url_for('extras.ver_tiposfamilias'))
+
+    # load department template
+    return render_template(
+                'extras/tiposfamilias/base_tiposfamilias.html',
+                action="Crear", add_tipofamilia=flag_crear,
+                flag_listar=flag_listar,
+                form=form, title="Crear Tipo de Familia")
+
+
+@extras.route('/extras/tiposfamilias/modif/<int:id>',
+              methods=['GET', 'POST'])
+@login_required
+def modif_tipofamilia(id):
+    """
+    Modificar un Tipo de Familia
+    """
+    check_admin()
+
+    flag_crear = False
+    flag_listar = False
+
+    obj_tfamilia = TipoFamilia.query.get_or_404(id)
+    form = TipoFamiliaForm(obj=obj_tfamilia)
+    if form.validate_on_submit():
+        obj_tfamilia.tipo_familia = form.nombre_tf.data
+        obj_tfamilia.descripcion_tipo_familia = form.descripcion_tf.data
+        db.session.commit()
+        flash('Has modificado los datos correctamente.', 'db')
+
+        # redirect to the departments page
+        return redirect(url_for('extras.ver_tiposfamilias'))
+
+    form.nombre_tf.data = obj_tfamilia.tipo_familia
+    form.descripcion_tf.data = obj_tfamilia.descripcion_tipo_familia
+    return render_template(
+                'extras/tiposfamilias/base_tiposfamilias.html',
+                action="Modificar",
+                add_tipofamilia=flag_crear, flag_listar=flag_listar,
+                form=form, tipofamilia=obj_tfamilia,
+                title="Modificar Tipo de Familia")
+
+
+@extras.route('/extras/tiposfamilias/borrar/<int:id>',
+              methods=['GET', 'POST'])
+@login_required
+def borrar_tipofamilia(id):
+    """
+    Borrar un tipo de familia
+    """
+    check_admin()
+
+    obj_tfamilia = TipoFamilia.query.get_or_404(id)
+    db.session.delete(obj_tfamilia)
+    db.session.commit()
+    flash('Has borrado los datos correctamente.', 'db')
+
+    # redirect to the departments page
+    return redirect(url_for('extras.ver_tiposfamilias'))
+
+    return render_template(title="Borrar Tipo de Familia")
