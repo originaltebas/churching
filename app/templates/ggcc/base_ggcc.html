@@ -3,8 +3,9 @@
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
+
 {% block title %}
-  Churching - Grupos Caseros
+Churching - Grupos Caseros
 {% endblock %}
 
 {% block body %}
@@ -22,9 +23,9 @@
     {% include "home/_topbar.html" %}
 
     {% if flag_listar %}
-      {% include "ggcc/tabla_ggcc.html" %}
+    {% include "ggcc/tabla_ggcc.html" %}
     {% else %}
-      {% include "ggcc/agregar_editar_ggcc.html" %}
+    {% include "ggcc/agregar_editar_ggcc.html" %}
     {% endif %}
   </div>
   <!-- End of Main Content -->

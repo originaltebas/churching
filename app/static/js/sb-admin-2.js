@@ -47,3 +47,20 @@
   });
 
 })(jQuery); // End of use strict
+
+$(".asignar-dir").click(function() {
+  var $row = $(this).closest("tr")   // Finds the closest row <tr>
+
+  $('input[name=NewDirFlag]').val("False");
+
+  $('input[name=idDir]').val($row.find("td:nth-child(1)").text().trim());
+  $('input[name=tipo_via]').val($row.find("td:nth-child(2)").text().trim());
+  $('input[name=nombre_via]').val($row.find("td:nth-child(3)").text().trim());
+  $('input[name=nro_via]').val($row.find("td:nth-child(4)").text().trim());
+  $('input[name=portalescalotros_via]').val($row.find("td:nth-child(5)").text().trim());
+  $('input[name=cp_via]').val($row.find("td:nth-child(6)").text().trim());
+  $('input[name=ciudad_via]').val($row.find("td:nth-child(7)").text().trim());
+  $('input[name=provincia_via]').val($row.find("td:nth-child(8)").text().trim());
+  $('input[name=pais_via]').val($row.find("td:nth-child(9)").text().trim());
+
+});

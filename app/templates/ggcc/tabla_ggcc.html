@@ -1,16 +1,16 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
-{%     set nombre = 'Grupo Casero' %}
-{%     set nombres = 'Grupos Caseros' %}
+    {% set nombre = 'Grupo Casero' %}
+    {% set nombres = 'Grupos Caseros' %}
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800"> {{nombres}} </h1>
     <p class="mb-4">En esta secci&oacute;n se puede crear, modificar y borrar los {{nombres}}
         que posteriormente se asociar&aacute;n a miembros de la iglesia</a>.</p>
-        {% with errors = get_flashed_messages(category_filter=["db"]) %}
-        {% if messages %}
-          {{ message }}
-        {% endif %}
-      {% endwith %}
+    {% with errors = get_flashed_messages(category_filter=["db"]) %}
+    {% if messages %}
+    {{ message }}
+    {% endif %}
+    {% endwith %}
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -49,14 +49,17 @@
                             <td> {{ gc.nombre_grupo }} </td>
                             <td> {{ gc.descripcion_grupo }} </td>
                             <td class="text-center">
-                                    {{ gc.tipo_via }} {{ gc.nombre_via }}, {{ gc.nro_via }}. {{ gc.portalescalotros_via }}.
-                                    {{ gc.cp_via }}. {{ gc.ciudad_via }}. {{ gc.provincia_via }}. {{ gc.pais_via }}.
-                                </td>
+                                {{ gc.tipo_via }} {{ gc.nombre_via }}, {{ gc.nro_via }}.
+                                {% if gc.portalescalotros_via %}
+                                    {{gc.portalescalotros_via }}.
+                                {% endif %}
+                                {{ gc.cp_via }}. {{ gc.ciudad_via }}. {{ gc.provincia_via }}. {{ gc.pais_via }}.
+                            </td>
                             <td class="text-center">
                                 {% if gc.miembros %}
-                                    {{ gc.miembros.count() }}
+                                {{ gc.miembros.count() }}
                                 {% else %}
-                                     0
+                                0
                                 {% endif %}
                             </td>
                             <td class="text-center">
@@ -77,10 +80,10 @@
         </div>
     </div>
     {% else %}
-        <div class="text-center">
+    <div class="text-center">
         <h3> No se han agregado Datos. </h3>
         <hr class="intro-divider">
-        </div>
+    </div>
     {% endif %}
 
     <div class="col-12 text-center">
@@ -89,7 +92,7 @@
                 <i class="fa fa-plus centered"></i>
             </span>
             <span class="text">Agregar
-              {{nombre}}
+                {{nombre}}
             </span>
         </button>
     </div>

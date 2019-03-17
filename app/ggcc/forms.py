@@ -2,7 +2,7 @@
 # coding: utf-8
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, HiddenField
 from wtforms.validators import DataRequired
 
 
@@ -10,6 +10,8 @@ class GGCCForm(FlaskForm):
     """
     Formulario para gruposcaseros
     """
+    NewDirFlag = HiddenField("NewDirFlag")
+    idDir = HiddenField("idDir")
     # Modelo GGCC
     nombre_grupo = StringField(u'Nombre', validators=[DataRequired()])
     descripcion_grupo = StringField(u'Descripción')
