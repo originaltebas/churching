@@ -27,7 +27,13 @@
   <div class="card-body">
     <form class="user" method="POST" role="form" action="">
       {{ form.csrf_token }}
-      {{ form.NewDirFlag(value="True") }}
+      {% if add_ggcc %}
+        {# el flag de nueva direccion para agregar es true por defecto
+          siempre que se cree un grupo por defecto se crea dir  #}
+        {{ form.NewDirFlag(value="True") }}
+      {% else %}
+        {{ form.NewDirFlag(value="False") }}
+      {% endif %}
       {{ form.idDir }}
       <div class="form-group">
         {{ form.nombre_grupo.label(class_="pl-3") }}
@@ -38,14 +44,7 @@
         {{ form.descripcion_grupo(class_="form-control form-control-user") }}
       </div>
 
-      <div class="form-group">
-        <div class="lead text-justify font-weight-bold pt-3 pb-1">Puedes crear una nueva direcci&oacute;n o seleccionar una
-          existente de la tabla. Si seleccionas
-          una existente se copiaran los datos automaticamente.</p>
-        </div>
-      </div>
-
-      <div class="form-group row">
+    <div class="form-group row">
         <div class="col-sm-3">
           {{ form.tipo_via.label(class_="pl-3") }}
           {{ form.tipo_via(class_="form-control form-control-user") }}
@@ -94,6 +93,30 @@
         <div class="col-4"></div>
       </div>
     </form>
+    {% if add_ggcc %}
+        <div class="form-group">
+          <div class="lead text-justify font-weight-bold pt-3 pb-1">Puedes crear una nueva direcci&oacute;n o seleccionar una
+            existente de la tabla. Si seleccionas
+            una existente se copiaran los datos automaticamente.
+          </div>
+        </div>
+    {% else %}
+    <div class="form-group">
+      <div class="lead text-justify font-weight-bold pt-3 pb-1">
+        Si modificas la direcci&oacute;n actual cambiar&aacute;s los datos en todos los elementos del sistema
+        que la tenga asociada (miembros, familias y grupos caseros). Si lo que quieres es cambiarla por una ya existente,
+        selecciona una de la lista de abajo. Si lo que quieres es crear una totalmente nueva, haz click en el bot&oacute;n
+        de "Crear Nueva Direccion".
+      </div>
+    </div>
+    <div class="row p-2">
+        <div class="col-10"></div>
+        <div class="col-2">
+          <input type="button" id="btn_agregardir" name="btn_agregardir"
+          class="crear-nueva-dir btn btn-secondary btn-user btn-block" value="Crear Nueva Dir" />
+        </div>
+      </div>
+    {% endif %}
 
     {% if direcciones %}
     <h3 class="mt-5 mb-2 text-center">
@@ -147,7 +170,7 @@
               </td>
             <td class="text-center">
               {% if direccion.gruposcaseros %}
-              {{ direccion.gruposcaseros.count() }}
+              {{ direccion.gruposcaseros|count() }}
               {% else %}
               0
               {% endif %}

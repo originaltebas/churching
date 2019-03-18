@@ -5,7 +5,7 @@
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800"> {{nombres}} </h1>
     <p class="mb-4">En esta secci&oacute;n se puede crear, modificar y borrar los {{nombres}}
-        que posteriormente se asociar&aacute;n a miembros de la iglesia</a>.</p>
+        que posteriormente se asociar&aacute;n a miembros de la iglesia</p>
     {% with errors = get_flashed_messages(category_filter=["db"]) %}
     {% if messages %}
     {{ message }}
@@ -57,7 +57,7 @@
                             </td>
                             <td class="text-center">
                                 {% if gc.miembros %}
-                                {{ gc.miembros.count() }}
+                                {{ gc.miembros|count() }}
                                 {% else %}
                                 0
                                 {% endif %}

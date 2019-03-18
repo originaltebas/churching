@@ -47,7 +47,7 @@
                             <td> {{ tipofamilia.descripcion_tipo_familia }} </td>
                             <td class="text-center">
                                 {% if tipofamilia.familias %}
-                                {{ tipofamilia.familias.count() }}
+                                {{ tipofamilia.familias|count() }}
                                 {% else %}
                                 0
                                 {% endif %}

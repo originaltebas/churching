@@ -4,12 +4,13 @@
 from flask import abort, flash
 from flask import redirect, render_template, url_for
 from flask_login import current_user, login_required
+from sqlalchemy import func
 
 from app.ggcc import ggcc
 from app.ggcc.forms import GGCCForm
 
 from app import db
-from app.models import GrupoCasero, Direccion
+from app.models import GrupoCasero, Direccion, Miembro
 
 
 def check_admin():
@@ -75,14 +76,16 @@ def crear_gc():
         if (form.NewDirFlag.data == "True"):
             obj_gc = GrupoCasero(nombre_grupo=form.nombre_grupo.data,
                                  descripcion_grupo=form.descripcion_grupo.data)
-            obj_dir = Direccion(tipo_via=form.tipo_via.data,
-                                nombre_via=form.nombre_via.data,
-                                nro_via=form.nro_via.data,
-                                portalescalotro=form.portalescalotro_via.data,
-                                cp_via=form.cp_via.data,
-                                ciudad_via=form.ciudad_via.data,
-                                provincia_via=form.provincia_via.data,
-                                pais_via=form.pais_via.data)
+            obj_dir = Direccion(
+                          tipo_via=form.tipo_via.data,
+                          nombre_via=form.nombre_via.data,
+                          nro_via=form.nro_via.data,
+                          portalescalotros_via=form.portalescalotros_via.data,
+                          cp_via=form.cp_via.data,
+                          ciudad_via=form.ciudad_via.data,
+                          provincia_via=form.provincia_via.data,
+                          pais_via=form.pais_via.data
+                               )
             try:
                 # agrego registro de direccion
                 db.session.add(obj_dir)
@@ -132,9 +135,102 @@ def crear_gc():
 @login_required
 def modif_gc(id):
     """
-    Modificar un rol
+    Modificar un grupo casero
     """
     check_admin()
+
+    flag_crear = False
+    flag_listar = False
+
+    # lo hago por partes para actualizar más facil
+    # la dir si se crea una nueva
+    obj_gc = GrupoCasero.query.get_or_404(id)
+    obj_dir = Direccion.query.get_or_404(obj_gc.id_direccion)
+    obj_dirall = Direccion.query.all()
+
+    # Instancio el formulario si pasarle ningún dato para
+    # luego contectarlo a mano
+    form = GGCCForm()
+
+    if form.validate_on_submit():
+        # la direccion es nueva o no se ha tocado
+        if (form.NewDirFlag.data == 'True'):
+            obj_gc.nombre_grupo = form.nombre_grupo.data,
+            obj_gc.descripcion_grupo = form.descripcion_grupo.data
+
+            obj_dir_nueva = Direccion(
+                          tipo_via=form.tipo_via.data,
+                          nombre_via=form.nombre_via.data,
+                          nro_via=form.nro_via.data,
+                          portalescalotros_via=form.portalescalotros_via.data,
+                          cp_via=form.cp_via.data,
+                          ciudad_via=form.ciudad_via.data,
+                          provincia_via=form.provincia_via.data,
+                          pais_via=form.pais_via.data
+                               )
+            try:
+                # agrego registro de direccion
+                db.session.add(obj_dir_nueva)
+                # envio los cambios a la base de datos
+                db.session.flush()
+                # asigno el id recien creado para direccion
+                # al grupo casero
+                obj_gc.id_direccion = obj_dir_nueva.id
+                # Agrego el registro de gc
+                # confirmo todos los datos en la db
+                db.session.commit()
+                flash('Has guardado los datos correctamente.', 'db')
+            except Exception as e:
+                # in case department name already exists
+                flash('Error:', e)
+
+        # La direccion ya existe y ha sido asignada -->
+        # solo guardo la direccion_id
+        else:
+            # la newdir es falsa -> entonces se seleccionó una o se modificó
+            # la existente para saber si se modificó la existente uso el idDir
+            # que es vacio si no se cambio.
+            if (form.idDir.data == ''):
+                obj_gc.nombre_grupo = form.nombre_grupo.data,
+                obj_gc.descripcion_grupo = form.descripcion_grupo.data
+
+                obj_dir.tipo_via = form.tipo_via.data
+                obj_dir.nombre_via = form.nombre_via.data
+                obj_dir.nro_via = form.nro_via.data
+                obj_dir.portalescalotros_via = form.portalescalotros_via.data
+                obj_dir.cp_via = form.cp_via.data
+                obj_dir.ciudad_via = form.ciudad_via.data
+                obj_dir.provincia_via = form.provincia_via.data
+                obj_dir.pais_via = form.pais_via.data
+                db.session.commit()
+                flash('Has guardado los datos correctamente.', 'db')
+            else:
+                obj_gc.nombre_grupo = form.nombre_grupo.data,
+                obj_gc.descripcion_grupo = form.descripcion_grupo.data
+                obj_gc.id_direccion = form.idDir.data
+                db.session.commit()
+                flash('Has guardado los datos correctamente.', 'db')
+        # redirect to  ver
+        return redirect(url_for('ggcc.ver_ggcc'))
+        # ## aqui se acaba el if->submit
+
+    # asigno los datos de la base al formulario para que se vean en el template
+    form.nombre_grupo.data = obj_gc.nombre_grupo
+    form.descripcion_grupo.data = obj_gc.descripcion_grupo
+    form.tipo_via.data = obj_dir.tipo_via
+    form.nombre_via.data = obj_dir.nombre_via
+    form.nro_via.data = obj_dir.nro_via
+    form.portalescalotros_via.data = obj_dir.portalescalotros_via
+    form.cp_via.data = obj_dir.cp_via
+    form.ciudad_via.data = obj_dir.ciudad_via
+    form.provincia_via.data = obj_dir.provincia_via
+    form.pais_via.data = obj_dir.pais_via
+    return render_template(
+                'ggcc/base_ggcc.html',
+                action="Modificar",
+                add_ggcc=flag_crear, flag_listar=flag_listar,
+                form=form, direcciones=obj_dirall,
+                title="Modificar Grupo Casero")
 
 
 @ggcc.route('/ggcc/borrar/<int:id>',
@@ -145,3 +241,82 @@ def borrar_gc(id):
     Borrar un rol
     """
     check_admin()
+
+    obj_gc = GrupoCasero.query.get_or_404(id)
+    db.session.delete(obj_gc)
+    db.session.commit()
+    flash('Has borrado los datos correctamente.', 'db')
+
+    # redirect to the departments page
+    return redirect(url_for('ggcc.ver_ggcc'))
+
+    return render_template(title='Borrar Grupo Casero')
+
+
+@ggcc.route('/ggcc/asignar/elegir-gc',
+            methods=['GET', 'POST'])
+@login_required
+def asignar_elegir():
+    """
+    Asignar miembros a un grupo casero
+    """
+    check_admin()
+
+    flag_listar = True
+
+    nro_personas = db.session.query(Miembro.id_grupocasero,
+                                    func.count(Miembro.id_grupocasero)
+                                        .label('contar'))\
+                             .group_by(Miembro.id_grupocasero).subquery()
+
+    query_ggcc = db.session.query(GrupoCasero)\
+                           .join(Direccion,
+                                 GrupoCasero.id_direccion ==
+                                 Direccion.id)\
+                           .outerjoin(nro_personas,
+                                      GrupoCasero.id ==
+                                      nro_personas.c.id_grupocasero)\
+                           .add_columns(
+                                        GrupoCasero.id,
+                                        GrupoCasero.nombre_grupo,
+                                        GrupoCasero.descripcion_grupo,
+                                        Direccion.tipo_via,
+                                        Direccion.nombre_via,
+                                        Direccion.nro_via,
+                                        Direccion.portalescalotros_via,
+                                        Direccion.cp_via,
+                                        Direccion.ciudad_via,
+                                        Direccion.provincia_via,
+                                        Direccion.pais_via,
+                                        nro_personas.c.contar)
+
+    return render_template('ggcc/base_asignar.html',
+                           ggcc=query_ggcc,
+                           flag_listar=flag_listar,
+                           title=u'Asignar Miembros - Elegir Grupos Caseros')
+
+
+@ggcc.route('/ggcc/asignar/miembros/<int:id>',
+            methods=['GET', 'POST'])
+@login_required
+def asignar_miembros(id):
+    """
+    Asignar miembros a un grupo casero
+    """
+    check_admin()
+
+    flag_listar = False
+
+    obj_gc = GrupoCasero.query.get_or_404(id)
+    obj_miembros_incluidos = Miembro.query\
+                                    .filter(Miembro.id_grupocasero == id)
+
+    obj_miembros_todos = Miembro.query\
+                                .filter(Miembro.id_grupocasero != id)
+
+    return render_template('ggcc/base_asignar.html',
+                           gc=obj_gc,
+                           miembros_in=obj_miembros_incluidos,
+                           miembros_all=obj_miembros_todos,
+                           flag_listar=flag_listar,
+                           title=u'Asignar Miembros - Elegir Grupos Caseros')

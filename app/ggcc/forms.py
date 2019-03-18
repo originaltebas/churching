@@ -2,7 +2,8 @@
 # coding: utf-8
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField
+from wtforms import StringField, SubmitField, HiddenField, FieldList
+from wtforms import IntegerField
 from wtforms.validators import DataRequired
 
 
@@ -26,3 +27,6 @@ class GGCCForm(FlaskForm):
     pais_via = StringField(u'País', validators=[DataRequired()])
     submit = SubmitField(u'Aceptar')
 
+
+class ListaAsignacionMiembrosFrom(FlaskForm):
+    id_miembros = FieldList(IntegerField('Ids'), min_entries=0, max_entries=50)

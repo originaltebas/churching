@@ -47,7 +47,7 @@
                             <td> {{ tipomiembro.descripcion_tipomiembro }} </td>
                             <td class="text-center">
                                 {% if tipomiembro.miembros %}
-                                {{ tipomiembro.miembros.count() }}
+                                {{ tipomiembro.miembros|count() }}
                                 {% else %}
                                 0
                                 {% endif %}

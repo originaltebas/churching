@@ -47,7 +47,7 @@
                             <td> {{ estadocivil.descripcion_estado }} </td>
                             <td class="text-center">
                                 {% if estadocivil.miembros %}
-                                {{ estadocivil.miembros.count() }}
+                                {{ estadocivil.miembros|count() }}
                                 {% else %}
                                 0
                                 {% endif %}

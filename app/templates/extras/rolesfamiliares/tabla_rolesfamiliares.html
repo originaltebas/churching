@@ -47,7 +47,7 @@
                             <td> {{ rolfamiliar.descripcion_rolfam }} </td>
                             <td class="text-center">
                                 {% if rolfamiliar.miembros %}
-                                {{ rolfamiliar.miembros.count() }}
+                                {{ rolfamiliar.miembros|count() }}
                                 {% else %}
                                 0
                                 {% endif %}

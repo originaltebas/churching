@@ -1,0 +1,164 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800"> Asignar Miembros </h1>
+    <p class="mb-4">Seleccionar los miembros a quitar o agregar de las tablas inferiores.</p>
+    {% with errors = get_flashed_messages(category_filter=["db"]) %}
+    {% if messages %}
+    {{ message }}
+    {% endif %}
+    {% endwith %}
+<!-- Basic Card Example -->
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h4 class="m-0 font-weight-bold text-primary text-center"> {{nombre}} </h4>
+  </div>
+  <div class="card-body">
+    {% if gc %}
+    <h3 class="mt-5 mb-2 text-center">
+      Grupo Casero
+    </h3>
+    <div class="table-responsive mt-2">
+      <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+          <thead class="thead-dark">
+              <tr class="text-center">
+                  <th scope="col">Id</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Descripci&oacute;n</th>
+                  <th scope="col">Direcci&oacute;n</th>
+                  <th scope="col"># de Personas</th>
+              </tr>
+          </thead>
+        <tbody>
+          <tr>
+            <td scope="row" class="text-center dir-id"> {{ gc.id }} </td>
+            <td class="text-center">
+              {{ gc.nombre_grupo }}
+            </td>
+            <td class="text-center">
+              {{ gc.descripcion_grupo }}
+            </td>
+            <td class="text-center">
+                {{ gc.direccion.tipo_via }} {{ gc.direccion.nombre_via }}, {{ gc.direccion.nro_via }}.
+                {% if gc.direccion.portalescalotros_via %}
+                    {{gc.direccion.portalescalotros_via }}.
+                {% endif %}
+                {{ gc.direccion.cp_via }}. {{ gc.direccion.ciudad_via }}. {{ gc.direccion.provincia_via }}. {{ gc.direccion.pais_via }}.
+            </td>
+            <td class="text-center">
+              {% if gc.miembros %}
+              {{ gc.miembros|count() }}
+              {% else %}
+              0
+              {% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+
+{# listar miembros INCLUIDOS#}
+<h3 class="mt-5 mb-2 text-center">
+  Tabla de Miembros actualmente incluidos en el Grupo
+</h3>
+<div class="table-responsive mt-2">
+  <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">Id</th>
+        <th scope="col" colspan=9>Nombres y Apellidos</th>
+        <th scope="col"># Grupos Caseros</th>
+        <th scope="col">Quitar</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% if miembros_in and miembros_in.count()>0 %}
+        {% for miembro in miembros_in %}
+      <tr>
+        <td scope="row" class="text-center dir-id"> {{ miembro.id }} </td>
+        <td class="text-center" colspan=9>
+          {{ miembro.nombres }} {{ miembro.apellidos }}
+        </td>
+        <td class="text-center">
+            {% if miembro.gruposcaseros %}
+          {{ miembro.gruposcaseros|count() }}
+          {% else %}
+          0
+          {% endif %}
+        </td>
+
+        <td class="text-center">
+            <button class="asignar-quitar-miembros">
+              {# if asignado quitar sino agregar #}
+              Quitar
+            </button>
+          </td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr><td colspan="12" class="text-center">No Hay Miembros Asignados</td></tr>
+      {% endif %}
+      </tbody>
+  </table>
+</div>
+
+
+
+{# listar miembros #}
+<h3 class="mt-5 mb-2 text-center">
+  Tabla de Miembros No incluidos
+</h3>
+<div class="table-responsive mt-2">
+  <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">Id</th>
+        <th scope="col" colspan=9>Nombres y Apellidos</th>
+        <th scope="col"># Grupos Caseros</th>
+        <th scope="col">Asignar</th>
+      </tr>
+    </thead>
+    <tfoot class="thead-dark">
+      <tr class="text-center">
+          <th scope="col">Id</th>
+          <th scope="col" colspan=9>Nombres y Apellidos</th>
+          <th scope="col"># Grupos Caseros</th>
+          <th scope="col">Asignar</th>
+        </tr>
+    </tfoot>
+    <tbody>
+     {% if miembros_all and miembros_all.count()>0 %}
+      {% for miembro in miembros_all %}
+      <tr>
+        <td scope="row" class="text-center dir-id"> {{ miembro.id }} </td>
+        <td class="text-center" colspan=9>
+          {{ miembro.nombres }} {{ miembro.apellidos }}
+        </td>
+        <td class="text-center">
+                  {% if miembro.gruposcaseros %}
+          {{ miembro.gruposcaseros|count() }}
+          {% else %}
+          0
+          {% endif %}
+        </td>
+
+        <td class="text-center">
+            <button class="asignar-quitar-miembros">
+              {# if asignado quitar sino agregar #}
+              Agregar
+            </button>
+          </td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+</div>
+</div>
+
+</div>

@@ -64,3 +64,18 @@ $(".asignar-dir").click(function() {
   $('input[name=pais_via]').val($row.find("td:nth-child(9)").text().trim());
 
 });
+
+$(".crear-nueva-dir").click(function() {
+
+  $('input[name=NewDirFlag]').val("True");
+
+  $('input[name=idDir]').val('');
+  $('input[name=tipo_via]').val('');
+  $('input[name=nombre_via]').val('');
+  $('input[name=nro_via]').val('');
+  $('input[name=portalescalotros_via]').val('');
+  $('input[name=cp_via]').val('');
+  $('input[name=ciudad_via]').val('');
+  $('input[name=provincia_via]').val('');
+  $('input[name=pais_via]').val('');
+});

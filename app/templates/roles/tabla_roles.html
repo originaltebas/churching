@@ -59,7 +59,7 @@
                             <td class="text-center"> {{nombre}} </td>
                             <td class="text-center">
                                 {% if rol.miembros %}
-                                    {{ rol.miembros.count() }}
+                                    {{ rol.miembros|count() }}
                                 {% else %}
                                      0
                                 {% endif %}
