@@ -55,8 +55,7 @@ class Miembro(db.Model):
     id_tipomiembro = db.Column(db.Integer, db.ForeignKey('tiposmiembros.id'),
                                nullable=False)
     # Grupo Casero (1 grupo casero, muchos miembros)
-    id_grupocasero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'),
-                              )
+    id_grupocasero = db.Column(db.Integer, db.ForeignKey('gruposcaseros.id'))
     # Rol Familiar (1 rol, muchos miembros)
     id_rolfamiliar = db.Column(db.Integer, db.ForeignKey('rolesfamiliares.id'),
                                nullable=False)
