@@ -2,8 +2,7 @@
 # coding: utf-8
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField, FieldList
-from wtforms import IntegerField
+from wtforms import StringField, SubmitField, HiddenField
 from wtforms.validators import DataRequired
 
 
@@ -29,4 +28,6 @@ class GGCCForm(FlaskForm):
 
 
 class ListaAsignacionMiembrosFrom(FlaskForm):
-    id_miembros = FieldList(IntegerField('Ids'), min_entries=0, max_entries=50)
+    ids = HiddenField('Ids')
+    ids_totales = HiddenField('Ids Totales')
+    modifFlag = HiddenField("modifFlag", default=False)

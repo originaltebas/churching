@@ -79,3 +79,105 @@ $(".crear-nueva-dir").click(function() {
   $('input[name=provincia_via]').val('');
   $('input[name=pais_via]').val('');
 });
+
+
+$(".agregar-quitar-miembros").click(function() {
+  // Uso la misma accion asociada a los dos y uso el tag-accion para
+  // saber si tengo que quitar o agregar miembro
+  // If -> quitar -> else -> agregar
+  if ($(this).attr("tag-accion") == "quitar") {
+    // Cambio el flag de modificacion a True
+    $('input[name=modifFlag]').val("True");
+
+    // cojo el id del miembro quitado para eliminarlo de la lista de
+    // los miembros del grupo
+    var idquitar = $(this).attr('tag-id');
+    // cojo los ids de los miembros del grupo
+    var ids = $('input[name=ids]').val();
+    // quito el id del miembro a quitar de la lista total de miembros
+    ids = ids.replace(idquitar + ",", "");
+
+    // Lo mismo para totales
+    var idagregar = $(this).attr('tag-id');
+    var ids_t = $('input[name=ids_totales]').val();
+    ids_t = ids_t + idagregar + ",";
+
+    // Si la lista total de miembros del grupo esta vacia
+    // quito la clase de ocultar para que se vea la fila "no hay miembros"
+    // sino la pongo
+    if (ids == "") {
+      $(".tag-coletilla-ma").removeClass("d-none");
+    } else {
+      $(".tag-coletilla-ma").addClass("d-none");
+    }
+    // modifico el campo hidden del form que mantiene la lista de miembros
+    $('input[name=ids]').val(ids);
+    $('input[name=ids_totales]').val(ids_t);
+
+    // Pongo el contador de cantidad de grupos a 0 para el miembro quitado
+    $(this).closest("tr").children(".count-in").text("0");
+    // Cambio el texto de quitar a agregar
+    $(this).text("Agregar");
+    //cambio la etiqueta de accion a agregar (tenía quitar)
+    $(this).attr("tag-accion","agregar");
+
+    // Muevo fila de la tabla incluidos a la tabla no incluidos
+    var whichtr = $(this).closest("tr");
+    $('.m-no-incluidos').append(whichtr);
+
+    // Resto 1 a la cuenta de miembros del grupo casero
+    var min = (parseInt($('.count-gc').text()) - 1);
+    $('.count-gc').text(min);
+
+    $(".tag-coletilla-mni").addClass("d-none");
+
+  // accion agregar
+  } else {
+    // Cambio el flag de modificacion a True
+    $('input[name=modifFlag]').val("True");
+
+    // cojo el id del miembro agregado para sumarlo de la lista de
+    // los miembros del grupo
+    var idagregar = $(this).attr('tag-id');
+    // cojo los ids de los miembros del grupo
+    var ids = $('input[name=ids]').val();
+    // sumo el id del miembro a lista total de miembros
+    ids = ids + idagregar + ",";
+
+    // Lo mismo para totales
+    var idquitar = $(this).attr('tag-id');
+    // cojo los ids de los miembros del grupo
+    var ids_t = $('input[name=ids_totales]').val();
+    // quito el id del miembro a quitar de la lista total de miembros
+    ids_t = ids_t.replace(idquitar + ",", "");
+
+    // Si la lista total de miembros del grupo esta vacia
+    // quito la clase de ocultar para que se vea la fila "no hay miembros"
+    // sino la pongo
+    if (ids_t == "") {
+      $(".tag-coletilla-mni").removeClass("d-none");
+    } else {
+      $(".tag-coletilla-mni").addClass("d-none");
+    }
+    // modifico el campo hidden del form que mantiene la lista de miembros
+    $('input[name=ids]').val(ids);
+    $('input[name=ids_totales]').val(ids_t);
+
+    // Pongo el contador de cantidad de grupos a 1 para el miembro sumado
+    $(this).closest("tr").children(".count-in").text("1");
+    // Cambio el texto del boton
+    $(this).text("Quitar");
+    //cambio la etiqueta de accion a quitar (tenía agregar)
+    $(this).attr("tag-accion","quitar");
+
+    // Muevo fila de la tabla incluidos a la tabla no incluidos
+    var whichtr = $(this).closest("tr");
+    $('.m-incluidos').append(whichtr);
+
+    // Resto 1 a la cuenta de miembros del grupo casero
+    var min = (parseInt($('.count-gc').text()) + 1);
+    $('.count-gc').text(min);
+
+    $(".tag-coletilla-ma").addClass("d-none");
+  }
+});

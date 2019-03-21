@@ -2,12 +2,12 @@
 # coding: utf-8
 
 from flask import abort, flash
-from flask import redirect, render_template, url_for
+from flask import redirect, render_template, url_for, request
 from flask_login import current_user, login_required
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from app.ggcc import ggcc
-from app.ggcc.forms import GGCCForm
+from app.ggcc.forms import GGCCForm, ListaAsignacionMiembrosFrom
 
 from app import db
 from app.models import GrupoCasero, Direccion, Miembro
@@ -33,9 +33,19 @@ def ver_ggcc():
 
     flag_listar = True
 
-    query_ggcc = db.session.query(GrupoCasero).join(
-                        Direccion,
-                        GrupoCasero.id_direccion == Direccion.id).add_columns(
+    nro_personas = db.session.query(Miembro.id_grupocasero,
+                                    func.count(Miembro.id_grupocasero)
+                                        .label('contar'))\
+                             .group_by(Miembro.id_grupocasero).subquery()
+
+    query_ggcc = db.session.query(GrupoCasero)\
+                           .join(Direccion,
+                                 GrupoCasero.id_direccion ==
+                                 Direccion.id)\
+                           .outerjoin(nro_personas,
+                                      GrupoCasero.id ==
+                                      nro_personas.c.id_grupocasero)\
+                           .add_columns(
                                         GrupoCasero.id,
                                         GrupoCasero.nombre_grupo,
                                         GrupoCasero.descripcion_grupo,
@@ -46,7 +56,8 @@ def ver_ggcc():
                                         Direccion.cp_via,
                                         Direccion.ciudad_via,
                                         Direccion.provincia_via,
-                                        Direccion.pais_via)
+                                        Direccion.pais_via,
+                                        nro_personas.c.contar)
 
     return render_template('ggcc/base_ggcc.html',
                            ggcc=query_ggcc,
@@ -306,17 +317,62 @@ def asignar_miembros(id):
     check_admin()
 
     flag_listar = False
+    ids_miembros = ListaAsignacionMiembrosFrom()
 
-    obj_gc = GrupoCasero.query.get_or_404(id)
-    obj_miembros_incluidos = Miembro.query\
-                                    .filter(Miembro.id_grupocasero == id)
+    if request.method == 'GET':
+        obj_gc = GrupoCasero.query.get_or_404(id)
+        obj_miembros_incluidos = Miembro.query\
+                                        .filter(Miembro.id_grupocasero == id)
 
-    obj_miembros_todos = Miembro.query\
-                                .filter(Miembro.id_grupocasero != id)
+        obj_miembros_todos = Miembro.query\
+                                    .filter(or_(
+                                         Miembro.id_grupocasero != id,
+                                         Miembro.id_grupocasero.is_(None)))
+
+        ids_miembros.ids.data = ""
+        for idm in obj_miembros_incluidos:
+            ids_miembros.ids.data = str(ids_miembros.ids.data)\
+                                  + str(idm.id) + ","
+
+        ids_miembros.ids_totales.data = ""
+        for idm in obj_miembros_todos:
+            ids_miembros.ids_totales.data = str(ids_miembros.ids_totales.data)\
+                                            + str(idm.id) + ","
+
+    if ids_miembros.validate_on_submit():
+        # los miembros SÍ se han tocado -- hay que grabar de nuevo
+        if (ids_miembros.modifFlag.data == 'True'):
+            # Hay que hacer 2 cosas. Quitar a los que
+            # se han ido y agregar los nuevos
+
+            ids_inc = ids_miembros.ids.data[:-1].split(",")
+            ids_no_inc = ids_miembros.ids_totales.data[:-1].split(",")
+            obj_inc = Miembro.query\
+                             .filter(Miembro.id.in_(ids_inc))
+            obj_no_inc = Miembro.query\
+                                .filter(or_(Miembro.id.in_(ids_no_inc),
+                                            Miembro.id.is_(None)))
+
+            # Para borrar las relaciones de los antiguos
+            for o in obj_no_inc:
+                o.id_grupocasero = None
+
+            # Para agregar a los recien asignados
+            for m in obj_inc:
+                m.id_grupocasero = id
+
+            db.session.commit()
+            flash('Has guardado los datos correctamente.', 'db')
+        else:
+            # los miembros no se han tocado. no hacer nada.
+            flash('Has guardado los datos correctamente.', 'db')
+
+        return redirect(url_for('ggcc.asignar_elegir'))
 
     return render_template('ggcc/base_asignar.html',
                            gc=obj_gc,
                            miembros_in=obj_miembros_incluidos,
                            miembros_all=obj_miembros_todos,
                            flag_listar=flag_listar,
+                           ids_miembros=ids_miembros,
                            title=u'Asignar Miembros - Elegir Grupos Caseros')

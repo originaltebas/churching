@@ -44,7 +44,7 @@
                 {% endif %}
                 {{ gc.direccion.cp_via }}. {{ gc.direccion.ciudad_via }}. {{ gc.direccion.provincia_via }}. {{ gc.direccion.pais_via }}.
             </td>
-            <td class="text-center">
+            <td class="text-center count-gc">
               {% if gc.miembros %}
               {{ gc.miembros|count() }}
               {% else %}
@@ -63,7 +63,7 @@
   Tabla de Miembros actualmente incluidos en el Grupo
 </h3>
 <div class="table-responsive mt-2">
-  <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+  <table class="table table-bordered table-striped m-incluidos" width="100%" cellspacing="0">
     <thead class="thead-dark">
       <tr class="text-center">
         <th scope="col">Id</th>
@@ -80,24 +80,23 @@
         <td class="text-center" colspan=9>
           {{ miembro.nombres }} {{ miembro.apellidos }}
         </td>
-        <td class="text-center">
-            {% if miembro.gruposcaseros %}
-          {{ miembro.gruposcaseros|count() }}
+        <td class="text-center count-in">
+          {% if miembro.id_grupocasero != 0 %}
+          1
           {% else %}
           0
           {% endif %}
         </td>
 
         <td class="text-center">
-            <button class="asignar-quitar-miembros">
-              {# if asignado quitar sino agregar #}
-              Quitar
+            <button class="agregar-quitar-miembros" tag-accion="quitar" tag-id="{{ miembro.id }}">Quitar
             </button>
           </td>
       </tr>
       {% endfor %}
+      <tr class="tag-coletilla-ma d-none"><td colspan="12" class="text-center" >No Hay Miembros Asignados</td></tr>
       {% else %}
-      <tr><td colspan="12" class="text-center">No Hay Miembros Asignados</td></tr>
+      <tr class="tag-coletilla-ma"><td colspan="12" class="text-center" >No Hay Miembros Asignados</td></tr>
       {% endif %}
       </tbody>
   </table>
@@ -110,7 +109,7 @@
   Tabla de Miembros No incluidos
 </h3>
 <div class="table-responsive mt-2">
-  <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+  <table class="table table-bordered table-striped m-no-incluidos" width="100%" cellspacing="0">
     <thead class="thead-dark">
       <tr class="text-center">
         <th scope="col">Id</th>
@@ -135,28 +134,41 @@
         <td class="text-center" colspan=9>
           {{ miembro.nombres }} {{ miembro.apellidos }}
         </td>
-        <td class="text-center">
-                  {% if miembro.gruposcaseros %}
-          {{ miembro.gruposcaseros|count() }}
-          {% else %}
-          0
-          {% endif %}
-        </td>
+        <td class="text-center count-in">
+            {% if miembro.id_grupocasero != 0 %}
+            1
+            {% else %}
+            0
+            {% endif %}
+          </td>
 
         <td class="text-center">
-            <button class="asignar-quitar-miembros">
-              {# if asignado quitar sino agregar #}
-              Agregar
+            <button class="agregar-quitar-miembros" tag-accion="agregar" tag-id="{{ miembro.id }}">Agregar
             </button>
           </td>
       </tr>
       {% endfor %}
+      <tr class="tag-coletilla-mni .d-none"><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
       {% else %}
-      <tr><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
+      <tr class="tag-coletilla-mni"><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
       {% endif %}
     </tbody>
   </table>
 </div>
+
+<form class="user" method="POST" role="form" action="">
+    {{ ids_miembros.csrf_token }}
+    {{ ids_miembros.modifFlag(value='False') }}
+    {{ ids_miembros.ids }}
+    {{ ids_miembros.ids_totales }}
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+          <input type="submit" id="submit" name="submit" class="btn btn-lg btn-primary btn-user btn-block" value="Guardar" />
+        </div>
+        <div class="col-4"></div>
+      </div>
+</form>
 
 </div>
 </div>

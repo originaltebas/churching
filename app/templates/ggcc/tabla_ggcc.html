@@ -56,8 +56,8 @@
                                 {{ gc.cp_via }}. {{ gc.ciudad_via }}. {{ gc.provincia_via }}. {{ gc.pais_via }}.
                             </td>
                             <td class="text-center">
-                                {% if gc.miembros %}
-                                {{ gc.miembros|count() }}
+                                {% if gc.contar %}
+                                {{ gc.contar }}
                                 {% else %}
                                 0
                                 {% endif %}
