@@ -29,7 +29,7 @@
               </tr>
           </thead>
         <tbody>
-          <tr>
+          <tr  class="table-primary">
             <td scope="row" class="text-center dir-id"> {{ gc.id }} </td>
             <td class="text-center">
               {{ gc.nombre_grupo }}
@@ -69,13 +69,13 @@
         <th scope="col">Id</th>
         <th scope="col" colspan=9>Nombres y Apellidos</th>
         <th scope="col"># Grupos Caseros</th>
-        <th scope="col">Quitar</th>
+        <th scope="col">Acci&oacute;n</th>
       </tr>
     </thead>
     <tbody>
         {% if miembros_in and miembros_in.count()>0 %}
         {% for miembro in miembros_in %}
-      <tr>
+      <tr  class="table-success">
         <td scope="row" class="text-center dir-id"> {{ miembro.id }} </td>
         <td class="text-center" colspan=9>
           {{ miembro.nombres }} {{ miembro.apellidos }}
@@ -115,21 +115,13 @@
         <th scope="col">Id</th>
         <th scope="col" colspan=9>Nombres y Apellidos</th>
         <th scope="col"># Grupos Caseros</th>
-        <th scope="col">Asignar</th>
+        <th scope="col">Acci&oacute;n</th>
       </tr>
     </thead>
-    <tfoot class="thead-dark">
-      <tr class="text-center">
-          <th scope="col">Id</th>
-          <th scope="col" colspan=9>Nombres y Apellidos</th>
-          <th scope="col"># Grupos Caseros</th>
-          <th scope="col">Asignar</th>
-        </tr>
-    </tfoot>
     <tbody>
      {% if miembros_all and miembros_all.count()>0 %}
       {% for miembro in miembros_all %}
-      <tr>
+      <tr  class="table-danger">
         <td scope="row" class="text-center dir-id"> {{ miembro.id }} </td>
         <td class="text-center" colspan=9>
           {{ miembro.nombres }} {{ miembro.apellidos }}
@@ -141,14 +133,13 @@
             0
             {% endif %}
           </td>
-
         <td class="text-center">
             <button class="agregar-quitar-miembros" tag-accion="agregar" tag-id="{{ miembro.id }}">Agregar
             </button>
           </td>
       </tr>
       {% endfor %}
-      <tr class="tag-coletilla-mni .d-none"><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
+      <tr class="tag-coletilla-mni d-none"><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
       {% else %}
       <tr class="tag-coletilla-mni"><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
       {% endif %}
