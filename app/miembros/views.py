@@ -1,4 +1,4 @@
-# app/auth/views.py
+# app/miembros/views.py
 # coding: utf-8
 
 from flask import flash, redirect, render_template, url_for

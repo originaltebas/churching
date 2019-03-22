@@ -1,0 +1,167 @@
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800"> Asignar Miembros </h1>
+    <p class="mb-4">Seleccionar los miembros a quitar o agregar de las tablas inferiores.</p>
+    {% with errors = get_flashed_messages(category_filter=["db"]) %}
+    {% if messages %}
+    {{ message }}
+    {% endif %}
+    {% endwith %}
+<!-- Basic Card Example -->
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h4 class="m-0 font-weight-bold text-primary text-center"> {{nombre}} </h4>
+  </div>
+  <div class="card-body">
+    {% if gc %}
+    <h3 class="mt-5 mb-2 text-center">
+      Grupo Casero
+    </h3>
+    <div class="table-responsive mt-2">
+      <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+          <thead class="thead-dark">
+              <tr class="text-center">
+                  <th scope="col">Id</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Descripci&oacute;n</th>
+                  <th scope="col">Direcci&oacute;n</th>
+                  <th scope="col"># de Personas</th>
+              </tr>
+          </thead>
+        <tbody>
+          <tr  class="table-primary">
+            <td scope="row" class="text-center dir-id"> {{ gc.id }} </td>
+            <td class="text-center">
+              {{ gc.nombre_grupo }}
+            </td>
+            <td class="text-center">
+              {{ gc.descripcion_grupo }}
+            </td>
+            <td class="text-center">
+                {{ gc.direccion.tipo_via }} {{ gc.direccion.nombre_via }}, {{ gc.direccion.nro_via }}.
+                {% if gc.direccion.portalescalotros_via %}
+                    {{gc.direccion.portalescalotros_via }}.
+                {% endif %}
+                {{ gc.direccion.cp_via }}. {{ gc.direccion.ciudad_via }}. {{ gc.direccion.provincia_via }}. {{ gc.direccion.pais_via }}.
+            </td>
+            <td class="text-center count-gc">
+              {% if gc.miembros %}
+              {{ gc.miembros|count() }}
+              {% else %}
+              0
+              {% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+
+{# listar miembros INCLUIDOS#}
+<h3 class="mt-5 mb-2 text-center">
+  Tabla de Miembros actualmente incluidos en el Grupo
+</h3>
+<div class="table-responsive mt-2">
+  <table class="table table-bordered table-striped m-incluidos" width="100%" cellspacing="0">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">Id</th>
+        <th scope="col" colspan=9>Nombres y Apellidos</th>
+        <th scope="col"># Grupos Caseros</th>
+        <th scope="col">Acci&oacute;n</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% if miembros_in and miembros_in.count()>0 %}
+        {% for miembro in miembros_in %}
+      <tr  class="table-success">
+        <td scope="row" class="text-center dir-id"> {{ miembro.id }} </td>
+        <td class="text-center" colspan=9>
+          {{ miembro.nombres }} {{ miembro.apellidos }}
+        </td>
+        <td class="text-center count-in">
+          {% if miembro.id_grupocasero != 0 %}
+          1
+          {% else %}
+          0
+          {% endif %}
+        </td>
+
+        <td class="text-center">
+            <button class="agregar-quitar-miembros" tag-accion="quitar" tag-id="{{ miembro.id }}">Quitar
+            </button>
+          </td>
+      </tr>
+      {% endfor %}
+      <tr class="tag-coletilla-ma d-none"><td colspan="12" class="text-center" >No Hay Miembros Asignados</td></tr>
+      {% else %}
+      <tr class="tag-coletilla-ma"><td colspan="12" class="text-center" >No Hay Miembros Asignados</td></tr>
+      {% endif %}
+      </tbody>
+  </table>
+</div>
+
+
+
+{# listar miembros #}
+<h3 class="mt-5 mb-2 text-center">
+  Tabla de Miembros No incluidos
+</h3>
+<div class="table-responsive mt-2">
+  <table class="table table-bordered table-striped m-no-incluidos" width="100%" cellspacing="0">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">Id</th>
+        <th scope="col" colspan=9>Nombres y Apellidos</th>
+        <th scope="col"># Grupos Caseros</th>
+        <th scope="col">Acci&oacute;n</th>
+      </tr>
+    </thead>
+    <tbody>
+     {% if miembros_all and miembros_all.count()>0 %}
+      {% for miembro in miembros_all %}
+      <tr  class="table-danger">
+        <td scope="row" class="text-center dir-id"> {{ miembro.id }} </td>
+        <td class="text-center" colspan=9>
+          {{ miembro.nombres }} {{ miembro.apellidos }}
+        </td>
+        <td class="text-center count-in">
+            {% if miembro.id_grupocasero != 0 %}
+            1
+            {% else %}
+            0
+            {% endif %}
+          </td>
+        <td class="text-center">
+            <button class="agregar-quitar-miembros" tag-accion="agregar" tag-id="{{ miembro.id }}">Agregar
+            </button>
+          </td>
+      </tr>
+      {% endfor %}
+      <tr class="tag-coletilla-mni d-none"><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
+      {% else %}
+      <tr class="tag-coletilla-mni"><td colspan="12" class="text-center">Todos los miembros de la BD están asignados</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<form class="user" method="POST" role="form" action="">
+    {{ ids_miembros.csrf_token }}
+    {{ ids_miembros.modifFlag(value='False') }}
+    {{ ids_miembros.ids }}
+    {{ ids_miembros.ids_totales }}
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+          <input type="submit" id="submit" name="submit" class="btn btn-lg btn-primary btn-user btn-block" value="Guardar" />
+        </div>
+        <div class="col-4"></div>
+      </div>
+</form>
+
+</div>
+</div>
+
+</div>

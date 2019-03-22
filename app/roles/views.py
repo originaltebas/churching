@@ -1,4 +1,4 @@
-# app/extras/views.py
+# app/roles/views.py
 # coding: utf-8
 
 from flask import abort, flash

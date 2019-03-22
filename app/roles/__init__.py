@@ -1,4 +1,4 @@
-# app/extras/__init__.py
+# app/roles/__init__.py
 
 from flask import Blueprint
 

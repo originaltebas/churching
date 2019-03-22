@@ -30,7 +30,6 @@ def create_app(config_name):
     login_manager.init_app(app)
     login_manager.login_message = "Debes estar logado para ver esta pagina"
     login_manager.login_view = "auth.login"
-
     migrate = Migrate(app, db)
 
     from app import models

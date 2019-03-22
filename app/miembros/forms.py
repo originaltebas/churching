@@ -1,4 +1,4 @@
-# app/auth/forms.py
+# app/miembros/forms.py
 # coding: utf-8
 
 from flask_wtf import FlaskForm
