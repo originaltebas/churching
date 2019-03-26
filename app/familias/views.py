@@ -116,6 +116,13 @@ def crear_nuevadir_load():
     return render_template('familias/_modal_direccion_agregar.html', form=form)
 
 
+@familias.route('/familias/crear/usardir/loadForm')
+def crear_usardir_load():
+    check_admin()
+    query = Direccion.query.all()
+    return render_template('familias/_modal_direccion_editar.html', direcciones=query)
+
+
 @familias.route('/familias/crear/nuevadir', methods=['POST'])
 def crear_nuevadir():
     check_admin()

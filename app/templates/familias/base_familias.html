@@ -24,6 +24,18 @@ Churching - Familias
 
     {% if flag_accion == "Listar" %}
     {% include "familias/tabla_familias.html" %}
+    <script>
+      function listarFamilias(e) {
+          $(tblistarFamilias).dataTable({
+            "language": {
+              "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+              "decimal": ",",
+              "thousands": "."
+            }
+          });
+      }
+      window.addEventListener("load", listarFamilias, false);
+    </script>
     {% elif flag_accion == "Agregar" %}
     {% include "familias/agregar_familia.html" %}
     {% elif flag_accion == "Modificar" %}

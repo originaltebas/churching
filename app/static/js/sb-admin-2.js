@@ -187,7 +187,7 @@ $('#ndir').on('click', function () {
     $('#myModal').modal({
       show: true,
       closable: false,
-			transition: 'fade up',
+      transition: 'fade up',
     });
   });
 });
@@ -197,7 +197,7 @@ $('#udir').on('click', function () {
     $('#myModal').modal({
       show: true,
       closable: false,
-			transition: 'fade up',
+      transition: 'fade up',
     });
   });
 });
@@ -218,7 +218,7 @@ function after_form_submitted_f(data) {
   window.location.href = data.url;
 }
 
-$(document).on('click','#btnCrear', function(e) {
+$(document).on('click', '#btnCrear', function (e) {
   e.preventDefault();
   url = 'crear/nuevadir'
   $.ajax({
@@ -230,7 +230,7 @@ $(document).on('click','#btnCrear', function(e) {
   });
 })
 
-$(document).on('click','#submit', function(e) {
+$(document).on('click', '#btnCrearFam', function (e) {
   e.preventDefault();
   url = 'crear'
   $.ajax({

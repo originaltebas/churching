@@ -35,7 +35,7 @@
 
           <div class="form-group row d-none mt-5" id="cardBodyButtons">
             <div class="col-3"></div>
-            {{form.submit(class_="btn btn-primary col-2")}}
+            <button type="button" class="btn btn-primary col-2" id="btnCrearFam">Crear Familia</button>
             <div class="col-2"></div>
             <button type="button" class="btn btn-danger col-2"
               onclick="window.location.href='{{ url_for("familias.ver_familias") }}'">Cancelar</button>
