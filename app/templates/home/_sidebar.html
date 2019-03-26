@@ -1,4 +1,4 @@
-<!-- app/templates/_sidebar.html -->
+<!-- app/templates/home/_sidebar.html -->
 
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -38,9 +38,9 @@
     </a>
     <div id="collapseFam" class="collapse" aria-labelledby="headingFam" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item text-wrap" href="buttons.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('familias.ver_familias') }}">
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear Familia
+          Gestionar Familia
         </a>
         <a class="collapse-item text-wrap" href="buttons.html">
           <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>

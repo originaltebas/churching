@@ -21,8 +21,6 @@ def check_admin():
         abort(403)
 
 
-# SECCION: ***** Rol: PASTOR, ANCIANO; DIACONO, LIDER GRUPO CASERO *****
-
 @ggcc.route('/ggcc', methods=['GET', 'POST'])
 @login_required
 def ver_ggcc():

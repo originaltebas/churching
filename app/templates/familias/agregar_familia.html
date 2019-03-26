@@ -1,0 +1,70 @@
+<!-- app/templates/familias/agregar_familia.html -->
+
+{% set nombre = 'Familia' %}
+{% set modo ='Agregar' %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 alert alert-info"> {{modo}} {{nombre}} </h1>
+  <div class="col-12">
+    <form id="familyForm" name="familyForm" class="user" method="POST" role="form" action="">
+      {{ form.csrf_token }}
+      <div class="card shadow">
+        <div class="card-header py-3">Datos Generales</div>
+        <div class="card-body">
+          {{ form.idDir }}
+          <div class="form-group">
+            {{ form.apellidos_familia.label(class_="pl-3") }}
+            {{ form.apellidos_familia(class_="form-control form-control-user") }}
+          </div>
+          <div class="form-group">
+            {{ form.descripcion_familia.label(class_="pl-3") }}
+            {{ form.descripcion_familia(class_="form-control form-control-user") }}
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-5">
+              {{ form.telefono_familia.label(class_="pl-3") }}
+              {{ form.telefono_familia(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-sm-7">
+              {{ form.TipoFamilia.label(class_="pl-3") }}
+              {{ form.TipoFamilia(class_="custom-select custom-select-lg") }}
+            </div>
+          </div>
+
+          <div class="form-group row d-none mt-5" id="cardBodyButtons">
+            <div class="col-3"></div>
+            {{form.submit(class_="btn btn-primary col-2")}}
+            <div class="col-2"></div>
+            <button type="button" class="btn btn-danger col-2"
+              onclick="window.location.href='{{ url_for("familias.ver_familias") }}'">Cancelar</button>
+            <div class="col-3"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="card bg-secondary mt-3">
+      <div class="card-header">Direcci&oacute;n Familiar</div>
+      <div class="card-body text-center" id="cardBodyDir">
+        <button id="ndir" type="button" class="btn btn-success mr-5" data-toggle="modal" data-target="#myModal">
+          Crear Nueva Direcci&oacute;n
+        </button>
+        <button id="udir" type="button" class="btn btn-info ml-5" data-toggle="modal" data-target="#myModal">
+          Usar Direcci&oacute;n existente
+        </button>
+      </div>
+    </div>
+
+    <!-- The Modal -->
+    <div class="modal" id="myModal" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <!-- Modal content-->
+        <div class="modal-content">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end container-fluid-->

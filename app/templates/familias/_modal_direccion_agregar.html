@@ -1,0 +1,66 @@
+<form id="nDirForm" class="user" method="POST" role="form" action="">
+        {{ form.csrf_token }}
+    <div class="modal-header">
+        <h4 class="modal-title">Crear Nueva Direcci&oacute;n</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="form-group row">
+            <div class="col-sm-3">
+                {{ form.tipo_via.label(class_="pl-3") }}
+                {{ form.tipo_via(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-sm-6">
+                {{ form.nombre_via.label(class_="pl-3") }}
+                {{ form.nombre_via(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-sm-3">
+                {{ form.nro_via.label(class_="pl-3") }}
+                {{ form.nro_via(class_="form-control form-control-user") }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-3">
+                {{ form.portalescalotros_via.label(class_="pl-3") }}
+                {{ form.portalescalotros_via(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-sm-3">
+                {{ form.piso_nroletra_via.label(class_="pl-3") }}
+                {{ form.piso_nroletra_via(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-sm-6">
+                {{ form.ciudad_via.label(class_="pl-3") }}
+                {{ form.ciudad_via(class_="form-control form-control-user") }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-2">
+                {{ form.cp_via.label(class_="pl-3") }}
+                {{ form.cp_via(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-sm-5">
+                {{ form.provincia_via.label(class_="pl-3") }}
+                {{ form.provincia_via(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-sm-5">
+                {{ form.pais_via.label(class_="pl-3") }}
+                {{ form.pais_via(class_="form-control form-control-user") }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-4 text-center"></div>
+            <div class="col-sm-2 text-center">
+                <input type="submit" id="btnCrear" name="btnCrear" class="btn btn-primary btn-block" value="Crear" />
+            </div>
+            <div class="col-sm-2  text-center">
+                <input type="button" id="btnCancel" name="btnCancel" class="btn btn-warning btn-block"
+                    data-dismiss="modal" value="Cancelar" />
+            </div>
+            <div class="col-sm-4 text-center"></div>
+        </div>
+    </div>
+
+</form>

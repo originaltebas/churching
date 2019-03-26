@@ -1,11 +1,11 @@
-<!-- app/templates/home/index.html -->
+<!-- app/templates/familias/base_familias.html -->
 
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
 
 {% block title %}
-Churching - Grupos Caseros
+Churching - Familias
 {% endblock %}
 
 {% block body %}
@@ -22,10 +22,12 @@ Churching - Grupos Caseros
 
     {% include "home/_topbar.html" %}
 
-    {% if flag_listar %}
-    {% include "ggcc/tabla_ggcc.html" %}
-    {% else %}
-    {% include "ggcc/agregar_editar_ggcc.html" %}
+    {% if flag_accion == "Listar" %}
+    {% include "familias/tabla_familias.html" %}
+    {% elif flag_accion == "Agregar" %}
+    {% include "familias/agregar_familia.html" %}
+    {% elif flag_accion == "Modificar" %}
+    {% include "familias/editar_familia.html" %}
     {% endif %}
 
   </div>

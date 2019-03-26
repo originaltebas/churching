@@ -1,8 +1,8 @@
-(function($) {
+(function ($) {
   "use strict"; // Start of use strict
 
   // Toggle the side navigation
-  $("#sidebarToggle, #sidebarToggleTop").on('click', function(e) {
+  $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
     $("body").toggleClass("sidebar-toggled");
     $(".sidebar").toggleClass("toggled");
     if ($(".sidebar").hasClass("toggled")) {
@@ -11,14 +11,14 @@
   });
 
   // Close any open menu accordions when window is resized below 768px
-  $(window).resize(function() {
+  $(window).resize(function () {
     if ($(window).width() < 768) {
       $('.sidebar .collapse').collapse('hide');
     };
   });
 
   // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
-  $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
+  $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function (e) {
     if ($(window).width() > 768) {
       var e0 = e.originalEvent,
         delta = e0.wheelDelta || -e0.detail;
@@ -28,7 +28,7 @@
   });
 
   // Scroll to top button appear
-  $(document).on('scroll', function() {
+  $(document).on('scroll', function () {
     var scrollDistance = $(this).scrollTop();
     if (scrollDistance > 100) {
       $('.scroll-to-top').fadeIn();
@@ -38,7 +38,7 @@
   });
 
   // Smooth scrolling using jQuery easing
-  $(document).on('click', 'a.scroll-to-top', function(e) {
+  $(document).on('click', 'a.scroll-to-top', function (e) {
     var $anchor = $(this);
     $('html, body').stop().animate({
       scrollTop: ($($anchor.attr('href')).offset().top)
@@ -48,8 +48,8 @@
 
 })(jQuery); // End of use strict
 
-$(".asignar-dir").click(function() {
-  var $row = $(this).closest("tr")   // Finds the closest row <tr>
+$(".asignar-dir").click(function () {
+  var $row = $(this).closest("tr") // Finds the closest row <tr>
 
   $('input[name=NewDirFlag]').val("False");
 
@@ -65,7 +65,7 @@ $(".asignar-dir").click(function() {
 
 });
 
-$(".crear-nueva-dir").click(function() {
+$(".crear-nueva-dir").click(function () {
 
   $('input[name=NewDirFlag]').val("True");
 
@@ -81,7 +81,7 @@ $(".crear-nueva-dir").click(function() {
 });
 
 
-$(".agregar-quitar-miembros").click(function() {
+$(".agregar-quitar-miembros").click(function () {
   // Uso la misma accion asociada a los dos y uso el tag-accion para
   // saber si tengo que quitar o agregar miembro
   // If -> quitar -> else -> agregar
@@ -119,7 +119,7 @@ $(".agregar-quitar-miembros").click(function() {
     // Cambio el texto de quitar a agregar
     $(this).text("Agregar");
     //cambio la etiqueta de accion a agregar (tenía quitar)
-    $(this).attr("tag-accion","agregar");
+    $(this).attr("tag-accion", "agregar");
 
     // Muevo fila de la tabla incluidos a la tabla no incluidos
     var whichtr = $(this).closest("tr");
@@ -131,7 +131,7 @@ $(".agregar-quitar-miembros").click(function() {
 
     $(".tag-coletilla-mni").addClass("d-none");
 
-  // accion agregar
+    // accion agregar
   } else {
     // Cambio el flag de modificacion a True
     $('input[name=modifFlag]').val("True");
@@ -168,7 +168,7 @@ $(".agregar-quitar-miembros").click(function() {
     // Cambio el texto del boton
     $(this).text("Quitar");
     //cambio la etiqueta de accion a quitar (tenía agregar)
-    $(this).attr("tag-accion","quitar");
+    $(this).attr("tag-accion", "quitar");
 
     // Muevo fila de la tabla incluidos a la tabla no incluidos
     var whichtr = $(this).closest("tr");
@@ -181,3 +181,63 @@ $(".agregar-quitar-miembros").click(function() {
     $(".tag-coletilla-ma").addClass("d-none");
   }
 });
+
+$('#ndir').on('click', function () {
+  $('.modal-content').load('crear/nuevadir/loadForm', function () {
+    $('#myModal').modal({
+      show: true,
+      closable: false,
+			transition: 'fade up',
+    });
+  });
+});
+
+$('#udir').on('click', function () {
+  $('.modal-content').load('crear/usardir/loadForm', function () {
+    $('#myModal').modal({
+      show: true,
+      closable: false,
+			transition: 'fade up',
+    });
+  });
+});
+
+function after_form_submitted(data) {
+  if (data.status == 'ok') {
+    $('input[name=idDir]').val(data.id);
+    $("#cardBodyButtons").removeClass("d-none");
+    $('#cardBodyDir').load('crear/loadDir/' + data.id);
+    $('#myModal').modal('hide');
+  } else {
+    $('#myModal .modal-content').html(data);
+    return false;
+  }
+}
+
+function after_form_submitted_f(data) {
+  window.location.href = data.url;
+}
+
+$(document).on('click','#btnCrear', function(e) {
+  e.preventDefault();
+  url = 'crear/nuevadir'
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: $('#nDirForm').serialize(),
+    success: after_form_submitted,
+    dataType: 'json'
+  });
+})
+
+$(document).on('click','#submit', function(e) {
+  e.preventDefault();
+  url = 'crear'
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: $('#familyForm').serialize(),
+    success: after_form_submitted_f,
+    dataType: 'json'
+  });
+})

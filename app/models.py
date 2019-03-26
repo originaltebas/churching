@@ -93,10 +93,11 @@ class Direccion(db.Model):
     nombre_via = db.Column(db.String(100), nullable=False)
     nro_via = db.Column(db.String(10), nullable=False)
     portalescalotros_via = db.Column(db.String(20))
+    piso_nroletra_via = db.Column(db.String(20))
     cp_via = db.Column(db.String(10), nullable=False)
-    ciudad_via = db.Column(db.String(20), nullable=False)
-    provincia_via = db.Column(db.String(20), nullable=False)
-    pais_via = db.Column(db.String(20), nullable=False)
+    ciudad_via = db.Column(db.String(50), nullable=False)
+    provincia_via = db.Column(db.String(50), nullable=False)
+    pais_via = db.Column(db.String(50), nullable=False)
 
     # RELACIONES 1:N [BACKREF]
     miembros = db.relationship('Miembro', backref='direccion', lazy=True)
