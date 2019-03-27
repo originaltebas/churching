@@ -1,10 +1,12 @@
 # app/familias/views.py
 # coding: utf-8
 
-from flask import abort, flash, jsonify
-from flask import redirect, render_template, url_for, request
+from flask import abort, jsonify
+from flask import render_template, url_for, request
 from flask_login import current_user, login_required
 from sqlalchemy import func
+from flask_paginate import Pagination, get_page_parameter
+
 
 from app.familias import familias
 from app.familias.forms import FamiliaForm, DireccionModalForm
@@ -119,8 +121,24 @@ def crear_nuevadir_load():
 @familias.route('/familias/crear/usardir/loadForm')
 def crear_usardir_load():
     check_admin()
-    query = Direccion.query.all()
-    return render_template('familias/_modal_direccion_editar.html', direcciones=query)
+    search = False
+    q = request.args.get('q')
+    if q:
+        search = True
+
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+
+    nro_dirs = db.session.query(Direccion).count()
+
+    query_dir = Direccion.query.offset(((page-1)*10)).limit(10)
+
+    pagination = Pagination(page=page, total=nro_dirs,
+                            search=search, record_name='query_dir',
+                            css_framework='bootstrap4')
+
+    return render_template('familias/_modal_direccion_usar.html',
+                           direcciones=query_dir,
+                           pagination=pagination)
 
 
 @familias.route('/familias/crear/nuevadir', methods=['POST'])

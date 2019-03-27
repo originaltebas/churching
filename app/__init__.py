@@ -27,6 +27,9 @@ def create_app(config_name):
     Bootstrap(app)
     db.init_app(app)
 
+    app.config['PAGE_SIZE'] = 20
+    app.config['VISIBLE_PAGE_COUNT'] = 10
+
     login_manager.init_app(app)
     login_manager.login_message = "Debes estar logado para ver esta pagina"
     login_manager.login_view = "auth.login"
