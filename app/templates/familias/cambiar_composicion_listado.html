@@ -1,11 +1,9 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
-    {% set nombre = 'Familia' %}
+    {% set nombre = 'Agregar o Quitar Integrantes de las Familias' %}
     {% set nombres = 'Familias' %}
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800"> {{nombres}} </h1>
-    <p class="mb-4">En esta secci&oacute;n se puede crear, modificar y borrar las {{nombres}}
-        que posteriormente se asociar&aacute;n a miembros de la iglesia</p>
+    <h1 class="h3 mb-2 alert alert-info"> {{modo}} {{nombre}} </h1>
         {% with messages = get_flashed_messages(with_categories=true) %}
         <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
         {% if messages %}
@@ -19,7 +17,9 @@
       {% endwith %}    <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Informaci&oacute;n de {{nombres}} en la Base de Datos</h6>
+            <h6 class="m-0 font-weight-bold text-primary">
+                Elige una familia del listado inferior para cambiar su composición
+            </h6>
         </div>
         {% if familias %}
         <div class="card-body">
@@ -34,8 +34,7 @@
                             <th scope="col">Teléfono</th>
                             <th scope="col">Tipo de Familia</th>
                             <th scope="col"># de Personas</th>
-                            <th scope="col">Modificar</th>
-                            <th scope="col">Borrar</th>
+                            <th scope="col">Agregar/Quitar Integrantes</th>
                         </tr>
                     </thead>
                     <tfoot class="thead-dark">
@@ -47,8 +46,7 @@
                             <th scope="col">Teléfono</th>
                             <th scope="col">Tipo de Familia</th>
                             <th scope="col"># de Personas</th>
-                            <th scope="col">Modificar</th>
-                            <th scope="col">Borrar</th>
+                            <th scope="col">Agregar/Quitar Integrantes</th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -74,13 +72,8 @@
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <a href="{{ url_for('familias.modif_familia', id=f.id) }}">
+                                <a href="{{ url_for('familias.cambiar_composicion_edicion', id=f.id) }}">
                                     <i class="fa fa-edit"></i>
-                                </a>
-                            </td>
-                            <td class="text-center">
-                                <a href="{{ url_for('familias.borrar_familia', id=f.id) }}">
-                                    <i class="fa fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
@@ -96,17 +89,6 @@
         <hr class="intro-divider">
     </div>
     {% endif %}
-
-    <div class="col-12 text-center">
-        <button onclick="window.location.href='{{ url_for("familias.crear_familia") }}'" class="text-center btn btn-primary btn-icon-split btn-lg">
-            <span class="icon text-white-50">
-                <i class="fa fa-plus centered"></i>
-            </span>
-            <span class="text">Agregar
-                {{nombre}}
-            </span>
-        </button>
-    </div>
 
 </div>
 <!-- /.container-fluid -->

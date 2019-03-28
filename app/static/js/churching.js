@@ -1,5 +1,7 @@
-$(document).on("click", ".asignar-dir", function (e) {
-    alert('probando');
+(function ($) {
+  "use strict"; // Start of use strict
+
+  $(document).on("click", ".asignar-dir", function (e) {
 
     var $row = $(this).closest("tr"); // Finds the closest row <tr>
     var dirid = $row.find("td:nth-child(1)").text().trim();
@@ -8,7 +10,7 @@ $(document).on("click", ".asignar-dir", function (e) {
     $("#cardBodyButtons").removeClass("d-none");
     $('#cardBodyDir').load('crear/loadDir/' + dirid);
     $('#myModal').modal('hide');
-  })
+  });
 
 
   $(".crear-nueva-dir").click(function () {
@@ -128,25 +130,6 @@ $(document).on("click", ".asignar-dir", function (e) {
     }
   });
 
-  $('#ndir').on('click', function () {
-    $('.modal-content').load('crear/nuevadir/loadForm', function () {
-      $('#myModal').modal({
-        show: true,
-        closable: false,
-        transition: 'fade up',
-      });
-    });
-  });
-
-  $('#udir').on('click', function () {
-    $('.modal-content').load('crear/usardir/loadForm', function () {
-      $('#myModal').modal({
-        show: true,
-        closable: false,
-        transition: 'fade up',
-      });
-    });
-  });
 
   // trigger datatable de direcciones en modal
   $("#myModal").on('shown.bs.modal', function () {
@@ -185,7 +168,7 @@ $(document).on("click", ".asignar-dir", function (e) {
       success: after_form_submitted,
       dataType: 'json'
     });
-  })
+  });
 
   $(document).on('click', '#btnCrearFam', function (e) {
     e.preventDefault();
@@ -197,7 +180,7 @@ $(document).on("click", ".asignar-dir", function (e) {
       success: after_form_submitted_f,
       dataType: 'json'
     });
-  })
+  });
 
   $(document).on('click', '.page-link', function (e) {
     e.preventDefault();
@@ -210,3 +193,5 @@ $(document).on("click", ".asignar-dir", function (e) {
       });
     });
   });
+
+})(jQuery); // End of use strict

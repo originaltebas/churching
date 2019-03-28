@@ -11,6 +11,7 @@ class FamiliaForm(FlaskForm):
     """
     Formulario para familias
     """
+    id = HiddenField("id")
     idDir = HiddenField("idDir")
     apellidos_familia = StringField(
                             u'Apellidos de la Familia',

@@ -24,22 +24,16 @@ Churching - Familias
 
     {% if flag_accion == "Listar" %}
     {% include "familias/tabla_familias.html" %}
-    <script>
-      function listarFamilias(e) {
-          $(tblistarFamilias).dataTable({
-            "language": {
-              "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
-              "decimal": ",",
-              "thousands": "."
-            }
-          });
-      }
-      window.addEventListener("load", listarFamilias, false);
-    </script>
+    <script src="{{ url_for('static', filename='js/familias_listar.min.js') }}"></script>
     {% elif flag_accion == "Agregar" %}
     {% include "familias/agregar_familia.html" %}
+    <script src="{{ url_for('static', filename='js/familias_agregar.min.js') }}"></script>
     {% elif flag_accion == "Modificar" %}
-    {% include "familias/editar_familia.html" %}
+    {% include "familias/modificar_familia.html" %}
+    <script src="{{ url_for('static', filename='js/familias_modificar.min.js') }}"></script>
+    {% elif flag_accion == "ListarCompo" %}
+    {% include "familias/cambiar_composicion_listado.html" %}
+    <script src="{{ url_for('static', filename='js/familias_listar.min.js') }}"></script>
     {% endif %}
 
   </div>

@@ -40,15 +40,11 @@
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item text-wrap" href="{{ url_for('familias.ver_familias') }}">
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Gestionar Familia
+          Gestionar Familias
         </a>
-        <a class="collapse-item text-wrap" href="buttons.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('familias.cambiar_composicion') }}">
           <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
-          Modificar Familia o Composici&oacute;n
-        </a>
-        <a class="collapse-item text-wrap" href="cards.html">
-          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Borrar Familia
+          Agregar o quitar integrantes
         </a>
       </div>
     </div>

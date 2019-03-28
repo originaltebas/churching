@@ -1,0 +1,158 @@
+<!-- app/templates/familias/modificar_familia.html -->
+
+{% set nombre = 'Familia' %}
+{% set modo ='Modificar' %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 alert alert-info"> {{modo}} {{nombre}} </h1>
+  <div class="col-12">
+    <form id="familyForm" name="familyForm" class="user" method="POST" role="form" action="">
+      {{ form.csrf_token }}
+      <div class="card shadow">
+        <div class="card-header py-3">Datos Generales</div>
+        <div class="card-body">
+          {{ form.idDir }}
+          {{ form.id }}
+          <div class="form-group">
+            {{ form.apellidos_familia.label(class_="pl-3") }}
+            {{ form.apellidos_familia(class_="form-control form-control-user") }}
+          </div>
+          <div class="form-group">
+            {{ form.descripcion_familia.label(class_="pl-3") }}
+            {{ form.descripcion_familia(class_="form-control form-control-user") }}
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-5">
+              {{ form.telefono_familia.label(class_="pl-3") }}
+              {{ form.telefono_familia(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-sm-7">
+              {{ form.TipoFamilia.label(class_="pl-3") }}
+              {{ form.TipoFamilia(class_="custom-select custom-select-lg") }}
+            </div>
+          </div>
+
+          <div class="form-group row mt-5" id="cardBodyButtons">
+            <div class="col-3"></div>
+            <button type="button" class="btn btn-primary col-2" id="btnModifFam">Guardar Datos</button>
+            <div class="col-2"></div>
+            <button type="button" class="btn btn-danger col-2"
+              onclick="window.location.href='{{ url_for("familias.ver_familias") }}'">Cancelar</button>
+            <div class="col-3"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="card bg-secondary mt-3">
+      <div class="card-header">Direcci&oacute;n Familiar</div>
+      <div class="card-body text-white" id="cardBodyDir">
+        {% if domicilio %}
+        <form id="formDireccion" name="formDireccion" class="user" method="POST" role="form" action="">
+            {{ form.csrf_token }}
+        <div class="form-group row">
+          <div class="col-sm-3">
+            <label class="pl-3" for="tipo_via">Tipo de vía</label>
+            <input class="form-control form-control-user" id="tipo_via" name="tipo_via" readonly="readonly" required=""
+              type="text" value="{{ domicilio.tipo_via }}">
+          </div>
+          <div class="col-sm-6">
+            <label class="pl-3" for="nombre_via">Nombre de vía</label>
+            <input class="form-control form-control-user" id="nombre_via" name="nombre_via" readonly="readonly"
+              required="" type="text" value="{{ domicilio.nombre_via }}">
+          </div>
+          <div class="col-sm-3">
+            <label class="pl-3" for="nro_via">N&uacute;mero de vía</label>
+            <input class="form-control form-control-user" id="nro_via" name="nro_via" readonly="readonly" required=""
+              type="text" value="{{ domicilio.nro_via }}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-3">
+            <label class="pl-3" for="portalescalotros_via">Portal/Esc/Otro</label>
+            <input class="form-control form-control-user" id="portalescalotros_via" name="portalescalotros_via"
+              readonly="readonly" type="text" value="{{ domicilio.portalescalotros_via }}">
+          </div>
+          <div class="col-sm-3">
+            <label class="pl-3" for="piso_nroletra_via">Nro/Letra del Piso</label>
+            <input class="form-control form-control-user" id="piso_nroletra_via" name="piso_nroletra_via"
+              readonly="readonly" type="text" value="{{ domicilio.piso_nroletra_via }}">
+          </div>
+          <div class="col-sm-6">
+            <label class="pl-3" for="ciudad_via">Ciudad</label>
+            <input class="form-control form-control-user" id="ciudad_via" name="ciudad_via" readonly="readonly"
+              required="" type="text" value="{{ domicilio.ciudad_via }}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-2">
+            <label class="pl-3" for="nombre_via">CP</label>
+            <input class="form-control form-control-user" id="cp_via" name="cp_via" readonly="readonly" required=""
+              type="text" value="{{ domicilio.cp_via }}">
+          </div>
+          <div class="col-sm-5">
+            <label class="pl-3" for="provincia_via">Provincia</label>
+            <input class="form-control form-control-user" id="provincia_via" name="provincia_via" readonly="readonly"
+              required="" type="text" value="{{ domicilio.provincia_via }}">
+          </div>
+          <div class="col-sm-5">
+            <label class="pl-3" for="pais_via">Pa&iacute;s</label>
+            <input class="form-control form-control-user" id="pais_via" name="pais_via" readonly="readonly" required=""
+              type="text" value="{{ domicilio.pais_via }}">
+          </div>
+        </div>
+      </form>
+        <div id="rowButtonsDir" class="row text-center">
+          <div class="col-4">
+            <button id="ndir" type="button" class="btn btn-success btn-block" data-toggle="modal"
+              data-target="#myModal">
+              Crear una nueva direcci&oacute;n
+            </button>
+          </div>
+          <div class="col-4">
+            <button id="udir" type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#myModal">
+              Cambiar a otra direcci&oacute;n existente
+            </button>
+          </div>
+          <div class="col-4">
+            <button id="mdira" type="button" class="btn btn-danger btn-block">
+              Modificar la direcci&oacute;n actual
+            </button>
+          </div>
+        </div>
+
+        <div id="rowModButtonsDir" class="row d-none text-center">
+          <div class="col-2"></div>
+          <div class="col-3">
+            <button id="mdiraGuardar" type="button" class="btn btn-success mr-5 btn-block">
+              Guardar Direcci&oacute;n
+            </button>
+          </div>
+          <div class="col-2"></div>
+          <div class="col-3">
+            <button id="mdiraCancelar" type="button" class="btn btn-danger ml-5 btn-block">
+              Cancelar
+            </button>
+          </div>
+          <div class="col-2"></div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- The Modal -->
+    <div tabindex="-1" class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <!-- Modal content-->
+        <div class="modal-content">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!--end container-fluid-->
