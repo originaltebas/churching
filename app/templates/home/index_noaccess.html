@@ -1,0 +1,39 @@
+<!-- app/templates/home/index_noaccess.html -->
+
+<html>
+
+{# incluir cabecera #}
+{% include "home/_header.html" %}
+
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <div class="jumbotron">
+            <h2 class="display-4">Lo sentimos</h2>
+            <p class="lead">Solamente los usuarios administradores y editores pueden acceder al sistema</p>
+            <hr class="my-4">
+            <p>Si crees que deberías tener acceso ponte en contacto en <a
+                    href="emailto:admin@ichamartin.org">admin@ichamartin.org</a></p>
+            <a class="btn btn-primary btn-lg" role="button" href="{{ url_for('auth.logout') }}">Logout</a>
+        </div>
+
+        <!-- Card image -->
+        <div class="view overlay rounded-top">
+            <img src="{{ url_for('static', filename='img/noaccess.jpg') }}" class="img-fluid" alt="No Access">
+            <a href="#">
+                <div class="mask rgba-white-slight"></div>
+            </a>
+        </div>
+    </div>
+
+    {% include "home/_jsinclude_bottom.html" %}
+
+</body>
+
+
+
+
+</html>

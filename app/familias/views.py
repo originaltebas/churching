@@ -317,3 +317,4 @@ def cambiar_composicion_edicion(id):
     Edicion de la composición de la familia
     """
     check_admin()
+

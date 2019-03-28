@@ -13,8 +13,11 @@ from app.models import Usuario
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     """
-    Gestiona los pedidos de registro
     Agrega el usuario a la base de datos
+    -- Actualmente todas las funciones están hechas para administradores
+    -- y solo se puede poner la marca de admin por base de datos
+    -- está creado en el modelo el flag de editor para dar permiso a
+    -- todo excepto a datos de seguimiento de gente por privacidad
     """
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -24,16 +27,20 @@ def register():
                           last_name=form.last_name.data,
                           password=form.password.data)
 
-        # add usuario to the database
-        db.session.add(usuario)
-        db.session.commit()
-        flash(u'Se ha creado correctamente el usuario.', 'user')
+        try:
+            # agregar usuario a la BD
+            db.session.add(usuario)
+            db.session.commit()
+            flash(u'Se ha creado correctamente el usuario.', 'success')
+        except Exception as e:
+            # error
+            flash('Error:', e, 'danger')
 
         # redirect to the login page
         return redirect(url_for('auth.login'))
 
     # load registration template
-    return render_template('auth/register.html', form=form, title=u'Register')
+    return render_template('auth/register.html', form=form)
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -50,19 +57,20 @@ def login():
         usuario = Usuario.query.filter_by(email=form.email.data).first()
         if usuario is not None and usuario.verify_password(form.password.data):
             login_user(usuario)
-            flash('Te has logado correctamente', 'user')
             # redirect to the appropriate dashboard page
             if usuario.is_admin:
-                return redirect(url_for('home.dashboard'))
+                return redirect(url_for('home.dashboard_admin'))
+            elif usuario.is_editor:
+                return redirect(url_for('home.dashboard_editor'))
             else:
-                return redirect(url_for('home.noadmin'))
+                return redirect(url_for('home.noaccess'))
 
         # when login details are incorrect
         else:
-            flash(u'Email o contrase&ntilde;a invalidos.', 'user')
+            flash(u'Email o contraseña invalidos.', 'danger')
 
     # load login template
-    return render_template('auth/login.html', form=form, title=u'Login')
+    return render_template('auth/login.html', form=form)
 
 
 @auth.route('/logout')
@@ -72,7 +80,7 @@ def logout():
     Gestiona los logouts
     """
     logout_user()
-    flash(u'Has salido correctamente.', 'user')
+    flash(u'Has salido correctamente.', 'success')
 
     # redirect to the login page
     return redirect(url_for('auth.login'))

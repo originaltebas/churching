@@ -34,6 +34,9 @@ Churching - Familias
     {% elif flag_accion == "ListarCompo" %}
     {% include "familias/cambiar_composicion_listado.html" %}
     <script src="{{ url_for('static', filename='js/familias_listar.min.js') }}"></script>
+    {% elif flag_accion == "AsignarCompo" %}
+    {% include "familias/cambiar_composicion_asignar.html" %}
+    <script src="{{ url_for('static', filename='js/familias_asignar.min.js') }}"></script>
     {% endif %}
 
   </div>
