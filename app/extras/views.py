@@ -22,7 +22,7 @@ def check_admin():
 
 # SECCION: *****ESTADOS CIVILES*****
 
-@extras.route('/extras/estadosciviles', methods=['GET', 'POST'])
+@extras.route('/extras/estadosciviles', methods=['GET'])
 @login_required
 def ver_estadosciviles():
     """
@@ -38,8 +38,7 @@ def ver_estadosciviles():
 
     return render_template('extras/estadosciviles/base_estadosciviles.html',
                            estadosciviles=query_ecivil,
-                           flag_listar=flag_listar,
-                           title=u"Gestión de Estados Civiles")
+                           flag_listar=flag_listar)
 
 
 @extras.route('/extras/estadosciviles/crear', methods=['GET', 'POST'])
@@ -62,10 +61,10 @@ def crear_estadocivil():
             # add department to the database
             db.session.add(obj_ecivil)
             db.session.commit()
-            flash('Has guardado los datos correctamente.', 'db')
+            flash('Has guardado los datos correctamente.', 'success')
         except Exception as e:
             # in case department name already exists
-            flash('Error:', e)
+            flash('Error:', e, 'danger')
 
         # redirect to departments page
         return redirect(url_for('extras.ver_estadosciviles'))
@@ -73,9 +72,8 @@ def crear_estadocivil():
     # load department template
     return render_template(
                 'extras/estadosciviles/base_estadosciviles.html',
-                action="Crear", add_estadocivil=flag_crear,
-                flag_listar=flag_listar,
-                form=form, title="Crear Estado Civil")
+                add_estadocivil=flag_crear,
+                flag_listar=flag_listar, form=form)
 
 
 @extras.route('/extras/estadosciviles/modif/<int:id>', methods=['GET', 'POST'])
@@ -94,8 +92,11 @@ def modif_estadocivil(id):
     if form.validate_on_submit():
         obj_ecivil.nombre_estado = form.nombre_ec.data
         obj_ecivil.descripcion_estado = form.descripcion_ec.data
-        db.session.commit()
-        flash('Has modificado los datos correctamente.', 'db')
+        try:
+            db.session.commit()
+            flash('Has modificado los datos correctamente', 'success')
+        except Exception as e:
+            flash('Error: ', e, 'danger')
 
         # redirect to the departments page
         return redirect(url_for('extras.ver_estadosciviles'))
@@ -104,14 +105,12 @@ def modif_estadocivil(id):
     form.descripcion_ec.data = obj_ecivil.descripcion_estado
     return render_template(
                 'extras/estadosciviles/base_estadosciviles.html',
-                action="Modificar",
                 add_estadocivil=flag_crear, flag_listar=flag_listar,
-                form=form, estadocivil=obj_ecivil,
-                title="Modificar Estado Civil")
+                form=form, estadocivil=obj_ecivil)
 
 
 @extras.route('/extras/estadosciviles/borrar/<int:id>',
-              methods=['GET', 'POST'])
+              methods=['GET'])
 @login_required
 def borrar_estadocivil(id):
     """
@@ -120,18 +119,18 @@ def borrar_estadocivil(id):
     check_admin()
 
     obj_ecivil = EstadoCivil.query.get_or_404(id)
-    db.session.delete(obj_ecivil)
-    db.session.commit()
-    flash('Has borrado los datos correctamente.', 'db')
+    try:
+        db.session.delete(obj_ecivil)
+        db.session.commit()
+        flash('Has borrado los datos correctamente.', 'success')
+    except Exception as e:
+        flash('Error: ', e, 'danger')
 
     # redirect to the departments page
     return redirect(url_for('extras.ver_estadosciviles'))
 
-    return render_template(title="Borrar Estado Civil")
-
 
 # SECCION: *****TIPOS DE MIEMBROS*****
-
 @extras.route('/extras/tiposmiembros', methods=['GET', 'POST'])
 @login_required
 def ver_tiposmiembros():

@@ -21,9 +21,11 @@
 
     {% if flag_listar %}
       {% include "extras/estadosciviles/tabla_estadosciviles.html" %}
+      <script src="{{ url_for('static', filename='js/extras_listar.min.js') }}"></script>
     {% else %}
       {% include "extras/estadosciviles/agregar_editar_estadocivil.html" %}
     {% endif %}
+
   </div>
   <!-- End of Main Content -->
 
