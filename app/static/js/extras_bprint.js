@@ -33,6 +33,16 @@ function extrasElements(e) {
     });
   }
 
+    // EXTRAS -> Tipos de Familias
+    if ($('#tblistarTiposFamilias').length != 0) {
+      $(tblistarTiposFamilias).dataTable({
+        "language": {
+          "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+          "decimal": ",",
+          "thousands": "."
+        }
+      });
+    }
 
 
 }
