@@ -13,17 +13,12 @@ def homepage():
     """
     Pagina de Inicio / Bienvenida
     """
-    user = current_user
 
     # si no está logado mandar a login
     if not user_logged_in:
         return redirect(url_for('auth.login'))
-    elif user.is_admin:
-        return redirect(url_for('home.dashboard_admin'))
-    elif user.is_editor:
-        return redirect(url_for('home.dashboard_editor'))
     else:
-        return redirect(url_for('home.noaccess'))
+        return redirect(url_for('home.dashboard'))
 
 
 @home.route('/noaccess')
@@ -36,6 +31,23 @@ def noaccess():
     return render_template('home/index_noaccess.html')
 
 
+@home.route('/dashboard')
+@login_required
+def dashboard():
+    """
+    Redirige al dashboard correcto segun rol
+    """
+
+    print("AYUDADDDDDDDDDDDDDD", current_user.get_urole())
+
+    if (current_user.get_urole() == 2):
+        return redirect(url_for('home.dashboard_admin'))
+    elif (current_user.get_urole() == 1):
+        return redirect(url_for('home.dashboard_editor'))
+    else:
+        return redirect(url_for('home.noaccess'))
+
+
 @home.route('/dashboard_admin')
 @login_required
 def dashboard_admin():
@@ -44,8 +56,8 @@ def dashboard_admin():
     Esta es la pagina principal de donde se va a todos lados
     """
     # prevent non-admins from accessing the page
-    if not current_user.is_admin:
-        abort(403)
+    if not current_user.is_admin():
+        return redirect(url_for('home.noaccess'))
 
     return render_template('home/index_admin.html')
 
@@ -58,7 +70,7 @@ def dashboard_editor():
     restringe el acceso a cosas privadas de las personas como el seguimiento
     """
 
-    if not current_user.is_editor:
+    if not current_user.get_urole() == 1:
         abort(403)
 
     return render_template('home/index_editor.html')

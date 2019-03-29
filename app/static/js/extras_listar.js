@@ -9,6 +9,16 @@ function listarExtras(e) {
       }
     });
   }
+
+  if ($('#tblistarTiposMiembros').length != 0) {
+    $(tblistarTiposMiembros).dataTable({
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+        "decimal": ",",
+        "thousands": "."
+      }
+    });
+  }
 }
 
 window.addEventListener("load", listarExtras, false);

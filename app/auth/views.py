@@ -58,12 +58,7 @@ def login():
         if usuario is not None and usuario.verify_password(form.password.data):
             login_user(usuario)
             # redirect to the appropriate dashboard page
-            if usuario.is_admin:
-                return redirect(url_for('home.dashboard_admin'))
-            elif usuario.is_editor:
-                return redirect(url_for('home.dashboard_editor'))
-            else:
-                return redirect(url_for('home.noaccess'))
+            return redirect(url_for('home.dashboard'))
 
         # when login details are incorrect
         else:

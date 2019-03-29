@@ -1,4 +1,4 @@
-<!-- app/templates/home/index.html -->
+<!-- app/templates/extras/base_tiposmiembros.html -->
 
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
@@ -21,6 +21,7 @@
 
     {% if flag_listar %}
       {% include "extras/tiposmiembros/tabla_tiposmiembros.html" %}
+      <script src="{{ url_for('static', filename='js/extras_listar.min.js') }}"></script>
     {% else %}
       {% include "extras/tiposmiembros/agregar_editar_tipomiembro.html" %}
     {% endif %}

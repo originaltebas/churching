@@ -330,6 +330,13 @@ class Rol(db.Model):
         return '<Rol: {}>'.format(self.nombre)
 
 
+ACCESS = {
+    'usuario': 0,
+    'editor': 1,
+    'admin': 2
+}
+
+
 class Usuario(UserMixin, db.Model):
     "tabla de usuarios de la aplicacion -- no tiene relacion con el modelo"
 
@@ -345,8 +352,7 @@ class Usuario(UserMixin, db.Model):
     first_name = db.Column(db.String(60))
     last_name = db.Column(db.String(60))
     password_hash = db.Column(db.String(128))
-    is_admin = db.Column(db.Boolean, default=False)
-    is_editor = db.Column(db.Boolean, default=False)
+    urole = db.Column(db.Integer, default=0)
 
     @property
     def password(self):
@@ -368,6 +374,20 @@ class Usuario(UserMixin, db.Model):
         """
         return check_password_hash(self.password_hash, password)
 
+    def get_urole(self):
+        """
+        Para roles:
+        Por defecto es 0 -> usuario comun
+                       1 -> es editor
+                       2 -> es administrador
+        """
+        return self.urole
+
+    def is_admin(self):
+        return self.urole == ACCESS['admin']
+
+    def allowed(self, access_level):
+        return self.urole >= access_level
 
 # Set up user_loader
 @login_manager.user_loader
