@@ -12,12 +12,12 @@ from app import db
 from app.models import EstadoCivil, TipoMiembro, RolFamiliar, TipoFamilia
 
 
-def check_admin():
+def check_edit_or_admin():
     """
     Prevent non-admins from accessing the page
     """
-    if not current_user.is_admin:
-        abort(403)
+    if not current_user.get_urole()>=1:
+        return redirect(url_for("home.hub"))
 
 
 # SECCION: *****ESTADOS CIVILES*****
@@ -29,7 +29,7 @@ def ver_estadosciviles():
     Ver una lista de todos los estados civiles
     con la opción de modificar, borrar o agregar uno nuevo
     """
-    check_admin()
+    check_edit_or_admin()
 
     # de arranque carga el listado
     flag_listar = True
@@ -47,7 +47,7 @@ def crear_estadocivil():
     """
     Agregar un Estado Civil a la Base de Datos
     """
-    check_admin()
+    check_edit_or_admin()
 
     # Variable para el template. Para decirle si es Alta o Modif
     flag_crear = True
@@ -72,8 +72,7 @@ def crear_estadocivil():
     # load department template
     return render_template(
                 'extras/estadosciviles/base_estadosciviles.html',
-                add_estadocivil=flag_crear,
-                flag_listar=flag_listar, form=form)
+                add_estadocivil=flag_crear, flag_listar=flag_listar, form=form)
 
 
 @extras.route('/extras/estadosciviles/modif/<int:id>', methods=['GET', 'POST'])
@@ -82,7 +81,7 @@ def modif_estadocivil(id):
     """
     Modificar un estado civil
     """
-    check_admin()
+    check_edit_or_admin()
 
     flag_crear = False
     flag_listar = False
@@ -116,7 +115,7 @@ def borrar_estadocivil(id):
     """
     Borrar un estado civil
     """
-    check_admin()
+    check_edit_or_admin()
 
     obj_ecivil = EstadoCivil.query.get_or_404(id)
     try:
@@ -131,14 +130,14 @@ def borrar_estadocivil(id):
 
 
 # SECCION: *****TIPOS DE MIEMBROS*****
-@extras.route('/extras/tiposmiembros', methods=['GET', 'POST'])
+@extras.route('/extras/tiposmiembros', methods=['GET'])
 @login_required
 def ver_tiposmiembros():
     """
     Ver una lista de todos los tipos de miembros de la iglesia
     con la opción de modificar, borrar o agregar uno nuevo
     """
-    check_admin()
+    check_edit_or_admin()
 
     # de arranque carga el listado
     flag_listar = True
@@ -147,8 +146,7 @@ def ver_tiposmiembros():
 
     return render_template('extras/tiposmiembros/base_tiposmiembros.html',
                            tiposmiembros=query_tmiembro,
-                           flag_listar=flag_listar,
-                           title=u"Gestión de Tipos de Miembros")
+                           flag_listar=flag_listar)
 
 
 @extras.route('/extras/tiposmiembros/crear', methods=['GET', 'POST'])
@@ -157,7 +155,7 @@ def crear_tipomiembro():
     """
     Agregar un Tipo de Miembro a la Base de Datos
     """
-    check_admin()
+    check_edit_or_admin()
 
     # Variable para el template. Para decirle si es Alta o Modif
     flag_crear = True
@@ -172,10 +170,10 @@ def crear_tipomiembro():
             # add department to the database
             db.session.add(obj_tmiembro)
             db.session.commit()
-            flash('Has guardado los datos correctamente.', 'db')
+            flash('Has guardado los datos correctamente.', 'success')
         except Exception as e:
             # in case department name already exists
-            flash('Error:', e)
+            flash('Error:', e, 'danger')
 
         # redirect to departments page
         return redirect(url_for('extras.ver_tiposmiembros'))
@@ -183,9 +181,7 @@ def crear_tipomiembro():
     # load department template
     return render_template(
                 'extras/tiposmiembros/base_tiposmiembros.html',
-                action="Crear", add_tipomiembro=flag_crear,
-                flag_listar=flag_listar,
-                form=form, title="Crear Tipo de Miembro")
+                add_tipomiembro=flag_crear, flag_listar=flag_listar, form=form)
 
 
 @extras.route('/extras/tiposmiembros/modif/<int:id>', methods=['GET', 'POST'])
@@ -194,7 +190,7 @@ def modif_tipomiembro(id):
     """
     Modificar un tipo de miembro
     """
-    check_admin()
+    check_edit_or_admin()
 
     flag_crear = False
     flag_listar = False
@@ -204,8 +200,11 @@ def modif_tipomiembro(id):
     if form.validate_on_submit():
         obj_tmiembro.nombre_tipomiembro = form.nombre_tm.data
         obj_tmiembro.descripcion_tipomiembro = form.descripcion_tm.data
-        db.session.commit()
-        flash('Has modificado los datos correctamente.', 'db')
+        try:
+            db.session.commit()
+            flash('Has modificado los datos correctamente.', 'success')
+        except Exception as e:
+            flash('Error: ', e, 'danger')
 
         # redirect to the departments page
         return redirect(url_for('extras.ver_tiposmiembros'))
@@ -214,29 +213,28 @@ def modif_tipomiembro(id):
     form.descripcion_tm.data = obj_tmiembro.descripcion_tipomiembro
     return render_template(
                 'extras/tiposmiembros/base_tiposmiembros.html',
-                action="Modificar",
                 add_tipomiembro=flag_crear, flag_listar=flag_listar,
-                form=form, tipomiembro=obj_tmiembro,
-                title="Modificar Tipo de Miembro")
+                form=form, tipomiembro=obj_tmiembro)
 
 
-@extras.route('/extras/tiposmiembros/borrar/<int:id>', methods=['GET', 'POST'])
+@extras.route('/extras/tiposmiembros/borrar/<int:id>', methods=['GET'])
 @login_required
 def borrar_tipomiembro(id):
     """
     Borrar un tipo de miembros
     """
-    check_admin()
+    check_edit_or_admin()
 
     obj_tmiembro = TipoMiembro.query.get_or_404(id)
     db.session.delete(obj_tmiembro)
-    db.session.commit()
-    flash('Has borrado los datos correctamente.', 'db')
 
-    # redirect to the departments page
+    try:
+        db.session.commit()
+        flash('Has borrado los datos correctamente.', 'success')
+    except Exception as e:
+        flash('Error: ', e, 'danger')
+
     return redirect(url_for('extras.ver_tiposmiembros'))
-
-    return render_template(title="Borrar Tipo de Miembro")
 
 
 # SECCION: ***** ROLES FAMILIARES *****
