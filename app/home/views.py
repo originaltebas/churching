@@ -3,7 +3,7 @@
 
 
 from flask_login import current_user, login_required, user_logged_in
-from flask import redirect, url_for, render_template, abort
+from flask import redirect, url_for, render_template
 
 from . import home
 
@@ -18,7 +18,7 @@ def homepage():
     if not user_logged_in:
         return redirect(url_for('auth.login'))
     else:
-        return redirect(url_for('home.dashboard'))
+        return redirect(url_for('home.hub'))
 
 
 @home.route('/noaccess')
@@ -31,14 +31,12 @@ def noaccess():
     return render_template('home/index_noaccess.html')
 
 
-@home.route('/dashboard')
+@home.route('/hub')
 @login_required
-def dashboard():
+def hub():
     """
     Redirige al dashboard correcto segun rol
     """
-
-    print("AYUDADDDDDDDDDDDDDD", current_user.get_urole())
 
     if (current_user.get_urole() == 2):
         return redirect(url_for('home.dashboard_admin'))
@@ -71,6 +69,6 @@ def dashboard_editor():
     """
 
     if not current_user.get_urole() == 1:
-        abort(403)
+        return redirect(url_for('home.noaccess'))
 
     return render_template('home/index_editor.html')

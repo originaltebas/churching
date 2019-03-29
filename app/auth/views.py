@@ -58,7 +58,7 @@ def login():
         if usuario is not None and usuario.verify_password(form.password.data):
             login_user(usuario)
             # redirect to the appropriate dashboard page
-            return redirect(url_for('home.dashboard'))
+            return redirect(url_for('home.hub'))
 
         # when login details are incorrect
         else:
