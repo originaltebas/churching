@@ -1,5 +1,6 @@
-function listarExtras(e) {
+function extrasElements(e) {
 
+  // EXTRAS -> Estados Civiles
   if ($('#tblistarEstadosCiviles').length != 0) {
     $(tblistarEstadosCiviles).dataTable({
       "language": {
@@ -10,6 +11,7 @@ function listarExtras(e) {
     });
   }
 
+  // EXTRAS -> Tipos de Miembros
   if ($('#tblistarTiposMiembros').length != 0) {
     $(tblistarTiposMiembros).dataTable({
       "language": {
@@ -21,4 +23,4 @@ function listarExtras(e) {
   }
 }
 
-window.addEventListener("load", listarExtras, false);
+window.addEventListener("load", extrasElements, false);

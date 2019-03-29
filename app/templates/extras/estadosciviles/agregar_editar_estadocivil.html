@@ -1,5 +1,10 @@
 <!-- app/templates/extras/estadosciviles/agregar_editar_estadocivil.html -->
 
+{% if current_user.is_authenticated %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
+
+
 {% set nombre = "Estado Civil" %}
 {% if add_estadocivil %}
 {% set modo = 'Agregar' %}
@@ -11,10 +16,13 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
-  <h1 class="h3 mb-2 alert alert-info"> {{modo}} {{nombre}} </h1>
+  <h1 class="h3 my-3 alert alert-primary"> {{modo}} {{nombre}} </h1>
   <div class="col-12">
     <div class="card shadow">
-      <div class="card-header py-3">Datos</div>
+        <div class="card-header py-3">
+            <h6 class="font-weight-bold text-primary">
+                Datos
+        </div>
       <div class="card-body">
         <form class="user" method="POST" role="form" action="">
           {{ form.csrf_token }}
@@ -28,10 +36,12 @@
           </div>
           <div class="row">
             <div class="col-2"></div>
-            <div class="col-4"><input type="submit" id="submit" name="submit" class="btn btn-primary btn-user btn-block"
-                value="Guardar" /></div>
-            <div class="col-4"><input type="button" class="btn btn-danger btn-user btn-block"
-                  value="Cancelar" onclick="location.href='{{ url_for("extras.ver_estadosciviles")}}'" /></div>
+            <div class="col-4">
+              <input type="submit" id="submit" name="submit" class="font-weight-bold btn btn-primary btn-block btn-lg" value="Guardar" />
+            </div>
+            <div class="col-4">
+              <a class="font-weight-bold btn btn-danger btn-lg btn-block" href="{{ url_for("extras.ver_estadosciviles")}}">Cancelar</a>
+            </div>
             <div class="col-2"></div>
           </div>
         </form>
@@ -39,3 +49,6 @@
     </div>
   </div>
 </div>
+
+{% endif %}
+{% endif %}
