@@ -1,7 +1,7 @@
 # app/extras/views.py
 # coding: utf-8
 
-from flask import abort, flash
+from flask import flash
 from flask import redirect, render_template, url_for
 from flask_login import current_user, login_required
 
@@ -14,9 +14,9 @@ from app.models import EstadoCivil, TipoMiembro, RolFamiliar, TipoFamilia
 
 def check_edit_or_admin():
     """
-    Prevent non-admins from accessing the page
+    Si no es admin o editor lo manda al inicio
     """
-    if not current_user.get_urole()>=1:
+    if not current_user.get_urole() >= 1:
         return redirect(url_for("home.hub"))
 
 
@@ -58,18 +58,14 @@ def crear_estadocivil():
         obj_ecivil = EstadoCivil(nombre_estado=form.nombre_ec.data,
                                  descripcion_estado=form.descripcion_ec.data)
         try:
-            # add department to the database
             db.session.add(obj_ecivil)
             db.session.commit()
-            flash('Has guardado los datos correctamente.', 'success')
+            flash('Has guardado los datos correctamente', 'success')
         except Exception as e:
-            # in case department name already exists
             flash('Error:', e, 'danger')
 
-        # redirect to departments page
         return redirect(url_for('extras.ver_estadosciviles'))
 
-    # load department template
     return render_template(
                 'extras/estadosciviles/base_estadosciviles.html',
                 add_estadocivil=flag_crear, flag_listar=flag_listar, form=form)
@@ -97,7 +93,6 @@ def modif_estadocivil(id):
         except Exception as e:
             flash('Error: ', e, 'danger')
 
-        # redirect to the departments page
         return redirect(url_for('extras.ver_estadosciviles'))
 
     form.nombre_ec.data = obj_ecivil.nombre_estado
@@ -121,11 +116,10 @@ def borrar_estadocivil(id):
     try:
         db.session.delete(obj_ecivil)
         db.session.commit()
-        flash('Has borrado los datos correctamente.', 'success')
+        flash('Has borrado los datos correctamente', 'success')
     except Exception as e:
         flash('Error: ', e, 'danger')
 
-    # redirect to the departments page
     return redirect(url_for('extras.ver_estadosciviles'))
 
 
@@ -167,18 +161,14 @@ def crear_tipomiembro():
                             nombre_tipomiembro=form.nombre_tm.data,
                             descripcion_tipomiembro=form.descripcion_tm.data)
         try:
-            # add department to the database
             db.session.add(obj_tmiembro)
             db.session.commit()
-            flash('Has guardado los datos correctamente.', 'success')
+            flash('Has guardado los datos correctamente', 'success')
         except Exception as e:
-            # in case department name already exists
             flash('Error:', e, 'danger')
 
-        # redirect to departments page
         return redirect(url_for('extras.ver_tiposmiembros'))
 
-    # load department template
     return render_template(
                 'extras/tiposmiembros/base_tiposmiembros.html',
                 add_tipomiembro=flag_crear, flag_listar=flag_listar, form=form)
@@ -202,11 +192,10 @@ def modif_tipomiembro(id):
         obj_tmiembro.descripcion_tipomiembro = form.descripcion_tm.data
         try:
             db.session.commit()
-            flash('Has modificado los datos correctamente.', 'success')
+            flash('Has modificado los datos correctamente', 'success')
         except Exception as e:
             flash('Error: ', e, 'danger')
 
-        # redirect to the departments page
         return redirect(url_for('extras.ver_tiposmiembros'))
 
     form.nombre_tm.data = obj_tmiembro.nombre_tipomiembro
@@ -230,7 +219,7 @@ def borrar_tipomiembro(id):
 
     try:
         db.session.commit()
-        flash('Has borrado los datos correctamente.', 'success')
+        flash('Has borrado los datos correctamente', 'success')
     except Exception as e:
         flash('Error: ', e, 'danger')
 
@@ -239,14 +228,14 @@ def borrar_tipomiembro(id):
 
 # SECCION: ***** ROLES FAMILIARES *****
 
-@extras.route('/extras/rolesfamiliares', methods=['GET', 'POST'])
+@extras.route('/extras/rolesfamiliares', methods=['GET'])
 @login_required
 def ver_rolesfamiliares():
     """
     Ver una lista de todos los roles familiares de la iglesia
     con la opción de modificar, borrar o agregar uno nuevo
     """
-    check_admin()
+    check_edit_or_admin()
 
     # de arranque carga el listado
     flag_listar = True
@@ -255,8 +244,7 @@ def ver_rolesfamiliares():
 
     return render_template('extras/rolesfamiliares/base_rolesfamiliares.html',
                            rolesfamiliares=query_rfamiliar,
-                           flag_listar=flag_listar,
-                           title=u"Gestión de Roles Familiares")
+                           flag_listar=flag_listar)
 
 
 @extras.route('/extras/rolesfamiliares/crear', methods=['GET', 'POST'])
@@ -265,7 +253,7 @@ def crear_rolfamiliar():
     """
     Agregar un Rol Familiar a la Base de Datos
     """
-    check_admin()
+    check_edit_or_admin()
 
     # Variable para el template. Para decirle si es Alta o Modif
     flag_crear = True
@@ -277,23 +265,18 @@ def crear_rolfamiliar():
                             nombre_rolfam=form.nombre_rf.data,
                             descripcion_rolfam=form.descripcion_rf.data)
         try:
-            # add department to the database
             db.session.add(obj_rfamiliar)
             db.session.commit()
-            flash('Has guardado los datos correctamente.', 'db')
+            flash('Has guardado los datos correctamente', 'success')
         except Exception as e:
-            # in case department name already exists
-            flash('Error:', e)
+            flash('Error:', e, 'danger')
 
-        # redirect to departments page
         return redirect(url_for('extras.ver_rolesfamiliares'))
 
-    # load department template
     return render_template(
                 'extras/rolesfamiliares/base_rolesfamiliares.html',
-                action="Crear", add_rolfamiliar=flag_crear,
-                flag_listar=flag_listar,
-                form=form, title="Crear Rol Familiar")
+                add_rolfamiliar=flag_crear, flag_listar=flag_listar,
+                form=form)
 
 
 @extras.route('/extras/rolesfamiliares/modif/<int:id>',
@@ -303,7 +286,7 @@ def modif_rolfamiliar(id):
     """
     Modificar un rol familiar
     """
-    check_admin()
+    check_edit_or_admin()
 
     flag_crear = False
     flag_listar = False
@@ -313,52 +296,52 @@ def modif_rolfamiliar(id):
     if form.validate_on_submit():
         obj_rfamiliar.nombre_rolfam = form.nombre_rf.data
         obj_rfamiliar.descripcion_rolfam = form.descripcion_rf.data
-        db.session.commit()
-        flash('Has modificado los datos correctamente.', 'db')
+        try:
+            db.session.commit()
+            flash('Has modificado los datos correctamente', 'success')
+        except Exception as e:
+            flash('Error: ', e, 'danger')
 
-        # redirect to the departments page
         return redirect(url_for('extras.ver_rolesfamiliares'))
 
     form.nombre_rf.data = obj_rfamiliar.nombre_rolfam
     form.descripcion_rf.data = obj_rfamiliar.descripcion_rolfam
     return render_template(
                 'extras/rolesfamiliares/base_rolesfamiliares.html',
-                action="Modificar",
                 add_rolfamiliar=flag_crear, flag_listar=flag_listar,
-                form=form, rolfamiliar=obj_rfamiliar,
-                title="Modificar Rol Familiar")
+                form=form, rolfamiliar=obj_rfamiliar)
 
 
 @extras.route('/extras/rolesfamiliares/borrar/<int:id>',
-              methods=['GET', 'POST'])
+              methods=['GET'])
 @login_required
 def borrar_rolfamiliar(id):
     """
     Borrar un rol familiar
     """
-    check_admin()
+    check_edit_or_admin()
 
     obj_rfamiliar = RolFamiliar.query.get_or_404(id)
     db.session.delete(obj_rfamiliar)
-    db.session.commit()
-    flash('Has borrado los datos correctamente.', 'db')
+    try:
+        db.session.commit()
+        flash('Has borrado los datos correctamente', 'success')
+    except Exception as e:
+        flash('Error:', e, 'danger')
 
-    # redirect to the departments page
     return redirect(url_for('extras.ver_rolesfamiliares'))
-
-    return render_template(title="Borrar Rol Familiar")
 
 
 # SECCION: ***** TIPOS DE FAMILIA *****
 
-@extras.route('/extras/tiposfamilias', methods=['GET', 'POST'])
+@extras.route('/extras/tiposfamilias', methods=['GET'])
 @login_required
 def ver_tiposfamilias():
     """
     Ver una lista de todos los tipos de familias de la iglesia
     con la opción de modificar, borrar o agregar uno nuevo
     """
-    check_admin()
+    check_edit_or_admin()
 
     # de arranque carga el listado
     flag_listar = True
@@ -367,8 +350,7 @@ def ver_tiposfamilias():
 
     return render_template('extras/tiposfamilias/base_tiposfamilias.html',
                            tiposfamilias=query_tfamilia,
-                           flag_listar=flag_listar,
-                           title=u"Gestión de Tipos de Familias")
+                           flag_listar=flag_listar)
 
 
 @extras.route('/extras/tiposfamilias/crear', methods=['GET', 'POST'])
@@ -377,7 +359,7 @@ def crear_tipofamilia():
     """
     Agregar un Tipo de Familia a la Base de Datos
     """
-    check_admin()
+    check_edit_or_admin()
 
     # Variable para el template. Para decirle si es Alta o Modif
     flag_crear = True
@@ -389,23 +371,18 @@ def crear_tipofamilia():
                             tipo_familia=form.nombre_tf.data,
                             descripcion_tipo_familia=form.descripcion_tf.data)
         try:
-            # add department to the database
             db.session.add(obj_tfamilia)
             db.session.commit()
-            flash('Has guardado los datos correctamente.', 'db')
+            flash('Has guardado los datos correctamente', 'success')
         except Exception as e:
-            # in case department name already exists
-            flash('Error:', e)
+            flash('Error: ', e, 'danger')
 
-        # redirect to departments page
         return redirect(url_for('extras.ver_tiposfamilias'))
 
-    # load department template
     return render_template(
                 'extras/tiposfamilias/base_tiposfamilias.html',
-                action="Crear", add_tipofamilia=flag_crear,
-                flag_listar=flag_listar,
-                form=form, title="Crear Tipo de Familia")
+                add_tipofamilia=flag_crear, flag_listar=flag_listar,
+                form=form)
 
 
 @extras.route('/extras/tiposfamilias/modif/<int:id>',
@@ -415,7 +392,7 @@ def modif_tipofamilia(id):
     """
     Modificar un Tipo de Familia
     """
-    check_admin()
+    check_edit_or_admin()
 
     flag_crear = False
     flag_listar = False
@@ -425,37 +402,37 @@ def modif_tipofamilia(id):
     if form.validate_on_submit():
         obj_tfamilia.tipo_familia = form.nombre_tf.data
         obj_tfamilia.descripcion_tipo_familia = form.descripcion_tf.data
-        db.session.commit()
-        flash('Has modificado los datos correctamente.', 'db')
+        try:
+            db.session.commit()
+            flash('Has modificado los datos correctamente', 'success')
+        except Exception as e:
+            flash('Error: ', e, 'danger')
 
-        # redirect to the departments page
         return redirect(url_for('extras.ver_tiposfamilias'))
 
     form.nombre_tf.data = obj_tfamilia.tipo_familia
     form.descripcion_tf.data = obj_tfamilia.descripcion_tipo_familia
     return render_template(
                 'extras/tiposfamilias/base_tiposfamilias.html',
-                action="Modificar",
                 add_tipofamilia=flag_crear, flag_listar=flag_listar,
-                form=form, tipofamilia=obj_tfamilia,
-                title="Modificar Tipo de Familia")
+                form=form, tipofamilia=obj_tfamilia)
 
 
 @extras.route('/extras/tiposfamilias/borrar/<int:id>',
-              methods=['GET', 'POST'])
+              methods=['GET'])
 @login_required
 def borrar_tipofamilia(id):
     """
     Borrar un tipo de familia
     """
-    check_admin()
+    check_edit_or_admin()
 
     obj_tfamilia = TipoFamilia.query.get_or_404(id)
     db.session.delete(obj_tfamilia)
-    db.session.commit()
-    flash('Has borrado los datos correctamente.', 'db')
+    try:
+        db.session.commit()
+        flash('Has borrado los datos correctamente', 'success')
+    except Exception as e:
+        flash('Error: ', e, 'danger')
 
-    # redirect to the departments page
     return redirect(url_for('extras.ver_tiposfamilias'))
-
-    return render_template(title="Borrar Tipo de Familia")

@@ -1,4 +1,4 @@
-<!-- app/templates/home/index.html -->
+<!-- app/templates/extras/rolesfamiliares/base_rolesfamiliaress.html -->
 
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
@@ -7,7 +7,8 @@
 
 {% block body %}
 {% if current_user.is_authenticated %}
-{% if current_user.is_admin %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
 
 {% include "home/_sidebar.html" %}
 
@@ -21,6 +22,7 @@
 
     {% if flag_listar %}
       {% include "extras/rolesfamiliares/tabla_rolesfamiliares.html" %}
+      <script src="{{ url_for('static', filename='js/extras_bprint.min.js') }}"></script>
     {% else %}
       {% include "extras/rolesfamiliares/agregar_editar_rolfamiliar.html" %}
     {% endif %}
