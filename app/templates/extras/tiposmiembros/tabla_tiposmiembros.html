@@ -4,39 +4,40 @@
 {# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
 {% if current_user.get_urole() >= 1 %}
 
+{% set nombre = 'Tipo de Miembro' %}
+{% set nombres = 'Tipos de Miembros' %}
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <h1 class="h3 my-3 alert alert-primary"> Tipos de Miembros </h1>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
-    {% if messages %}
+        <!-- Page Heading -->
+        <h1 class="h3 my-3 alert alert-primary"> {{nombres}} </h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+        {% if messages %}
         {% for category, message in messages %}
         <div class="alert alert-{{ category }} alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-        <!-- <strong>Title</strong> -->
-        {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <!-- <strong>Title</strong> --> {{ message }}
         </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="font-weight-bold text-primary">
-                        Puedes crear, modificar y/o borrar "Tipos de Miembros" que
-                        posteriormente se asociar&aacute;n a miembros de la iglesia
-            </h6>
-        </div>
-        {% if tiposmiembros %}
-        <div class="card-body">
-                <div class="text-right my-2">
-                        <a href="{{url_for("extras.crear_tipomiembro")}}" class="btn btn-primary btn-icon-split">
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="card shadow mb-4">
+                <div class="card-body">
+                        <h5 class="card-title">
+                            Puedes crear, modificar y/o borrar {{nombres}}. Ten en cuenta que no puedes borrar un {{nombre}} que tenga personas vinculadas
+                        </h5>
+
+                {% if tiposmiembros %}
+
+                    <div class="text-right mu-2 mb-4">
+                            <a href="{{url_for("extras.crear_tipomiembro")}}" class="btn btn-primary btn-icon-split">
                             <span class="icon text-white-50">
                                 <i class="fa fa-plus centered"></i>
                             </span>
-                            <span class="text">Crear Tipo de Miembro</span>
+                            <span class="text">Crear {{nombre}}</span>
                         </a>
                     </div>
             <div class="table-responsive">

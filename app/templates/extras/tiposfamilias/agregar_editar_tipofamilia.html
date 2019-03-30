@@ -19,10 +19,9 @@
   <h1 class="h3 my-3 alert alert-primary"> {{modo}} {{nombre}} </h1>
   <div class="col-12">
     <div class="card shadow">
-      <div class="card-header py-3">
-        <h6 class="font-weight-bold text-primary">
+      <h5 class="card-header py-3">
           Datos
-      </div>
+        </h5>
       <div class="card-body">
         <form class="user" method="POST" role="form" action="">
           {{ form.csrf_token }}
@@ -50,6 +49,7 @@
 
       </div>
     </div>
-    <div class="col-1"></div>
-    {% endif %}
-    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endif %}

@@ -4,11 +4,15 @@
 {# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
 {% if current_user.get_urole() >= 1 %}
 
+
+{% set nombre = "Estado Civil" %}
+{% set nombres = "Estados Civiles" %}
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 my-3 alert alert-primary"> Estados Civiles </h1>
+    <h1 class="h3 my-3 alert alert-primary"> {{nombres}} </h1>
     {% with messages = get_flashed_messages(with_categories=true) %}
     <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
     {% if messages %}
@@ -22,20 +26,19 @@
     {% endif %}
     {% endwith %}
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="font-weight-bold text-primary">
-                Puedes crear, modificar y/o borrar "Estados Civiles" que
-                posteriormente se asociar&aacute;n a miembros de la iglesia
-            </h6>
-        </div>
-        {% if estadosciviles %}
-        <div class="card-body">
-            <div class="text-right my-2">
+            <div class="card-body">
+                    <h5 class="card-title">
+                        Puedes crear, modificar y/o borrar {{nombres}}. Ten en cuenta que no puedes borrar un {{nombre}} que tenga personas vinculadas
+                    </h5>
+
+            {% if estadosciviles %}
+
+                <div class="text-right mu-2 mb-4">
                 <a href="{{url_for("extras.crear_estadocivil")}}" class="btn btn-primary btn-icon-split">
                     <span class="icon text-white-50">
                         <i class="fa fa-plus centered"></i>
                     </span>
-                    <span class="text">Crear Estado Civil</span>
+                    <span class="text">Crear {{nombre}}</span>
                 </a>
             </div>
               <div class="table-responsive">
@@ -79,15 +82,14 @@
                     </tbody>
                 </table>
             </div>
+            {% else %}
+            <div class="text-center">
+                <h3> No se han agregado datos </h3>
+                <hr class="intro-divider">
+            </div>
+            {% endif %}
         </div>
     </div>
-    {% else %}
-    <div class="text-center">
-        <h3> No se han agregado Estados Civiles. </h3>
-        <hr class="intro-divider">
-    </div>
-    {% endif %}
-
 </div>
 <!-- /.container-fluid -->
 

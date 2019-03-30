@@ -246,7 +246,10 @@ th {
 
 label {
   display: inline-block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
+  font-size: 1.2rem;
+  padding-left: 1rem;
+  font-weight: 600;
 }
 
 button {
@@ -12337,12 +12340,12 @@ a:focus {
   text-align: center;
   padding: 0 1rem;
   font-weight: 800;
-  font-size: 0.65rem;
+  font-size: 0.8rem;
 }
 
 @media (min-width: 768px) {
   .sidebar {
-    width: 14rem !important;
+    width: 20rem !important;
   }
 
   .sidebar .nav-item .collapse {
@@ -12376,16 +12379,16 @@ a:focus {
     width: 100%;
     text-align: left;
     padding: 1rem;
-    width: 14rem;
+    width: 20rem;
   }
 
   .sidebar .nav-item .nav-link i {
-    font-size: 0.85rem;
+    font-size: 1rem;
     margin-right: 0.25rem;
   }
 
   .sidebar .nav-item .nav-link span {
-    font-size: 0.85rem;
+    font-size: 1rem;
     display: inline;
   }
 
@@ -12462,7 +12465,12 @@ a:focus {
   }
 
   .sidebar.toggled .nav-item .nav-link span {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
+    display: block;
+  }
+
+  .sidebar.toggled .sidebar-heading {
+    font-size: 0.6rem;
     display: block;
   }
 
@@ -12771,7 +12779,7 @@ form.user .custom-checkbox.small label {
 }
 
 form.user .form-control-user {
-  font-size: 0.8rem;
+  font-size: 1.2rem;
   border-radius: 10rem;
   padding: 1.5rem 1rem;
 }

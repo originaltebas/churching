@@ -1,4 +1,4 @@
-<!-- app/templates/home/index.html -->
+<!-- app/templates/roles/base_roles.html -->
 
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
@@ -7,15 +7,16 @@
 {% if flag_tiporol=='R' %}
   Churching - Roles Familiares
 {% elif flag_tiporol=='M' %}
-  Churching - Roles Familiares
+  Churching - Ministarios
 {% elif flag_tiporol=='C' %}
-  Churching - Roles Familiares
+  Churching - Clases
 {% endif %}
 {% endblock %}
 
 {% block body %}
 {% if current_user.is_authenticated %}
-{% if current_user.is_admin %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
 
 {% include "home/_sidebar.html" %}
 
@@ -29,6 +30,8 @@
 
     {% if flag_listar %}
       {% include "roles/tabla_roles.html" %}
+      <script src="{{ url_for('static', filename='js/roles_bprint.min.js') }}"></script>
+
     {% else %}
       {% include "roles/agregar_editar_rol.html" %}
     {% endif %}
