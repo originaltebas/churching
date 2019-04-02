@@ -3,6 +3,7 @@
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
+
 {% block title %}
 {% if flag_tiporol=='R' %}
   Churching - Roles Familiares
@@ -31,7 +32,6 @@
     {% if flag_listar %}
       {% include "roles/tabla_roles.html" %}
       <script src="{{ url_for('static', filename='js/roles_bprint.min.js') }}"></script>
-
     {% else %}
       {% include "roles/agregar_editar_rol.html" %}
     {% endif %}

@@ -1,0 +1,131 @@
+<!-- app/templates/ggcc/modificar_gc.html -->
+
+{% if current_user.is_authenticated %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
+
+{%     set nombre = 'Grupo Casero' %}
+{%     set nombres = 'Grupos Caseros' %}
+{%     set modo = 'Modificar' %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 class="h3 my-3 alert alert-primary"> {{modo}} {{nombre}} </h1>
+  <div class="col-12">
+    <div class="card shadow">
+      <h5 class="card-header py-3">
+        Datos Generales
+      </h5>
+      <div class="card-body">
+        <form id="tbModificarGC" class="user" method="POST" role="form" action="">
+          {{ form_gc.csrf_token }}
+          {{ form_gc.id_direccion }}
+          {{ form_gc.id }}
+          <div class="form-group">
+            {{ form_gc.nombre_grupo.label(class_="pl-3") }}
+            {{ form_gc.nombre_grupo(class_="form-control form-control-user") }}
+          </div>
+          <div class="form-group">
+            {{ form_gc.descripcion_grupo.label(class_="pl-3") }}
+            {{ form_gc.descripcion_grupo(class_="form-control form-control-user") }}
+          </div>
+
+
+          <div class="form-group row d-none mt-5" id="cardBodyButtons">
+            <div class="col-3"></div>
+            <a class="btn btn-primary col-2 text-white font-weight-bold" id="btnModificarGC">Guardar {{nombre}}</a>
+            <div class="col-2"></div>
+            <a class="btn btn-danger col-2 text-white font-weight-bold"
+              href='{{ url_for("ggcc.ver_ggcc") }}'>Cancelar</a>
+            <div class="col-3"></div>
+          </div>
+
+      </div>
+    </div>
+    </form>
+
+    <div class="card s mt-3">
+      <h5 class="card-header">Direcci&oacute;n Familiar</h5>
+      <div class="card-body" id="cardBodyDir">
+        <div class="form_dir-group row">
+          <div class="col-sm-3">
+            {{ form_dir.tipo_via.label(class_="pl-3") }}
+            {{ form_dir.tipo_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+          <div class="col-sm-6">
+            {{ form_dir.nombre_via.label(class_="pl-3") }}
+            {{ form_dir.nombre_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+          <div class="col-sm-3">
+            {{ form_dir.nro_via.label(class_="pl-3") }}
+            {{ form_dir.nro_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-3">
+            {{ form_dir.portalescalotros_via.label(class_="pl-3") }}
+            {{ form_dir.portalescalotros_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+          <div class="col-sm-3">
+            {{ form_dir.piso_nroletra_via.label(class_="pl-3") }}
+            {{ form_dir.piso_nroletra_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+          <div class="col-sm-6">
+            {{ form_dir.ciudad_via.label(class_="pl-3") }}
+            {{ form_dir.ciudad_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-2">
+            {{ form_dir.cp_via.label(class_="pl-3") }}
+            {{ form_dir.cp_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+          <div class="col-sm-5">
+            {{ form_dir.provincia_via.label(class_="pl-3") }}
+            {{ form_dir.provincia_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+          <div class="col-sm-5">
+            {{ form_dir.pais_via.label(class_="pl-3") }}
+            {{ form_dir.pais_via(class_="form-control form-control-user", readonly=true) }}
+          </div>
+        </div>
+
+        <div class="row text-center">
+          <div class="col-4">
+            <a id="cambiarDireccion" class="btn btn-block btn-warning mr-5 text-white font-weight-bold" data-toggle="modal"
+            data-target="#myModal">
+            Modificar Direcci&oacute;n actual
+            </a>
+          </div>
+          <div class="col-4">
+            <a id="nuevaDireccion" class="btn btn-block btn-success mr-5 text-white font-weight-bold" data-toggle="modal"
+              data-target="#myModal">
+              Crear Nueva Direcci&oacute;n
+            </a>
+            </div>
+            <div class="col-4">
+            <a id="usarDireccion" class="btn btn-block btn-info mr-5 text-white font-weight-bold" data-toggle="modal"
+              data-target="#myModal">
+              Usar otra Direcci&oacute;n existente
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- The Modal -->
+    <div tabindex="-1" class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+           <div class="modal-content">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!--end container-fluid-->
+{% endif %}
+{% endif %}
