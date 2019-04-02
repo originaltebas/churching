@@ -1,0 +1,48 @@
+<!-- app/templates/ggcc/sumborrar_miembros_gc.html -->
+
+{% if current_user.is_authenticated %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
+
+{%     set nombre = 'Grupo Casero' %}
+{%     set nombres = 'Grupos Caseros' %}
+{%     set modo = 'Agregar o Quitar Miembros a ' %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 class="h3 my-3 alert alert-primary"> {{modo}} {{nombre}} </h1>
+  <div class="col-12">
+    <div class="card shadow">
+      <h5 class="card-header py-3">
+        Datos Generales
+      </h5>
+      <div class="card-body">
+        <form id="tbModificarGC" class="user" method="POST" role="form" action="">
+          {{ form_gc.csrf_token }}
+          {{ form_gc.id }}
+          <div class="form-group">
+            {{ form_gc.nombre_grupo.label(class_="pl-3") }}
+            {{ form_gc.nombre_grupo(class_="form-control form-control-user", readonly=true) }}
+          </div>
+
+          <div class="form-group row mt-5" id="cardBodyButtons">
+            <div class="col-3"></div>
+            <a class="btn btn-primary col-2 text-white font-weight-bold" id="btnModificarGC">Guardar {{nombre}}</a>
+            <div class="col-2"></div>
+            <a class="btn btn-danger col-2 text-white font-weight-bold"
+              href='{{ url_for("ggcc.ver_ggcc_asignar") }}'>Cancelar</a>
+            <div class="col-3"></div>
+          </div>
+
+      </div>
+    </div>
+    {{ FormMiembros.ids_in }}
+    {{ FormMiembros.ids_out }}
+    </form>
+
+  </div>
+</div>
+<!--end container-fluid-->
+{% endif %}
+{% endif %}

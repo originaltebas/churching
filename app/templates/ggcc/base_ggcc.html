@@ -24,9 +24,9 @@ Churching - Grupos Caseros
 
     {% if flag_listar %}
       {% include "ggcc/tabla_ggcc.html" %}
-      {% elif not flag_listar and flag_crear  %}
+    {% elif not flag_listar and flag_crear  %}
       {% include "ggcc/agregar_gc.html" %}
-      {% elif not flag_listar and not flag_crear %}
+    {% elif not flag_listar and not flag_crear %}
       {% include "ggcc/modificar_gc.html" %}
     {% endif %}
 

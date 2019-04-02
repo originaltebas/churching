@@ -1,6 +1,7 @@
 function ggccElements(e) {
 
   // GGCC -> Listado de grupos caseros
+  // Sirve para listar_ggcc y listar_ggcc_asignar
   if ($('#tbListarGGCC').length != 0) {
     $(tbListarGGCC).dataTable({
       "language": {
@@ -31,10 +32,11 @@ function ggccElements(e) {
         dataType: 'json'
       });
     })
+    /**
+    * Fin Par funciones crear GC
+    */
   }
-  /*
-  * Fin Par funciones Modificar GC
-  */
+
 
   // FUNCIONALIDADES DE CREAR GRUPO CASERO
   if ($('#tbModificarGC').length != 0) {
@@ -45,7 +47,7 @@ function ggccElements(e) {
       window.location.href = data.url;
     }
 
-    $(document).on('click', '#btnModificarGC', function (e) {
+    $(document).on('click', '#btnModificarGC', function(e) {
       e.preventDefault();
       id = $('#id').val();
       url = '/ggcc/modificar/' + id
@@ -57,12 +59,41 @@ function ggccElements(e) {
         dataType: 'json'
       });
     })
+    /**
+    * Fin Par funciones Modificar GC
+    */
+
+    /**
+     * Funcion para cambiar direccion eligiendo otra
+     */
+    $(document).on('click', '#cambiarDireccion', function (e) {
+      url = '/direcciones/loadFormMisma/' + $('#id_direccion').val();
+      $('.modal-content').load(url, function (e) {
+        $('#myModal').modal({
+          show: true,
+          closable: false,
+          transition: 'fade up',
+        });
+      });
+    });
+
+    /**
+     * Funcion para modificar dirección actual
+     * Callback Success: usa la misma que en crear direccion
+     */
+    $(document).on('click', '#btnModifDirActual', function (e) {
+      e.preventDefault();
+      url = '/direcciones/modifdiractual/' + $('#id_direccion').val();
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: $('#nDirForm').serialize(),
+        success: after_nueva_direccion_submitted, //uso la misma funcion que en crear
+        dataType: 'json'
+      });
+    })
+
   }
-  /**
-  * Fin Par funciones Modificar GC
-  */
-
-
 
   /**
    * Funciones comunes a Crear, Modificar y Asignar
@@ -70,6 +101,7 @@ function ggccElements(e) {
    */
 
   // Boton Crear Nueva Direccion
+  // Funcion compartida por Crear y Modificar
   $(document).on('click', '#nuevaDireccion', function (e) {
     $('.modal-content').load('/direcciones/loadFormNueva', function () {
       $('#myModal').modal({
@@ -81,6 +113,7 @@ function ggccElements(e) {
   });
 
   // Boton Usar Direccion Existente
+  // Funcion compartida por Crear y Modificar
   $(document).on('click', '#usarDireccion', function (e) {
     $('.modal-content').load('/direcciones/loadFormUsar', function () {
       $('#myModal').modal({
@@ -92,6 +125,7 @@ function ggccElements(e) {
   });
 
   // Ajustar la ventana del modal al tamaño de las tablas
+  // Funcion compartida por Crear y Modificar
   $(document).on('shown.bs.modal', "#myModal", function (e) {
     $(this).find('.modal-dialog').css({
       width: 'auto',
@@ -103,6 +137,7 @@ function ggccElements(e) {
 
   // Link de pasar pagina de la lista de direcciones.
   // Coje el url y lo lanza de nuevo al modal
+  // Funcion compartida por Crear y Modificar
   $(document).on('click', '.page-link', function (e) {
     e.preventDefault();
     var url = $(this).attr("href");
@@ -116,10 +151,10 @@ function ggccElements(e) {
   });
 
   // Asigna la direccion desde el modal (lo cierra) y aparece en la pantalla principal de gc, familia o mb
+  // Funcion compartida por Crear y Modificar
   $(document).on("click", ".asignar-dir", function (e) {
     var $row = $(this).closest("tr"); // Finds the closest row <tr>
     var id_direccion_elegida = $row.find("td:nth-child(1)").text().trim();
-
     // asigna el id de direccion a la variable oculta id_direccion
     $('input[name=id_direccion]').val(id_direccion_elegida);
     $("#cardBodyButtons").removeClass("d-none");

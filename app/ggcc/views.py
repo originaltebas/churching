@@ -153,17 +153,19 @@ def borrar_gc(id):
     check_edit_or_admin()
 
     obj_gc = GrupoCasero.query.get_or_404(id)
-    db.session.delete(obj_gc)
-    db.session.commit()
-    flash('Has borrado los datos correctamente.', 'db')
+    try:
+        db.session.delete(obj_gc)
+        db.session.commit()
+        flash('Has borrado los datos correctamente.', 'success')
+    except Exception as e:
+        flash('Error: ', e, 'danger')
 
     return redirect(url_for('ggcc.ver_ggcc'))
 
 
-@ggcc.route('/ggcc/asignar/elegir-gc',
-            methods=['GET', 'POST'])
+@ggcc.route('/ggcc/asignar', methods=['GET'])
 @login_required
-def asignar_elegir():
+def ver_ggcc_asignar():
     """
     Asignar miembros a un grupo casero
     """
@@ -197,7 +199,7 @@ def asignar_elegir():
                                         Direccion.pais_via,
                                         nro_personas.c.contar)
 
-    return render_template('ggcc/base_asignar.html',
+    return render_template('ggcc/base_ggcc_asignar.html',
                            ggcc=query_ggcc,
                            flag_listar=flag_listar)
 
@@ -212,64 +214,71 @@ def asignar_miembros(id):
     check_edit_or_admin()
 
     flag_listar = False
-    ids_miembros = AsignacionMiembrosForm()
+    FormMiembros = AsignacionMiembrosForm()
 
     if request.method == 'GET':
         obj_gc = GrupoCasero.query.get_or_404(id)
-        obj_miembros_incluidos = Miembro.query\
-                                        .filter(Miembro.id_grupocasero == id)
+        form_gc = GGCCForm(obj=obj_gc)
 
-        obj_miembros_todos = Miembro.query\
-                                    .filter(or_(
-                                         Miembro.id_grupocasero != id,
-                                         Miembro.id_grupocasero.is_(None)))
+        obj_miembros_in = db.session.query(Miembro.id)\
+                                    .filter(Miembro.id_grupocasero == id)\
+                                    .all()
 
-        ids_miembros.ids.data = ""
-        for idm in obj_miembros_incluidos:
-            ids_miembros.ids.data = str(ids_miembros.ids.data)\
-                                  + str(idm.id) + ","
+        obj_miembros_out = db.session.query(Miembro.id)\
+                                     .filter(or_(
+                                          Miembro.id_grupocasero == 0,
+                                          Miembro.id_grupocasero.is_(None)))\
+                                     .all()
 
-        ids_miembros.ids_totales.data = ""
-        for idm in obj_miembros_todos:
-            ids_miembros.ids_totales.data = str(ids_miembros.ids_totales.data)\
-                                            + str(idm.id) + ","
+        # genero una cadena de ids con los datos de los miembros
+        # incluídos para guardarlos en un Hidden Field
+        FormMiembros.ids_in.data = ""
+        for idm in obj_miembros_in:
+            FormMiembros.ids_in.data = str(FormMiembros.ids_in.data
+                                           ) + str(idm.id) + ","
+        # genero una cadena de ids con los datos de los miembros
+        # incluídos para guardarlos en un Hidden Field
+        FormMiembros.ids_out.data = ""
+        for idm in obj_miembros_out:
+            FormMiembros.ids_out.data = str(FormMiembros.ids_out.data)\
+                                      + str(idm.id) + ","
 
-    if ids_miembros.validate_on_submit():
+    if FormMiembros.validate_on_submit():
         # los miembros SÍ se han tocado -- hay que grabar de nuevo
-        if (ids_miembros.modifFlag.data == 'True'):
+        if (FormMiembros.modifFlag.data == 'True'):
             # Hay que hacer 2 cosas. Quitar a los que
             # se han ido y agregar los nuevos
+            ids_in = FormMiembros.ids_in.data[:-1].split(",")
+            ids_out = FormMiembros.ids_out.data[:-1].split(",")
 
-            ids_inc = ids_miembros.ids.data[:-1].split(",")
-            ids_no_inc = ids_miembros.ids_totales.data[:-1].split(",")
-            obj_inc = Miembro.query\
-                             .filter(Miembro.id.in_(ids_inc))
-            obj_no_inc = Miembro.query\
-                                .filter(or_(Miembro.id.in_(ids_no_inc),
-                                            Miembro.id.is_(None)))
+            obj_in = Miembro.query.filter(Miembro.id.in_(ids_in))
+            obj_out = Miembro.query.filter(
+                                    or_(Miembro.id.in_(ids_out),
+                                        Miembro.id.is_(None)))
 
             # Para borrar las relaciones de los antiguos
-            for o in obj_no_inc:
+            for o in obj_out:
                 o.id_grupocasero = None
 
             # Para agregar a los recien asignados
-            for m in obj_inc:
+            for m in obj_in:
                 m.id_grupocasero = id
 
-            db.session.commit()
-            flash('Has guardado los datos correctamente.', 'db')
+            try:
+                db.session.commit()
+                flash('Has guardado los datos correctamente', 'success')
+            except Exception as e:
+                flash('Error: ', e, 'danger')
         else:
             # los miembros no se han tocado. no hacer nada.
-            flash('Has guardado los datos correctamente.', 'db')
+            flash('Los datos de miembros no han sido modificados', 'success')
 
-        return redirect(url_for('ggcc.asignar_elegir'))
+        return redirect(url_for('ggcc.ver_ggcc_asignar'))
 
-    return render_template('ggcc/base_asignar.html',
-                           gc=obj_gc,
-                           miembros_in=obj_miembros_incluidos,
-                           miembros_all=obj_miembros_todos,
+    return render_template('ggcc/base_ggcc_asignar.html',
+                           form_gc=form_gc,
                            flag_listar=flag_listar,
-                           ids_miembros=ids_miembros)
+                           FormMiembros=FormMiembros)
 
 
 @ggcc.route('/direcciones/loadFormNueva')
@@ -302,6 +311,15 @@ def cargarForm_direcciones():
     return render_template('ggcc/_modal_direccion_usar.html',
                            direcciones=query_dir,
                            pagination=pagination)
+
+
+@ggcc.route('/direcciones/loadFormMisma/<int:id>')
+@login_required
+def cargar_direccion(id):
+    check_edit_or_admin()
+    query = Direccion.query.get_or_404(id)
+    form = DireccionModalForm(obj=query)
+    return render_template('ggcc/_modal_direccion_misma.html', form=form)
 
 
 @ggcc.route('/direcciones/loadDir/<int:id>')
@@ -345,4 +363,37 @@ def crear_nuevadir():
         for field, errors in form.errors.items():
             for error in errors:
                 errores.append((getattr(form, field).name))
+        return jsonify(status='v_error', errores=errores)
+
+
+@ggcc.route('/direcciones/modifdiractual/<int:id>', methods=['POST'])
+@login_required
+def modif_diractual(id):
+    check_edit_or_admin()
+
+    obj_dir = Direccion.query.get_or_404(id)
+    form_dir = DireccionModalForm()
+
+    if form_dir.validate_on_submit():
+        obj_dir.tipo_via = form_dir.tipo_via.data,
+        obj_dir.nombre_via = form_dir.nombre_via.data,
+        obj_dir.nro_via = form_dir.nro_via.data,
+        obj_dir.portalescalotros_via = form_dir.portalescalotros_via.data,
+        obj_dir.piso_nroletra_via = form_dir.piso_nroletra_via.data,
+        obj_dir.cp_via = form_dir.cp_via.data,
+        obj_dir.ciudad_via = form_dir.ciudad_via.data,
+        obj_dir.provincia_via = form_dir.provincia_via.data,
+        obj_dir.pais_via = form_dir.pais_via.data
+
+        try:
+            db.session.commit()
+            return jsonify(status='ok', id=id)
+        except Exception as e:
+            return jsonify(status='ko'+str(e))
+    else:
+        errores = []
+        # no se ha validado correctamente
+        for field, errors in form_dir.errors.items():
+            for error in errors:
+                errores.append((getattr(form_dir, field).name))
         return jsonify(status='v_error', errores=errores)
