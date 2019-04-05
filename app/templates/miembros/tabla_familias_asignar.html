@@ -1,0 +1,99 @@
+<!-- app/templates/familias/tabla_familias.html -->
+
+{% if current_user.is_authenticated %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
+
+{% set nombre = 'Familia' %}
+{% set nombres = 'Familias' %}
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 my-3 alert alert-primary"> {{ nombres }} </h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <!-- <strong>Title</strong> --> {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h5 class="card-title pt-2 mb-5">
+                Seleccione la {{nombre}} para agregar o quitarle miembros.<br><br> Tenga en cuenta que cada miembro
+                s&oacute;lo puede estar en una
+                {{nombre}} por lo que aquellos miembros que ya se encuentran en algúna no aparecer&aacute;n en el
+                listado
+                para poder ser agregados.
+            </h5>
+
+            {% if familias %}
+            <div class="table-responsive">
+                <table id="tbListarFamilias" class="table table-bordered table-striped" id="dataTable" width="100%"
+                    cellspacing="0">
+                    <thead class="thead-dark">
+                        <tr class="text-center">
+                            <th scope="col">Id</th>
+                            <th scope="col">Apellidos de la Familia</th>
+                            <th scope="col">Descripci&oacute;n</th>
+                            <th scope="col">Tel&eacute;fono</th>
+                            <th scope="col">Tipo de Familia</th>
+                            <th scope="col">Direcci&oacute;n</th>
+                            <th scope="col"># de Personas</th>
+                            <th scope="col">Modificar Composici&oacute;n</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for familia in familias %}
+                        <tr class="text-center">
+                            <td scope="row"> {{ familia.id }} </td>
+                            <td> {{ familia.apellidos_familia }} </td>
+                            <td> {{ familia.descripcion_familia }} </td>
+                            <td> {{ familia.telefono_familia }} </td>
+                            <td> {{ familia.tipo_familia }} </td>
+                            <td>
+                                {{ familia.tipo_via }} {{ familia.nombre_via }}, {{ familia.nro_via }}.
+                                {% if familia.portalescalotros_via %}
+                                {{familia.portalescalotros_via }}.
+                                {% endif %}
+                                {{ familia.cp_via }}. {{ familia.ciudad_via }}. {{ familia.provincia_via }}.
+                                {{ familia.pais_via }}.
+                            </td>
+                            <td>
+                                {% if familia.contar %}
+                                {{ familia.contar }}
+                                {% else %}
+                                0
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('familias.asignar_miembros', id=familia.id) }}">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center">
+                <h3> No se han agregado Datos</h3>
+                <hr class="intro-divider">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+{% endif %}
+{% endif %}

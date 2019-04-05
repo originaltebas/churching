@@ -59,17 +59,17 @@
     </a>
     <div id="collapsePer" class="collapse" aria-labelledby="headingPer" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item text-wrap" href="buttons.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('miembros.ver_miembros') }}">
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear Persona
+          Gestionar Personas
         </a>
-        <a class="collapse-item text-wrap" href="buttons.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('familias.ver_familias_asignar') }}">
           <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
-          Modificar Persona
+          Asignar Personas a Familias
         </a>
-        <a class="collapse-item text-wrap" href="cards.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('ggcc.ver_ggcc_asignar') }}">
           <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Borrar Persona
+          Asignar Personas a Grupos Caseros
         </a>
       </div>
     </div>

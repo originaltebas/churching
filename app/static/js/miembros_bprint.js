@@ -163,7 +163,7 @@ function familiasElements(e) {
       let ids_out = $('input[name=ids_out]').val();
       ids_out = ids_out.replace(id + ",", "");
       $('input[name=ids_out]').val(ids_out);
-      //quito la id que está saliendo y la coma
+       //quito la id que está saliendo y la coma
       //agregar
       let ids_in = $('input[name=ids_in]').val();
       ids_in = ids_in + id + ","; //agrego id y coma

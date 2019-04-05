@@ -1,41 +1,75 @@
-# app/miembros/forms.py
+# app/ggcc/forms.py
 # coding: utf-8
 
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, ValidationError
-from wtforms.validators import DataRequired, Email, EqualTo
-
-from app.models import Usuario
+from wtforms import StringField, SubmitField, HiddenField, SelectField
+from wtforms.validators import InputRequired, Length
 
 
-class RegistrationForm(FlaskForm):
+class FamiliasForm(FlaskForm):
     """
-    Formulario para registrar usuarios
+    Formulario para familias
     """
-    email = StringField(u'Email', validators=[DataRequired(), Email()])
-    username = StringField(u'Nombre de usuario', validators=[DataRequired()])
-    first_name = StringField(u'Nombres', validators=[DataRequired()])
-    last_name = StringField(u'Apellidos', validators=[DataRequired()])
-    password = PasswordField(u'Contraseña', validators=[
-                                        DataRequired(),
-                                        EqualTo('confirm_password')
-                                        ])
-    confirm_password = PasswordField(u'Confirma contraseña')
-    submit = SubmitField(u'Crear usuario')
 
-    def validate_email(self, field):
-        if Usuario.query.filter_by(email=field.data).first():
-            raise ValidationError(u'El email ya existe en la BD.')
+    id = HiddenField("id")
+    id_direccion = HiddenField("idDir")
 
-    def validate_username(self, field):
-        if Usuario.query.filter_by(username=field.data).first():
-            raise ValidationError(u'El usuario ya existe en la BD.')
+    # Modelo Familia
+    apellidos_familia = StringField(u'Apellido de la Familia',
+                                    validators=[InputRequired(),
+                                                Length(min=1, max=60)])
+    descripcion_familia = StringField(u'Descripción de la Familia',
+                                      validators=[InputRequired(),
+                                                  Length(min=0, max=200)])
+    telefono_familia = StringField(u'Teléfono de la Familia',
+                                   validators=[InputRequired(),
+                                               Length(min=0, max=15)])
+
+    TipoFamilia = SelectField(u'Tipo de Familia', coerce=int)
+
+    submit = SubmitField(u'Aceptar')
 
 
-class LoginForm(FlaskForm):
+class DireccionModalForm(FlaskForm):
+    # Modelo Direccion
+    tipo_via = StringField(u'Tipo de vía',
+                           validators=[InputRequired(),
+                                       Length(min=1, max=20)])
+
+    nombre_via = StringField(u'Nombre de la vía',
+                             validators=[InputRequired(),
+                                         Length(min=1, max=100)])
+
+    nro_via = StringField(u'Nro',
+                          validators=[InputRequired(),
+                                      Length(min=1, max=10)])
+
+    portalescalotros_via = StringField(u'Portal/Esc/Otro')
+    piso_nroletra_via = StringField(u'Nro/Letra del Piso')
+    cp_via = StringField(u'CP',
+                         validators=[InputRequired(),
+                                     Length(min=1, max=10)])
+
+    ciudad_via = StringField(u'Ciudad',
+                             validators=[InputRequired(),
+                                         Length(min=1, max=50)])
+
+    provincia_via = StringField(u'Provincia',
+                                validators=[InputRequired(),
+                                            Length(min=1, max=50)])
+
+    pais_via = StringField(u'País',
+                           validators=[InputRequired(),
+                                       Length(min=1, max=50)])
+
+    submit = SubmitField(u'Crear Dirección')
+
+
+class AsignacionMiembrosForm(FlaskForm):
     """
-    Formulario para logarse en el sistema
+    Formulario para la asignacion de personas a las
+    ggcc. Las personas tienen que ser miembros creados
     """
-    email = StringField(u'Email', validators=[DataRequired(), Email()])
-    password = PasswordField(u'Contraseña', validators=[DataRequired()])
+    ids_in = HiddenField('Ids IN')
+    ids_out = HiddenField('Ids OUT')
     submit = SubmitField(u'Aceptar')
