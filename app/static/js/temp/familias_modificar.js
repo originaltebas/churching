@@ -54,7 +54,7 @@ function botonesDireccion() {
     $('#mdiraGuardar').on('click', function (e) {
         e.preventDefault();
 
-        var url = 'actualizarDir/' + $('input[name=idDir]').val();
+        let url = 'actualizarDir/' + $('input[name=idDir]').val();
 
         $('input[name=tipo_via]').prop('readonly', true);
         $('input[name=nombre_via]').prop('readonly', true);
@@ -107,7 +107,7 @@ function botonesDireccion() {
 
     e.preventDefault();
 
-    var url = $('input[name=id]').val();
+    let url = $('input[name=id]').val();
 
     $.ajax({
       type: "POST",

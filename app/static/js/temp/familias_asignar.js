@@ -11,15 +11,15 @@
 
         // cojo el id del miembro quitado para eliminarlo de la lista de
         // los miembros del grupo
-        var idquitar = $(this).attr('tag-id');
+        let idquitar = $(this).attr('tag-id');
         // cojo los ids de los miembros del grupo
-        var ids = $('input[name=ids]').val();
+        let ids = $('input[name=ids]').val();
         // quito el id del miembro a quitar de la lista total de miembros
         ids = ids.replace(idquitar + ",", "");
 
         // Lo mismo para totales
-        var idagregar = $(this).attr('tag-id');
-        var ids_t = $('input[name=ids_totales]').val();
+        let idagregar = $(this).attr('tag-id');
+        let ids_t = $('input[name=ids_totales]').val();
         ids_t = ids_t + idagregar + ",";
 
         // Si la lista total de miembros del grupo esta vacia
@@ -42,11 +42,11 @@
         $(this).attr("tag-accion", "agregar");
 
         // Muevo fila de la tabla incluidos a la tabla no incluidos
-        var whichtr = $(this).closest("tr");
+        let whichtr = $(this).closest("tr");
         $('.m-no-incluidos').append(whichtr);
 
         // Resto 1 a la cuenta de miembros del grupo casero
-        var min = (parseInt($('.count-gc').text()) - 1);
+        let min = (parseInt($('.count-gc').text()) - 1);
         $('.count-gc').text(min);
 
         $(".tag-coletilla-mni").addClass("d-none");
@@ -58,16 +58,16 @@
 
         // cojo el id del miembro agregado para sumarlo de la lista de
         // los miembros del grupo
-        var idagregar = $(this).attr('tag-id');
+        let idagregar = $(this).attr('tag-id');
         // cojo los ids de los miembros del grupo
-        var ids = $('input[name=ids]').val();
+        let ids = $('input[name=ids]').val();
         // sumo el id del miembro a lista total de miembros
         ids = ids + idagregar + ",";
 
         // Lo mismo para totales
-        var idquitar = $(this).attr('tag-id');
+        let idquitar = $(this).attr('tag-id');
         // cojo los ids de los miembros del grupo
-        var ids_t = $('input[name=ids_totales]').val();
+        let ids_t = $('input[name=ids_totales]').val();
         // quito el id del miembro a quitar de la lista total de miembros
         ids_t = ids_t.replace(idquitar + ",", "");
 
@@ -91,11 +91,11 @@
         $(this).attr("tag-accion", "quitar");
 
         // Muevo fila de la tabla incluidos a la tabla no incluidos
-        var whichtr = $(this).closest("tr");
+        let whichtr = $(this).closest("tr");
         $('.m-incluidos').append(whichtr);
 
         // Resto 1 a la cuenta de miembros del grupo casero
-        var min = (parseInt($('.count-gc').text()) + 1);
+        let min = (parseInt($('.count-gc').text()) + 1);
         $('.count-gc').text(min);
 
         $(".tag-coletilla-ma").addClass("d-none");
@@ -156,7 +156,7 @@
 
     $(document).on('click', '.page-link', function (e) {
       e.preventDefault();
-      var url = $(this).attr("href");
+      let url = $(this).attr("href");
       $('.modal-content').load(url, function () {
         $('#myModal').modal({
           show: true,

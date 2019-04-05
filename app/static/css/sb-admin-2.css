@@ -13278,3 +13278,9 @@ body.sidebar-toggled footer.sticky-footer {
   padding: .1em .25em;
   font-size: 150%;
 }
+
+.pull-lefta{float:left!important;}
+.pull-righta{float:right!important;}
+
+.pull-leftb{float:left!important;}
+.pull-rightb{float:right!important;}

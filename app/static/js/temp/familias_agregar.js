@@ -22,8 +22,8 @@ function botonesDireccion() {
 
  $(document).on("click", ".asignar-dir", function (e) {
 
-  var $row = $(this).closest("tr"); // Finds the closest row <tr>
-  var dirid = $row.find("td:nth-child(1)").text().trim();
+  let $row = $(this).closest("tr"); // Finds the closest row <tr>
+  let dirid = $row.find("td:nth-child(1)").text().trim();
 
   $('input[name=idDir]').val(dirid);
   $("#cardBodyButtons").removeClass("d-none");

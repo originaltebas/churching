@@ -1,4 +1,6 @@
 function ggccElements(e) {
+  "use strict"; // Start of use strict
+
 
   // GGCC -> Listado de grupos caseros
   // Sirve para listar_ggcc y listar_ggcc_asignar
@@ -23,7 +25,7 @@ function ggccElements(e) {
 
     $(document).on('click', '#btnCrearGC', function (e) {
       e.preventDefault();
-      url = '/ggcc/crear'
+      const url = '/ggcc/crear'
       $.ajax({
         type: "POST",
         url: url,
@@ -33,12 +35,12 @@ function ggccElements(e) {
       });
     })
     /**
-    * Fin Par funciones crear GC
-    */
+     * Fin Par funciones crear GC
+     */
   }
 
 
-  // FUNCIONALIDADES DE CREAR GRUPO CASERO
+  // FUNCIONALIDADES DE Modificar GRUPO CASERO
   if ($('#tbModificarGC').length != 0) {
     /**
      * Par de funciones para Modificar (Guardar) datos Grupo Casero
@@ -47,10 +49,10 @@ function ggccElements(e) {
       window.location.href = data.url;
     }
 
-    $(document).on('click', '#btnModificarGC', function(e) {
+    $(document).on('click', '#btnModificarGC', function (e) {
       e.preventDefault();
-      id = $('#id').val();
-      url = '/ggcc/modificar/' + id
+      const id = $('#id').val();
+      const url = '/ggcc/modificar/' + id
       $.ajax({
         type: "POST",
         url: url,
@@ -60,14 +62,14 @@ function ggccElements(e) {
       });
     })
     /**
-    * Fin Par funciones Modificar GC
-    */
+     * Fin Par funciones Modificar GC
+     */
 
     /**
      * Funcion para cambiar direccion eligiendo otra
      */
     $(document).on('click', '#cambiarDireccion', function (e) {
-      url = '/direcciones/loadFormMisma/' + $('#id_direccion').val();
+      const url = '/direcciones/loadFormMisma/' + $('#id_direccion').val();
       $('.modal-content').load(url, function (e) {
         $('#myModal').modal({
           show: true,
@@ -83,7 +85,7 @@ function ggccElements(e) {
      */
     $(document).on('click', '#btnModifDirActual', function (e) {
       e.preventDefault();
-      url = '/direcciones/modifdiractual/' + $('#id_direccion').val();
+      const url = '/direcciones/modifdiractual/' + $('#id_direccion').val();
       $.ajax({
         type: "POST",
         url: url,
@@ -92,7 +94,82 @@ function ggccElements(e) {
         dataType: 'json'
       });
     })
+  }
 
+  // FUNCIONALIDADES DE ASIGNAR MIEMBROS A GRUPO CASERO
+  if ($('#tbAsignarGC').length != 0) {
+    $(tbMiembrosIn).dataTable({
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+        "decimal": ",",
+        "thousands": ".",
+      },
+      "pageLength": 5,
+      "lengthChange": false,
+      "info": false,
+      "dom": '<"pull-lefta"f><"pull-righta"l>tip',
+      "createdRow": function (row, data, index, cells) {
+        $(cells[2]).html('<a href="" class="MiembroOut"><i class="fa fa-minus"></i></a>');
+        $(row).addClass('text-center');
+      },
+    });
+
+    $(tbMiembrosOut).dataTable({
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+        "decimal": ",",
+        "thousands": ".",
+      },
+      "pageLength": 5,
+      "lengthChange": false,
+      "info": false,
+      "dom": '<"pull-leftb"f><"pull-rightb"l>tip',
+      "createdRow": function (row, data, index, cells) {
+        $(cells[2]).html('<a href="" class="MiembroIn"><i class="fa fa-plus"></i></a>');
+        $(row).addClass('text-center');
+      },
+    });
+
+    function MiembroIn(e) {
+      e.preventDefault();
+      let fila = $('#tbMiembrosIn').DataTable().row($(this).closest('tr'));
+      let id = $(this).closest('tr').children('td').first().text();
+
+      //agregar
+      let ids_out = $('input[name=ids_out]').val();
+      ids_out = ids_out + id + ","; //agrego id y coma
+      $('input[name=ids_out]').val(ids_out);
+      //quitar
+      let ids_in = $('input[name=ids_in]').val();
+      ids_in = ids_in.replace(id + ",", ""); //quito la id que está saliendo y la coma
+      $('input[name=ids_in]').val(ids_in);
+
+      $('#tbMiembrosOut').DataTable().row.add(fila.data()).draw();
+      fila.remove().draw();
+    }
+
+    function MiembroOut(e) {
+      e.preventDefault();
+      let fila = $('#tbMiembrosOut').DataTable().row($(this).closest('tr'));
+      let id = $(this).closest('tr').children('td').first().text();
+      console.log(id);
+
+      //quitar
+      let ids_out = $('input[name=ids_out]').val();
+      ids_out = ids_out.replace(id + ",", "");
+      $('input[name=ids_out]').val(ids_out);
+       //quito la id que está saliendo y la coma
+      //agregar
+      let ids_in = $('input[name=ids_in]').val();
+      ids_in = ids_in + id + ","; //agrego id y coma
+      $('input[name=ids_in]').val(ids_in);
+
+      $('#tbMiembrosIn').DataTable().row.add(fila.data()).draw();
+      fila.remove().draw();
+    }
+
+    $(document).on('click', '.MiembroIn', MiembroOut)
+    $(document).on('click', '.MiembroOut', MiembroIn)
   }
 
   /**
@@ -140,7 +217,7 @@ function ggccElements(e) {
   // Funcion compartida por Crear y Modificar
   $(document).on('click', '.page-link', function (e) {
     e.preventDefault();
-    var url = $(this).attr("href");
+    const url = $(this).attr("href");
     $('.modal-content').load(url, function () {
       $('#myModal').modal({
         show: true,
@@ -153,8 +230,8 @@ function ggccElements(e) {
   // Asigna la direccion desde el modal (lo cierra) y aparece en la pantalla principal de gc, familia o mb
   // Funcion compartida por Crear y Modificar
   $(document).on("click", ".asignar-dir", function (e) {
-    var $row = $(this).closest("tr"); // Finds the closest row <tr>
-    var id_direccion_elegida = $row.find("td:nth-child(1)").text().trim();
+    let $row = $(this).closest("tr"); // Finds the closest row <tr>
+    let id_direccion_elegida = $row.find("td:nth-child(1)").text().trim();
     // asigna el id de direccion a la variable oculta id_direccion
     $('input[name=id_direccion]').val(id_direccion_elegida);
     $("#cardBodyButtons").removeClass("d-none");
@@ -173,22 +250,22 @@ function ggccElements(e) {
       $("#cardBodyButtons").removeClass("d-none");
       $('#cardBodyDir').load('/direcciones/loadDir/' + data.id);
       $('#myModal').modal('hide');
-    } else if (data.status == 'v_error') {  //funcion para marcar los campos invalidos en el formulario
-        $("form#nDirForm :input").each(function(){
-          $(this).removeClass("is-invalid");
-        });
-        data.errores.forEach(function (value, key) {
-          $('#' + value).addClass("is-invalid");
-        });
-        return false;
+    } else if (data.status == 'v_error') { //funcion para marcar los campos invalidos en el formulario
+      $("form#nDirForm :input").each(function () {
+        $(this).removeClass("is-invalid");
+      });
+      data.errores.forEach(function (value, key) {
+        $('#' + value).addClass("is-invalid");
+      });
+      return false;
     } else {
-        return false;
+      return false;
     }
   }
 
   $(document).on('click', '#btnCrearDireccion', function (e) {
     e.preventDefault();
-    url = '/direcciones/creardireccion'
+    const url = '/direcciones/creardireccion'
     $.ajax({
       type: "POST",
       url: url,
@@ -200,13 +277,13 @@ function ggccElements(e) {
 
   // Esta funcion limpia el formulario modal de los campos inválidos
   // a medida que se rellenan los datos.
-  $(document).on('focus', "form#nDirForm .form-control-user", function(e) {
-      $(this).removeClass('is-invalid');
+  $(document).on('focus', "form#nDirForm .form-control-user", function (e) {
+    $(this).removeClass('is-invalid');
   });
 
   /**
    * Fin par funciones para crear direccion
    */
-
 }
+
 window.addEventListener("load", ggccElements, false);

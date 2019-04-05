@@ -220,11 +220,13 @@ def asignar_miembros(id):
         obj_gc = GrupoCasero.query.get_or_404(id)
         form_gc = GGCCForm(obj=obj_gc)
 
-        obj_miembros_in = db.session.query(Miembro.id)\
+        obj_miembros_in = db.session.query(Miembro.id, Miembro.nombres,
+                                           Miembro.apellidos)\
                                     .filter(Miembro.id_grupocasero == id)\
                                     .all()
 
-        obj_miembros_out = db.session.query(Miembro.id)\
+        obj_miembros_out = db.session.query(Miembro.id, Miembro.nombres,
+                                            Miembro.apellidos)\
                                      .filter(or_(
                                           Miembro.id_grupocasero == 0,
                                           Miembro.id_grupocasero.is_(None)))\
@@ -277,6 +279,8 @@ def asignar_miembros(id):
 
     return render_template('ggcc/base_ggcc_asignar.html',
                            form_gc=form_gc,
+                           miembros_in=obj_miembros_in,
+                           miembros_out=obj_miembros_out,
                            flag_listar=flag_listar,
                            FormMiembros=FormMiembros)
 
