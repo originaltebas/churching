@@ -1,59 +1,60 @@
-<!-- app/templates/familias/agregar_familia.html -->
+<!-- app/templates/ggcc/agregar_gc.html -->
 
-{% set nombre = 'Familia' %}
-{% set modo ='Agregar' %}
+{% if current_user.is_authenticated %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
+
+{%     set nombre = 'Grupo Casero' %}
+{%     set nombres = 'Grupos Caseros' %}
+{%     set modo = 'Agregar' %}
+
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
-  <h1 class="h3 mb-2 alert alert-info"> {{modo}} {{nombre}} </h1>
+  <h1 class="h3 my-3 alert alert-primary"> {{modo}} {{nombre}} </h1>
   <div class="col-12">
-    <form id="familyForm" name="familyForm" class="user" method="POST" role="form" action="">
-      {{ form.csrf_token }}
-      <div class="card shadow">
-        <div class="card-header py-3">Datos Generales</div>
-        <div class="card-body">
+    <div class="card shadow">
+      <h5 class="card-header py-3">
+        Datos Generales
+      </h5>
+      <div class="card-body">
+        <form id="tbCrearGC" class="user" method="POST" role="form" action="">
+          {{ form.csrf_token }}
           {{ form.idDir }}
           <div class="form-group">
-            {{ form.apellidos_familia.label(class_="pl-3") }}
-            {{ form.apellidos_familia(class_="form-control form-control-user") }}
+            {{ form.nombre_grupo.label(class_="pl-3") }}
+            {{ form.nombre_grupo(class_="form-control form-control-user") }}
           </div>
           <div class="form-group">
-            {{ form.descripcion_familia.label(class_="pl-3") }}
-            {{ form.descripcion_familia(class_="form-control form-control-user") }}
+            {{ form.descripcion_grupo.label(class_="pl-3") }}
+            {{ form.descripcion_grupo(class_="form-control form-control-user") }}
           </div>
-          <div class="form-group row">
-            <div class="col-sm-5">
-              {{ form.telefono_familia.label(class_="pl-3") }}
-              {{ form.telefono_familia(class_="form-control form-control-user") }}
-            </div>
-            <div class="col-sm-7">
-              {{ form.TipoFamilia.label(class_="pl-3") }}
-              {{ form.TipoFamilia(class_="custom-select custom-select-lg") }}
-            </div>
-          </div>
+
 
           <div class="form-group row d-none mt-5" id="cardBodyButtons">
             <div class="col-3"></div>
-            <button type="button" class="btn btn-primary col-2" id="btnCrearFam">Crear Familia</button>
+            <a class="btn btn-primary col-2 text-white font-weight-bold" id="btnCrearGC">Crear {{nombre}}</a>
             <div class="col-2"></div>
-            <button type="button" class="btn btn-danger col-2"
-              onclick="window.location.href='{{ url_for("familias.ver_familias") }}'">Cancelar</button>
+            <a class="btn btn-danger col-2 text-white font-weight-bold" href='{{ url_for("ggcc.ver_ggcc") }}'>Cancelar</a>
             <div class="col-3"></div>
           </div>
-        </div>
+
       </div>
+    </div>
     </form>
 
-    <div class="card bg-secondary mt-3">
-      <div class="card-header">Direcci&oacute;n Familiar</div>
+    <div class="card s mt-3">
+      <h5 class="card-header">Direcci&oacute;n Familiar</h5>
       <div class="card-body text-center" id="cardBodyDir">
-        <button id="ndir" type="button" class="btn btn-success mr-5" data-toggle="modal" data-target="#myModal">
+        <a id="nuevaDireccion" class="btn btn-success mr-5 text-white font-weight-bold" data-toggle="modal"
+          data-target="#myModal">
           Crear Nueva Direcci&oacute;n
-        </button>
-        <button id="udir" type="button" class="btn btn-info ml-5" data-toggle="modal" data-target="#myModal">
+        </a>
+        <a id="usarDireccion" class="btn btn-info mr-5 text-white font-weight-bold" data-toggle="modal"
+          data-target="#myModal">
           Usar Direcci&oacute;n existente
-        </button>
+        </a>
       </div>
     </div>
 
@@ -69,3 +70,5 @@
   </div>
 </div>
 <!--end container-fluid-->
+{% endif %}
+{% endif %}

@@ -1,27 +1,25 @@
-# app/familias/forms.py
+# app/ggcc/forms.py
 # coding: utf-8
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms import HiddenField, SelectField
+from wtforms import StringField, SubmitField, HiddenField
 from wtforms.validators import InputRequired, Length
 
 
-class FamiliaForm(FlaskForm):
+class GGCCForm(FlaskForm):
     """
-    Formulario para familias
+    Formulario para gruposcaseros
     """
     id = HiddenField("id")
-    idDir = HiddenField("idDir")
-    apellidos_familia = StringField(
-                            u'Apellidos de la Familia',
-                            validators=[InputRequired(),
-                                        Length(min=1, max=60)])
-
-    descripcion_familia = StringField(u'Descripción de la Familia')
-    telefono_familia = StringField(u'Teléfono Familiar')
-    TipoFamilia = SelectField(u'Tipo de Familia', coerce=int)
-    submit = SubmitField(u'Crear Familia')
+    id_direccion = HiddenField("idDir")
+    # Modelo GGCC
+    nombre_grupo = StringField(u'Nombre del Grupo Casero',
+                               validators=[InputRequired(),
+                                           Length(min=1, max=60)])
+    descripcion_grupo = StringField(u'Descripción del Grupo Casero',
+                                    validators=[InputRequired(),
+                                                Length(min=0, max=200)])
+    submit = SubmitField(u'Aceptar')
 
 
 class DireccionModalForm(FlaskForm):
@@ -59,10 +57,10 @@ class DireccionModalForm(FlaskForm):
     submit = SubmitField(u'Crear Dirección')
 
 
-class AsignacionMiembrosFrom(FlaskForm):
+class AsignacionMiembrosForm(FlaskForm):
     """
     Formulario para la asignacion de personas a las
-    familias. Las personas tienen que ser miembros creados
+    ggcc. Las personas tienen que ser miembros creados
     """
     ids_in = HiddenField('Ids IN')
     ids_out = HiddenField('Ids OUT')

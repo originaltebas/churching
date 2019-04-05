@@ -1,19 +1,19 @@
-<!-- app/templates/familias/base_familias.html -->
+<!-- app/templates/ggcc/base_ggcc.html -->
 
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
 
 {% block title %}
-Churching - Familias
+Churching - Grupos Caseros
 {% endblock %}
 
 {% block body %}
 {% if current_user.is_authenticated %}
-{% if current_user.is_admin %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
 
 {% include "home/_sidebar.html" %}
-
 <!-- Content Wrapper -->
 <div id="content-wrapper" class="d-flex flex-column">
 
@@ -22,21 +22,12 @@ Churching - Familias
 
     {% include "home/_topbar.html" %}
 
-    {% if flag_accion == "Listar" %}
-    {% include "familias/tabla_familias.html" %}
-    <script src="{{ url_for('static', filename='js/familias_listar.min.js') }}"></script>
-    {% elif flag_accion == "Agregar" %}
-    {% include "familias/agregar_familia.html" %}
-    <script src="{{ url_for('static', filename='js/familias_agregar.min.js') }}"></script>
-    {% elif flag_accion == "Modificar" %}
-    {% include "familias/modificar_familia.html" %}
-    <script src="{{ url_for('static', filename='js/familias_modificar.min.js') }}"></script>
-    {% elif flag_accion == "ListarCompo" %}
-    {% include "familias/cambiar_composicion_listado.html" %}
-    <script src="{{ url_for('static', filename='js/familias_listar.min.js') }}"></script>
-    {% elif flag_accion == "AsignarCompo" %}
-    {% include "familias/cambiar_composicion_asignar.html" %}
-    <script src="{{ url_for('static', filename='js/familias_asignar.min.js') }}"></script>
+    {% if flag_listar %}
+      {% include "ggcc/tabla_ggcc.html" %}
+    {% elif not flag_listar and flag_crear  %}
+      {% include "ggcc/agregar_gc.html" %}
+    {% elif not flag_listar and not flag_crear %}
+      {% include "ggcc/modificar_gc.html" %}
     {% endif %}
 
   </div>
@@ -48,4 +39,5 @@ Churching - Familias
 <!-- End of Content Wrapper -->
 {% endif %}
 {% endif %}
+<script src="{{ url_for('static', filename='js/ggcc_bprint.min.js') }}"></script>
 {% endblock %}

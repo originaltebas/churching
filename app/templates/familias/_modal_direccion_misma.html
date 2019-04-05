@@ -1,7 +1,7 @@
 <form id="nDirForm" class="user" method="POST" role="form" action="">
         {{ form.csrf_token }}
     <div class="modal-header">
-        <h4 class="modal-title">Crear Nueva Direcci&oacute;n</h4>
+        <h4 class="modal-title">Modificar Direcci&oacute;n Actual</h4>
     </div>
 
     <div class="modal-body">
@@ -55,11 +55,10 @@
         <div class="form-group row">
             <div class="col-sm-4 text-center"></div>
             <div class="col-sm-2 text-center">
-                <input type="submit" id="btnCrearDireccion" name="btnCrear" class="btn btn-primary btn-block" value="Crear" />
+                <a id="btnModifDirActual" class="btn btn-primary btn-block text-white font-weight-bold">Guardar</a>
             </div>
             <div class="col-sm-2  text-center">
-                <input type="button" class="btn btn-danger btn-block"
-                    data-dismiss="modal" value="Cancelar" />
+                <a class="btn btn-danger btn-block text-white font-weight-bold" data-dismiss="modal">Cancelar</a>
             </div>
             <div class="col-sm-4 text-center"></div>
         </div>
