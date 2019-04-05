@@ -152,7 +152,6 @@ function ggccElements(e) {
       e.preventDefault();
       let fila = $('#tbMiembrosOut').DataTable().row($(this).closest('tr'));
       let id = $(this).closest('tr').children('td').first().text();
-      console.log(id);
 
       //quitar
       let ids_out = $('input[name=ids_out]').val();
@@ -168,8 +167,25 @@ function ggccElements(e) {
       fila.remove().draw();
     }
 
+    function after_miembrosgc_submitted(data) {
+      window.location.href = data.url;
+    }
+
+    $(document).on('click', '#btnGuardarAsigGC', function (e) {
+      e.preventDefault();
+      const url = '/ggcc/asignar/miembros/' + $('input[name=id]').val()
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: $('#tbAsignarGC').serialize(),
+        success: after_miembrosgc_submitted,
+        dataType: 'json'
+      });
+    })
+
     $(document).on('click', '.MiembroIn', MiembroOut)
     $(document).on('click', '.MiembroOut', MiembroIn)
+
   }
 
   /**

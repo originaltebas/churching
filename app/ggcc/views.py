@@ -245,44 +245,44 @@ def asignar_miembros(id):
             FormMiembros.ids_out.data = str(FormMiembros.ids_out.data)\
                                       + str(idm.id) + ","
 
-    if FormMiembros.validate_on_submit():
-        # los miembros SÍ se han tocado -- hay que grabar de nuevo
-        if (FormMiembros.modifFlag.data == 'True'):
-            # Hay que hacer 2 cosas. Quitar a los que
-            # se han ido y agregar los nuevos
-            ids_in = FormMiembros.ids_in.data[:-1].split(",")
-            ids_out = FormMiembros.ids_out.data[:-1].split(",")
+        return render_template('ggcc/base_ggcc_asignar.html',
+                               form_gc=form_gc,
+                               miembros_in=obj_miembros_in,
+                               miembros_out=obj_miembros_out,
+                               flag_listar=flag_listar,
+                               FormMiembros=FormMiembros)
 
-            obj_in = Miembro.query.filter(Miembro.id.in_(ids_in))
-            obj_out = Miembro.query.filter(
-                                    or_(Miembro.id.in_(ids_out),
-                                        Miembro.id.is_(None)))
+    elif FormMiembros.validate_on_submit():
+        ids_in = FormMiembros.ids_in.data[:-1].split(",")
+        ids_out = FormMiembros.ids_out.data[:-1].split(",")
 
-            # Para borrar las relaciones de los antiguos
-            for o in obj_out:
-                o.id_grupocasero = None
+        obj_in = Miembro.query.filter(Miembro.id.in_(ids_in))
+        obj_out = Miembro.query.filter(
+                                or_(Miembro.id.in_(ids_out),
+                                    Miembro.id.is_(None)))
 
-            # Para agregar a los recien asignados
-            for m in obj_in:
-                m.id_grupocasero = id
+        # Para borrar las relaciones de los antiguos
+        for o in obj_out:
+            o.id_grupocasero = None
 
-            try:
-                db.session.commit()
-                flash('Has guardado los datos correctamente', 'success')
-            except Exception as e:
-                flash('Error: ', e, 'danger')
-        else:
-            # los miembros no se han tocado. no hacer nada.
-            flash('Los datos de miembros no han sido modificados', 'success')
+        # Para agregar a los recien asignados
+        for m in obj_in:
+            m.id_grupocasero = id
 
+        try:
+            db.session.commit()
+            flash('Has guardado los datos correctamente', 'success')
+        except Exception as e:
+            flash('Error: ', e, 'danger')
+
+        url = url_for('ggcc.ver_ggcc_asignar')
+        return jsonify(url=url)
+    else:
+        # Es Post pero no pasa el validate.
+        flash('Los datos de miembros no han podido modificarse', 'danger')
         return redirect(url_for('ggcc.ver_ggcc_asignar'))
-
-    return render_template('ggcc/base_ggcc_asignar.html',
-                           form_gc=form_gc,
-                           miembros_in=obj_miembros_in,
-                           miembros_out=obj_miembros_out,
-                           flag_listar=flag_listar,
-                           FormMiembros=FormMiembros)
+        url = url_for('ggcc.ver_ggcc_asignar')
+        return jsonify(url=url)
 
 
 @ggcc.route('/direcciones/loadFormNueva')
