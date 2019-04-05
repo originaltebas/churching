@@ -5,7 +5,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Churching - Grupos Caseros
+Churching - Familias
 {% endblock %}
 
 {% block body %}
@@ -23,9 +23,9 @@ Churching - Grupos Caseros
     {% include "home/_topbar.html" %}
 
     {% if flag_listar %}
-      {% include "ggcc/tabla_ggcc_asignar.html" %}
+      {% include "familias/tabla_familias_asignar.html" %}
     {% else  %}
-      {% include "ggcc/sumborrar_miembros_asignar.html" %}
+      {% include "familias/sumborrar_miembros_asignar.html" %}
     {% endif %}
 
   </div>
@@ -37,5 +37,5 @@ Churching - Grupos Caseros
 <!-- End of Content Wrapper -->
 {% endif %}
 {% endif %}
-<script src="{{ url_for('static', filename='js/ggcc_bprint.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/familias_bprint.min.js') }}"></script>
 {% endblock %}

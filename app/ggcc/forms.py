@@ -64,5 +64,4 @@ class AsignacionMiembrosForm(FlaskForm):
     """
     ids_in = HiddenField('Ids IN')
     ids_out = HiddenField('Ids OUT')
-    modifFlag = HiddenField("modifFlag", default=False)
     submit = SubmitField(u'Aceptar')

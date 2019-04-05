@@ -86,7 +86,7 @@ def crear_gc():
             flash('Has guardado los datos correctamente', 'success')
             status = 'ok'
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
             status = 'ko'
 
         url = url_for('ggcc.ver_ggcc')
@@ -132,7 +132,7 @@ def modif_gc(id):
             flash('Has guardado los datos correctamente', 'success')
             status = 'ok'
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
             status = 'ko'
 
         url = url_for('ggcc.ver_ggcc')
@@ -148,7 +148,7 @@ def modif_gc(id):
 @login_required
 def borrar_gc(id):
     """
-    Borrar un rol
+    Borrar un gc
     """
     check_edit_or_admin()
 
@@ -158,7 +158,7 @@ def borrar_gc(id):
         db.session.commit()
         flash('Has borrado los datos correctamente.', 'success')
     except Exception as e:
-        flash('Error: ', e, 'danger')
+        flash('Error: ' + str(e), 'danger')
 
     return redirect(url_for('ggcc.ver_ggcc'))
 
@@ -273,7 +273,7 @@ def asignar_miembros(id):
             db.session.commit()
             flash('Has guardado los datos correctamente', 'success')
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
 
         url = url_for('ggcc.ver_ggcc_asignar')
         return jsonify(url=url)

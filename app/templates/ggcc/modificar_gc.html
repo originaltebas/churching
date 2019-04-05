@@ -40,10 +40,11 @@
               href='{{ url_for("ggcc.ver_ggcc") }}'>Cancelar</a>
             <div class="col-3"></div>
           </div>
+      </form>
+      </div>
 
       </div>
-    </div>
-    </form>
+
 
     <div class="card s mt-3">
       <h5 class="card-header">Direcci&oacute;n Familiar</h5>
@@ -94,25 +95,30 @@
         </div>
 
         <div class="row text-center">
-          <div class="col-4">
+            <div class="col-3">
+                <a id="mismaDireccion" class="btn btn-block btn-primary mr-5 text-white font-weight-bold">
+                Dejar esta Direcci&oacute;n
+                </a>
+              </div>
+             <div class="col-3">
             <a id="cambiarDireccion" class="btn btn-block btn-warning mr-5 text-white font-weight-bold" data-toggle="modal"
             data-target="#myModal">
             Modificar Direcci&oacute;n actual
             </a>
           </div>
-          <div class="col-4">
+          <div class="col-3">
             <a id="nuevaDireccion" class="btn btn-block btn-success mr-5 text-white font-weight-bold" data-toggle="modal"
               data-target="#myModal">
               Crear Nueva Direcci&oacute;n
             </a>
             </div>
-            <div class="col-4">
+            <div class="col-3">
             <a id="usarDireccion" class="btn btn-block btn-info mr-5 text-white font-weight-bold" data-toggle="modal"
               data-target="#myModal">
               Usar otra Direcci&oacute;n existente
             </a>
+            </div>
           </div>
-        </div>
       </div>
     </div>
 

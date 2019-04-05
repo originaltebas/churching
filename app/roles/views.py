@@ -1,7 +1,7 @@
 # app/roles/views.py
 # coding: utf-8
 
-from flask import abort, flash
+from flask import flash
 from flask import redirect, render_template, url_for
 from flask_login import current_user, login_required
 
@@ -103,7 +103,7 @@ def modif_rol(id, flag):
             db.session.commit()
             flash('Has modificado los datos correctamente', 'success')
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
 
         return redirect(url_for('roles.ver_roles', flag=flag))
 
@@ -130,6 +130,6 @@ def borrar_rol(id, flag):
         db.session.commit()
         flash('Has borrado los datos correctamente', 'success')
     except Exception as e:
-        flash('Error: ', e, 'danger')
+        flash('Error: ' + str(e), 'danger')
 
     return redirect(url_for('roles.ver_roles', flag=flag))

@@ -1,11 +1,11 @@
-<!-- app/templates/ggcc/tabla_ggcc.html -->
+<!-- app/templates/familias/tabla_familias.html -->
 
 {% if current_user.is_authenticated %}
 {# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
 {% if current_user.get_urole() >= 1 %}
 
-{% set nombre = 'Grupo Casero' %}
-{% set nombres = 'Grupos Caseros' %}
+{% set nombre = 'Familia' %}
+{% set nombres = 'Familias' %}
 
 
 <!-- Begin Page Content -->
@@ -28,51 +28,58 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <h5 class="card-title pt-2 mb-5">
-                Seleccione el {{nombre}} para agregar o quitarle miembros.<br><br> Tenga en cuenta que cada miembro s&oacute;lo puede estar en un
-                {{nombre}} por lo que aquellos miembros que ya se encuentran en algún {{nombre}} no aparecer&aacute;n en el listado
+                Seleccione la {{nombre}} para agregar o quitarle miembros.<br><br> Tenga en cuenta que cada miembro
+                s&oacute;lo puede estar en una
+                {{nombre}} por lo que aquellos miembros que ya se encuentran en algúna no aparecer&aacute;n en el
+                listado
                 para poder ser agregados.
             </h5>
 
-            {% if ggcc %}
+            {% if familias %}
             <div class="table-responsive">
-                <table id="tbListarGGCC" class="table table-bordered table-striped" id="dataTable" width="100%"
+                <table id="tbListarFamilias" class="table table-bordered table-striped" id="dataTable" width="100%"
                     cellspacing="0">
                     <thead class="thead-dark">
                         <tr class="text-center">
                             <th scope="col">Id</th>
-                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos de la Familia</th>
                             <th scope="col">Descripci&oacute;n</th>
+                            <th scope="col">Tel&eacute;fono</th>
+                            <th scope="col">Tipo de Familia</th>
                             <th scope="col">Direcci&oacute;n</th>
                             <th scope="col"># de Personas</th>
                             <th scope="col">Modificar Composici&oacute;n</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for gc in ggcc %}
-                        <tr>
-                            <td scope="row" class="text-center"> {{ gc.id }} </td>
-                            <td> {{ gc.nombre_grupo }} </td>
-                            <td> {{ gc.descripcion_grupo }} </td>
-                            <td class="text-center">
-                                {{ gc.tipo_via }} {{ gc.nombre_via }}, {{ gc.nro_via }}.
-                                {% if gc.portalescalotros_via %}
-                                {{gc.portalescalotros_via }}.
+                        {% for familia in familias %}
+                        <tr class="text-center">
+                            <td scope="row"> {{ familia.id }} </td>
+                            <td> {{ familia.apellidos_familia }} </td>
+                            <td> {{ familia.descripcion_familia }} </td>
+                            <td> {{ familia.telefono_familia }} </td>
+                            <td> {{ familia.tipo_familia }} </td>
+                            <td>
+                                {{ familia.tipo_via }} {{ familia.nombre_via }}, {{ familia.nro_via }}.
+                                {% if familia.portalescalotros_via %}
+                                {{familia.portalescalotros_via }}.
                                 {% endif %}
-                                {{ gc.cp_via }}. {{ gc.ciudad_via }}. {{ gc.provincia_via }}. {{ gc.pais_via }}.
+                                {{ familia.cp_via }}. {{ familia.ciudad_via }}. {{ familia.provincia_via }}.
+                                {{ familia.pais_via }}.
                             </td>
-                            <td class="text-center">
-                                {% if gc.contar %}
-                                {{ gc.contar }}
+                            <td>
+                                {% if familia.contar %}
+                                {{ familia.contar }}
                                 {% else %}
                                 0
                                 {% endif %}
                             </td>
-                            <td class="text-center">
-                                <a href="{{ url_for('ggcc.asignar_miembros', id=gc.id) }}">
+                            <td>
+                                <a href="{{ url_for('familias.asignar_miembros', id=familia.id) }}">
                                     <i class="fa fa-edit"></i>
                                 </a>
                             </td>
-                          </tr>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>

@@ -94,6 +94,13 @@ function ggccElements(e) {
         dataType: 'json'
       });
     })
+
+    $(document).on('click', '#mismaDireccion', function (e) {
+      e.preventDefault();
+      $("#cardBodyButtons").removeClass("d-none");
+    });
+
+
   }
 
   // FUNCIONALIDADES DE ASIGNAR MIEMBROS A GRUPO CASERO

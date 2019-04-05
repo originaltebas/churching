@@ -1,11 +1,11 @@
-<!-- app/templates/ggcc/modificar_gc.html -->
+<!-- app/templates/familias/modificar_familia.html -->
 
 {% if current_user.is_authenticated %}
 {# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
 {% if current_user.get_urole() >= 1 %}
 
-{%     set nombre = 'Grupo Casero' %}
-{%     set nombres = 'Grupos Caseros' %}
+{%     set nombre = 'Familia' %}
+{%     set nombres = 'Familias' %}
 {%     set modo = 'Modificar' %}
 
 <!-- Begin Page Content -->
@@ -18,32 +18,41 @@
         Datos Generales
       </h5>
       <div class="card-body">
-        <form id="tbModificarGC" class="user" method="POST" role="form" action="">
-          {{ form_gc.csrf_token }}
-          {{ form_gc.id_direccion }}
-          {{ form_gc.id }}
+        <form id="tbModificarFamilia" class="user" method="POST" role="form" action="">
+          {{ form_familia.csrf_token }}
+          {{ form_familia.id_direccion }}
+          {{ form_familia.id }}
           <div class="form-group">
-            {{ form_gc.nombre_grupo.label(class_="pl-3") }}
-            {{ form_gc.nombre_grupo(class_="form-control form-control-user") }}
+            {{ form_familia.apellidos_familia.label(class_="pl-3") }}
+            {{ form_familia.apellidos_familia(class_="form-control form-control-user") }}
           </div>
           <div class="form-group">
-            {{ form_gc.descripcion_grupo.label(class_="pl-3") }}
-            {{ form_gc.descripcion_grupo(class_="form-control form-control-user") }}
+            {{ form_familia.descripcion_familia.label(class_="pl-3") }}
+            {{ form_familia.descripcion_familia(class_="form-control form-control-user") }}
           </div>
-
+          <div class="form-group row">
+            <div class="col-6">
+              {{ form_familia.telefono_familia.label(class_="pl-3") }}
+              {{ form_familia.telefono_familia(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-6 input-group-lg">
+              {{ form_familia.TipoFamilia.label(class_="pl-3") }}
+              {{ form_familia.TipoFamilia(class_="form-control custom-select text-lg") }}
+            </div>
+          </div>
 
           <div class="form-group row d-none mt-5" id="cardBodyButtons">
             <div class="col-3"></div>
-            <a class="btn btn-primary col-2 text-white font-weight-bold" id="btnModificarGC">Guardar {{nombre}}</a>
+            <a class="btn btn-primary col-2 text-white font-weight-bold" id="btnModificarFamilia">Guardar {{nombre}}</a>
             <div class="col-2"></div>
             <a class="btn btn-danger col-2 text-white font-weight-bold"
-              href='{{ url_for("ggcc.ver_ggcc") }}'>Cancelar</a>
+              href='{{ url_for("familias.ver_familias") }}'>Cancelar</a>
             <div class="col-3"></div>
           </div>
-
+        </form>
       </div>
     </div>
-    </form>
+
 
     <div class="card s mt-3">
       <h5 class="card-header">Direcci&oacute;n Familiar</h5>
@@ -94,19 +103,24 @@
         </div>
 
         <div class="row text-center">
-          <div class="col-4">
-            <a id="cambiarDireccion" class="btn btn-block btn-warning mr-5 text-white font-weight-bold" data-toggle="modal"
-            data-target="#myModal">
-            Modificar Direcci&oacute;n actual
+          <div class="col-3">
+            <a id="mismaDireccion" class="btn btn-block btn-primary mr-5 text-white font-weight-bold">
+              Dejar esta Direcci&oacute;n
             </a>
           </div>
-          <div class="col-4">
-            <a id="nuevaDireccion" class="btn btn-block btn-success mr-5 text-white font-weight-bold" data-toggle="modal"
-              data-target="#myModal">
+          <div class="col-3">
+            <a id="cambiarDireccion" class="btn btn-block btn-warning mr-5 text-white font-weight-bold"
+              data-toggle="modal" data-target="#myModal">
+              Modificar Direcci&oacute;n actual
+            </a>
+          </div>
+          <div class="col-3">
+            <a id="nuevaDireccion" class="btn btn-block btn-success mr-5 text-white font-weight-bold"
+              data-toggle="modal" data-target="#myModal">
               Crear Nueva Direcci&oacute;n
             </a>
-            </div>
-            <div class="col-4">
+          </div>
+          <div class="col-3">
             <a id="usarDireccion" class="btn btn-block btn-info mr-5 text-white font-weight-bold" data-toggle="modal"
               data-target="#myModal">
               Usar otra Direcci&oacute;n existente
@@ -119,7 +133,7 @@
     <!-- The Modal -->
     <div tabindex="-1" class="modal fade" id="myModal" role="dialog">
       <div class="modal-dialog modal-lg" role="document">
-           <div class="modal-content">
+        <div class="modal-content">
         </div>
       </div>
     </div>

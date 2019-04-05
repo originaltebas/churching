@@ -1,11 +1,11 @@
-function ggccElements(e) {
+function familiasElements(e) {
   "use strict"; // Start of use strict
 
 
-  // GGCC -> Listado de grupos caseros
-  // Sirve para listar_ggcc y listar_ggcc_asignar
-  if ($('#tbListarGGCC').length != 0) {
-    $(tbListarGGCC).dataTable({
+  // Familias -> Listado de grupos caseros
+  // Sirve para listar_familias y listar_familias_asignar
+  if ($('#tbListarFamilias').length != 0) {
+    $(tbListarFamilias).dataTable({
       "language": {
         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
         "decimal": ",",
@@ -15,54 +15,54 @@ function ggccElements(e) {
   }
 
   // FUNCIONALIDADES DE CREAR GRUPO CASERO
-  if ($('#tbCrearGC').length != 0) {
+  if ($('#tbCrearFamilia').length != 0) {
     /**
      * Par de funciones para Crear (Guardar) datos Grupo Casero
      *  */
-    function after_ggcc_submitted(data) {
+    function after_familias_submitted(data) {
       window.location.href = data.url;
     }
 
-    $(document).on('click', '#btnCrearGC', function (e) {
+    $(document).on('click', '#btnCrearFamilia', function (e) {
       e.preventDefault();
-      const url = '/ggcc/crear'
+      const url = '/familias/crear'
       $.ajax({
         type: "POST",
         url: url,
-        data: $('#tbCrearGC').serialize(),
-        success: after_ggcc_submitted,
+        data: $('#tbCrearFamilia').serialize(),
+        success: after_familias_submitted,
         dataType: 'json'
       });
     })
     /**
-     * Fin Par funciones crear GC
+     * Fin Par funciones crear Familia
      */
   }
 
 
   // FUNCIONALIDADES DE Modificar GRUPO CASERO
-  if ($('#tbModificarGC').length != 0) {
+  if ($('#tbModificarFamilia').length != 0) {
     /**
      * Par de funciones para Modificar (Guardar) datos Grupo Casero
      *  */
-    function after_ggcc_submitted(data) {
+    function after_familias_submitted(data) {
       window.location.href = data.url;
     }
 
-    $(document).on('click', '#btnModificarGC', function (e) {
+    $(document).on('click', '#btnModificarFamilia', function (e) {
       e.preventDefault();
       const id = $('#id').val();
-      const url = '/ggcc/modificar/' + id
+      const url = '/familias/modificar/' + id
       $.ajax({
         type: "POST",
         url: url,
-        data: $('#tbModificarGC').serialize(),
-        success: after_ggcc_submitted,
+        data: $('#tbModificarFamilia').serialize(),
+        success: after_familias_submitted,
         dataType: 'json'
       });
     })
     /**
-     * Fin Par funciones Modificar GC
+     * Fin Par funciones Modificar Familia
      */
 
     /**
@@ -94,10 +94,16 @@ function ggccElements(e) {
         dataType: 'json'
       });
     })
+
+    $(document).on('click', '#mismaDireccion', function (e) {
+      e.preventDefault();
+      $("#cardBodyButtons").removeClass("d-none");
+    });
+
   }
 
   // FUNCIONALIDADES DE ASIGNAR MIEMBROS A GRUPO CASERO
-  if ($('#tbAsignarGC').length != 0) {
+  if ($('#tbAsignarFamilia').length != 0) {
     $(tbMiembrosIn).dataTable({
       "language": {
         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
@@ -167,18 +173,18 @@ function ggccElements(e) {
       fila.remove().draw();
     }
 
-    function after_miembrosgc_submitted(data) {
+    function after_miembrosfamilia_submitted(data) {
       window.location.href = data.url;
     }
 
-    $(document).on('click', '#btnGuardarAsigGC', function (e) {
+    $(document).on('click', '#btnGuardarAsigFamilia', function (e) {
       e.preventDefault();
-      const url = '/ggcc/asignar/miembros/' + $('input[name=id]').val()
+      const url = '/familias/asignar/miembros/' + $('input[name=id]').val()
       $.ajax({
         type: "POST",
         url: url,
-        data: $('#tbAsignarGC').serialize(),
-        success: after_miembrosgc_submitted,
+        data: $('#tbAsignarFamilia').serialize(),
+        success: after_miembrosfamilia_submitted,
         dataType: 'json'
       });
     })
@@ -302,4 +308,4 @@ function ggccElements(e) {
    */
 }
 
-window.addEventListener("load", ggccElements, false);
+window.addEventListener("load", familiasElements, false);

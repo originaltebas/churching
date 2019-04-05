@@ -2,23 +2,31 @@
 # coding: utf-8
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField
+from wtforms import StringField, SubmitField, HiddenField, SelectField
 from wtforms.validators import InputRequired, Length
 
 
-class GGCCForm(FlaskForm):
+class FamiliasForm(FlaskForm):
     """
-    Formulario para gruposcaseros
+    Formulario para familias
     """
+
     id = HiddenField("id")
     id_direccion = HiddenField("idDir")
-    # Modelo GGCC
-    nombre_grupo = StringField(u'Nombre del Grupo Casero',
-                               validators=[InputRequired(),
-                                           Length(min=1, max=60)])
-    descripcion_grupo = StringField(u'Descripción del Grupo Casero',
+
+    # Modelo Familia
+    apellidos_familia = StringField(u'Apellido de la Familia',
                                     validators=[InputRequired(),
-                                                Length(min=0, max=200)])
+                                                Length(min=1, max=60)])
+    descripcion_familia = StringField(u'Descripción de la Familia',
+                                      validators=[InputRequired(),
+                                                  Length(min=0, max=200)])
+    telefono_familia = StringField(u'Teléfono de la Familia',
+                                   validators=[InputRequired(),
+                                               Length(min=0, max=15)])
+
+    TipoFamilia = SelectField(u'Tipo de Familia', coerce=int)
+
     submit = SubmitField(u'Aceptar')
 
 
@@ -64,5 +72,4 @@ class AsignacionMiembrosForm(FlaskForm):
     """
     ids_in = HiddenField('Ids IN')
     ids_out = HiddenField('Ids OUT')
-    modifFlag = HiddenField("modifFlag", default=False)
     submit = SubmitField(u'Aceptar')

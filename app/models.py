@@ -60,8 +60,7 @@ class Miembro(db.Model):
     id_rolfamiliar = db.Column(db.Integer, db.ForeignKey('rolesfamiliares.id'),
                                nullable=False)
     # Familia (1 familia, muchos miembros)
-    id_familia = db.Column(db.Integer, db.ForeignKey('familias.id'),
-                           nullable=False)
+    id_familia = db.Column(db.Integer, db.ForeignKey('familias.id'))
 
     # RELACIONES N:1 [BACKREF]
     # Asistencia (1 miembro, muchas asistencias)

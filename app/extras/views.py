@@ -91,7 +91,7 @@ def modif_estadocivil(id):
             db.session.commit()
             flash('Has modificado los datos correctamente', 'success')
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
 
         return redirect(url_for('extras.ver_estadosciviles'))
 
@@ -118,7 +118,7 @@ def borrar_estadocivil(id):
         db.session.commit()
         flash('Has borrado los datos correctamente', 'success')
     except Exception as e:
-        flash('Error: ', e, 'danger')
+        flash('Error: ' + str(e), 'danger')
 
     return redirect(url_for('extras.ver_estadosciviles'))
 
@@ -194,7 +194,7 @@ def modif_tipomiembro(id):
             db.session.commit()
             flash('Has modificado los datos correctamente', 'success')
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
 
         return redirect(url_for('extras.ver_tiposmiembros'))
 
@@ -221,7 +221,7 @@ def borrar_tipomiembro(id):
         db.session.commit()
         flash('Has borrado los datos correctamente', 'success')
     except Exception as e:
-        flash('Error: ', e, 'danger')
+        flash('Error: ' + str(e), 'danger')
 
     return redirect(url_for('extras.ver_tiposmiembros'))
 
@@ -300,7 +300,7 @@ def modif_rolfamiliar(id):
             db.session.commit()
             flash('Has modificado los datos correctamente', 'success')
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
 
         return redirect(url_for('extras.ver_rolesfamiliares'))
 
@@ -375,7 +375,7 @@ def crear_tipofamilia():
             db.session.commit()
             flash('Has guardado los datos correctamente', 'success')
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
 
         return redirect(url_for('extras.ver_tiposfamilias'))
 
@@ -406,7 +406,7 @@ def modif_tipofamilia(id):
             db.session.commit()
             flash('Has modificado los datos correctamente', 'success')
         except Exception as e:
-            flash('Error: ', e, 'danger')
+            flash('Error: ' + str(e), 'danger')
 
         return redirect(url_for('extras.ver_tiposfamilias'))
 
@@ -433,6 +433,6 @@ def borrar_tipofamilia(id):
         db.session.commit()
         flash('Has borrado los datos correctamente', 'success')
     except Exception as e:
-        flash('Error: ', e, 'danger')
+        flash('Error: ' + str(e), 'danger')
 
     return redirect(url_for('extras.ver_tiposfamilias'))
