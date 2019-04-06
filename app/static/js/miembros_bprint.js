@@ -1,11 +1,11 @@
-function familiasElements(e) {
+function miembrosElements(e) {
   "use strict"; // Start of use strict
 
 
-  // Familias -> Listado de grupos caseros
-  // Sirve para listar_familias y listar_familias_asignar
-  if ($('#tbListarFamilias').length != 0) {
-    $(tbListarFamilias).dataTable({
+  // miembros -> Listado de miembros
+  // Sirve para listar_miembros y listar_miembros_asignar
+  if ($('#tbListarMiembros').length != 0) {
+    $(tbListarMiembros).dataTable({
       "language": {
         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
         "decimal": ",",
@@ -15,54 +15,54 @@ function familiasElements(e) {
   }
 
   // FUNCIONALIDADES DE CREAR GRUPO CASERO
-  if ($('#tbCrearFamilia').length != 0) {
+  if ($('#tbCrearMiembro').length != 0) {
     /**
-     * Par de funciones para Crear (Guardar) datos Grupo Casero
+     * Par de funciones para Crear (Guardar) datos Miembro
      *  */
-    function after_familias_submitted(data) {
+    function after_miembros_submitted(data) {
       window.location.href = data.url;
     }
 
-    $(document).on('click', '#btnCrearFamilia', function (e) {
+    $(document).on('click', '#btnCrearMiembro', function (e) {
       e.preventDefault();
-      const url = '/familias/crear'
+      const url = '/miembros/crear'
       $.ajax({
         type: "POST",
         url: url,
-        data: $('#tbCrearFamilia').serialize(),
-        success: after_familias_submitted,
+        data: $('#tbCrearMiembro').serialize(),
+        success: after_miembros_submitted,
         dataType: 'json'
       });
     })
     /**
-     * Fin Par funciones crear Familia
+     * Fin Par funciones crear Miembro
      */
   }
 
 
   // FUNCIONALIDADES DE Modificar GRUPO CASERO
-  if ($('#tbModificarFamilia').length != 0) {
+  if ($('#tbModificarMiembro').length != 0) {
     /**
-     * Par de funciones para Modificar (Guardar) datos Grupo Casero
+     * Par de funciones para Modificar (Guardar) datos Miembro
      *  */
-    function after_familias_submitted(data) {
+    function after_miembros_submitted(data) {
       window.location.href = data.url;
     }
 
-    $(document).on('click', '#btnModificarFamilia', function (e) {
+    $(document).on('click', '#btnModificarMiembro', function (e) {
       e.preventDefault();
       const id = $('#id').val();
-      const url = '/familias/modificar/' + id
+      const url = '/miembros/modificar/' + id
       $.ajax({
         type: "POST",
         url: url,
-        data: $('#tbModificarFamilia').serialize(),
-        success: after_familias_submitted,
+        data: $('#tbModificarMiembro').serialize(),
+        success: after_miembros_submitted,
         dataType: 'json'
       });
     })
     /**
-     * Fin Par funciones Modificar Familia
+     * Fin Par funciones Modificar Miembro
      */
 
     /**
@@ -99,98 +99,6 @@ function familiasElements(e) {
       e.preventDefault();
       $("#cardBodyButtons").removeClass("d-none");
     });
-
-  }
-
-  // FUNCIONALIDADES DE ASIGNAR MIEMBROS A GRUPO CASERO
-  if ($('#tbAsignarFamilia').length != 0) {
-    $(tbMiembrosIn).dataTable({
-      "language": {
-        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
-        "decimal": ",",
-        "thousands": ".",
-      },
-      "pageLength": 5,
-      "lengthChange": false,
-      "info": false,
-      "dom": '<"pull-lefta"f><"pull-righta"l>tip',
-      "createdRow": function (row, data, index, cells) {
-        $(cells[2]).html('<a href="" class="MiembroOut"><i class="fa fa-minus"></i></a>');
-        $(row).addClass('text-center');
-      },
-    });
-
-    $(tbMiembrosOut).dataTable({
-      "language": {
-        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
-        "decimal": ",",
-        "thousands": ".",
-      },
-      "pageLength": 5,
-      "lengthChange": false,
-      "info": false,
-      "dom": '<"pull-leftb"f><"pull-rightb"l>tip',
-      "createdRow": function (row, data, index, cells) {
-        $(cells[2]).html('<a href="" class="MiembroIn"><i class="fa fa-plus"></i></a>');
-        $(row).addClass('text-center');
-      },
-    });
-
-    function MiembroIn(e) {
-      e.preventDefault();
-      let fila = $('#tbMiembrosIn').DataTable().row($(this).closest('tr'));
-      let id = $(this).closest('tr').children('td').first().text();
-
-      //agregar
-      let ids_out = $('input[name=ids_out]').val();
-      ids_out = ids_out + id + ","; //agrego id y coma
-      $('input[name=ids_out]').val(ids_out);
-      //quitar
-      let ids_in = $('input[name=ids_in]').val();
-      ids_in = ids_in.replace(id + ",", ""); //quito la id que está saliendo y la coma
-      $('input[name=ids_in]').val(ids_in);
-
-      $('#tbMiembrosOut').DataTable().row.add(fila.data()).draw();
-      fila.remove().draw();
-    }
-
-    function MiembroOut(e) {
-      e.preventDefault();
-      let fila = $('#tbMiembrosOut').DataTable().row($(this).closest('tr'));
-      let id = $(this).closest('tr').children('td').first().text();
-
-      //quitar
-      let ids_out = $('input[name=ids_out]').val();
-      ids_out = ids_out.replace(id + ",", "");
-      $('input[name=ids_out]').val(ids_out);
-       //quito la id que está saliendo y la coma
-      //agregar
-      let ids_in = $('input[name=ids_in]').val();
-      ids_in = ids_in + id + ","; //agrego id y coma
-      $('input[name=ids_in]').val(ids_in);
-
-      $('#tbMiembrosIn').DataTable().row.add(fila.data()).draw();
-      fila.remove().draw();
-    }
-
-    function after_miembrosfamilia_submitted(data) {
-      window.location.href = data.url;
-    }
-
-    $(document).on('click', '#btnGuardarAsigFamilia', function (e) {
-      e.preventDefault();
-      const url = '/familias/asignar/miembros/' + $('input[name=id]').val()
-      $.ajax({
-        type: "POST",
-        url: url,
-        data: $('#tbAsignarFamilia').serialize(),
-        success: after_miembrosfamilia_submitted,
-        dataType: 'json'
-      });
-    })
-
-    $(document).on('click', '.MiembroIn', MiembroOut)
-    $(document).on('click', '.MiembroOut', MiembroIn)
 
   }
 
@@ -308,4 +216,4 @@ function familiasElements(e) {
    */
 }
 
-window.addEventListener("load", familiasElements, false);
+window.addEventListener("load", miembrosElements, false);

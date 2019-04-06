@@ -5,7 +5,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Churching - Familias
+Churching - Miembros
 {% endblock %}
 
 {% block body %}
@@ -23,11 +23,11 @@ Churching - Familias
     {% include "home/_topbar.html" %}
 
     {% if flag_listar %}
-      {% include "familias/tabla_familias.html" %}
+      {% include "miembros/tabla_miembros.html" %}
     {% elif not flag_listar and flag_crear  %}
-      {% include "familias/agregar_familia.html" %}
+      {% include "miembros/agregar_miembro.html" %}
     {% elif not flag_listar and not flag_crear %}
-      {% include "familias/modificar_familia.html" %}
+      {% include "miembros/modificar_miembro.html" %}
     {% endif %}
 
   </div>
@@ -39,5 +39,5 @@ Churching - Familias
 <!-- End of Content Wrapper -->
 {% endif %}
 {% endif %}
-<script src="{{ url_for('static', filename='js/familias_bprint.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/miembros_bprint.min.js') }}"></script>
 {% endblock %}

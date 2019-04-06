@@ -49,8 +49,8 @@ class Miembro(db.Model):
     id_direccion = db.Column(db.Integer, db.ForeignKey('direcciones.id'),
                              nullable=False)
     # Estado Civil (1 estado civil para muchos miembros)
-    id_estadoscivil = db.Column(db.Integer, db.ForeignKey('estadosciviles.id'),
-                                nullable=False)
+    id_estadocivil = db.Column(db.Integer, db.ForeignKey('estadosciviles.id'),
+                               nullable=False)
     # Tipo de Miembro (1 tipo de miembro para muchos miembros)
     id_tipomiembro = db.Column(db.Integer, db.ForeignKey('tiposmiembros.id'),
                                nullable=False)

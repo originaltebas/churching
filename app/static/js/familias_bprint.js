@@ -17,7 +17,7 @@ function familiasElements(e) {
   // FUNCIONALIDADES DE CREAR GRUPO CASERO
   if ($('#tbCrearFamilia').length != 0) {
     /**
-     * Par de funciones para Crear (Guardar) datos Grupo Casero
+     * Par de funciones para Crear (Guardar) datos Familia
      *  */
     function after_familias_submitted(data) {
       window.location.href = data.url;
@@ -43,7 +43,7 @@ function familiasElements(e) {
   // FUNCIONALIDADES DE Modificar GRUPO CASERO
   if ($('#tbModificarFamilia').length != 0) {
     /**
-     * Par de funciones para Modificar (Guardar) datos Grupo Casero
+     * Par de funciones para Modificar (Guardar) datos Familia
      *  */
     function after_familias_submitted(data) {
       window.location.href = data.url;
