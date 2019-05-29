@@ -34,7 +34,8 @@ class Miembro(db.Model):
     nombres = db.Column(db.String(100), index=True, nullable=False)
     apellidos = db.Column(db.String(100), index=True, nullable=False)
     dni_doc = db.Column(db.String(20))
-    email = db.Column(db.String(60), index=True, unique=True)
+    # he quitado lo de unique porque los niños no tiene email
+    email = db.Column(db.String(60), index=True)
     telefono_movil = db.Column(db.String(15))
     telefono_fijo = db.Column(db.String(15))
     fecha_nac = db.Column(db.DateTime, nullable=False)
@@ -43,6 +44,8 @@ class Miembro(db.Model):
     fecha_bautismo = db.Column(db.DateTime)
     lugar_bautismo = db.Column(db.String(50))
     observaciones = db.Column(db.String(500))
+    hoja_firmada = db.Column(db.Boolean)
+    nro_hoja = db.Column(db.String(10))
 
     # RELACIONES N:1 [FOREINGKEYS]
     # Direccion (1 direccion para N miembros [la familia])

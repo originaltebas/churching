@@ -3,8 +3,8 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField, SelectField
-from wtforms import DateField
-from wtforms.validators import InputRequired, Length, Optional
+from wtforms import DateField, BooleanField
+from wtforms.validators import InputRequired, Length, Optional, DataRequired
 
 
 class MiembroForm(FlaskForm):
@@ -16,38 +16,39 @@ class MiembroForm(FlaskForm):
     id_direccion = HiddenField("idDir")
 
     # Modelo Familia
-    nombres = StringField(u'Nombres',
-                          validators=[InputRequired(),
+    nombres = StringField(u'Nombre/s',
+                          validators=[DataRequired(),
                                       Length(min=1, max=100)])
-    apellidos = StringField(u'Nombres',
-                            validators=[InputRequired(),
+    apellidos = StringField(u'Apellido/s',
+                            validators=[DataRequired(),
                                         Length(min=1, max=100)])
     dni_doc = StringField(u'DNI/Doc.',
-                          validators=[InputRequired(),
-                                      Length(min=0, max=20)])
-    email = StringField(u'Email',
-                        validators=[InputRequired(),
+                          validators=[Length(min=0, max=20)])
+    email = StringField(u'Email (si son niños poner el email\
+                          de alguno de los padres/tutores)',
+                        validators=[DataRequired(),
                                     Length(min=0, max=60)])
     telefono_movil = StringField(u'Móvil',
-                                 validators=[InputRequired(),
-                                             Length(min=0, max=15)])
+                                 validators=[Length(min=0, max=15)])
     telefono_fijo = StringField(u'Fijo',
-                                validators=[InputRequired(),
-                                            Length(min=0, max=15)])
-    fecha_nac = DateField(u'Fecha de Nacimiento', validators=[InputRequired()]
+                                validators=[Length(min=0, max=15)])
+    fecha_nac = DateField(u'Fecha de Nacimiento', validators=[DataRequired()])
     fecha_inicio_icecha = DateField(u'Fecha de Inicio en Iglesia',
-                                    validators=[Optional()]
-    fecha_miembro = DateField(u'Fecha de Membresía', validators=[Optional()]
-    fecha_bautismo = DateField(u'Fecha de Bautismo', validators=[Optional()]
+                                    validators=[Optional()])
+    fecha_miembro = DateField(u'Fecha de Membresía', validators=[Optional()])
+    fecha_bautismo = DateField(u'Fecha de Bautismo', validators=[Optional()])
     lugar_bautismo = StringField(u'Lugar de Bautismo',
-                                 validators=[InputRequired(),
-                                             Length(min=0, max=15)])
+                                 validators=[Length(min=0, max=15)])
+    hoja_firmada = BooleanField(u'¿Tiene firmada la hoja de membresía?')
+    nro_hoja = StringField(u'# de Hoja de Membresía (formato AAAA-NRO)')
     observaciones = StringField(u'Observaciones',
-                                validators=[InputRequired(),
-                                            Length(min=0, max=15)])
+                                validators=[Length(min=0, max=15)])
     EstadoCivil = SelectField(u'Estado Civil', coerce=int)
     TipoMiembro = SelectField(u'Tipo de Miembro', coerce=int)
     RolFamiliar = SelectField(u'Rol Familiar', coerce=int)
+
+    Familia = SelectField(u'Familia', coerce=int)
+    GrupoCasero = SelectField(u'Grupo Casero', coerce=int)
 
     submit = SubmitField(u'Aceptar')
 

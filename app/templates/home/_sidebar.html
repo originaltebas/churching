@@ -31,27 +31,6 @@
 
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFam" aria-expanded="true"
-      aria-controls="collapseTwo">
-      <i class="fas fa-fw fa-users"></i>
-      <span>Familias</span>
-    </a>
-    <div id="collapseFam" class="collapse" aria-labelledby="headingFam" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item text-wrap" href="{{ url_for('familias.ver_familias') }}">
-          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Gestionar Familias
-        </a>
-        <a class="collapse-item text-wrap" href="{{ url_for('familias.ver_familias_asignar') }}">
-          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
-          Agregar o quitar integrantes
-        </a>
-      </div>
-    </div>
-  </li>
-
-  <!-- Nav Item - Pages Collapse Menu -->
-  <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePer" aria-expanded="true"
       aria-controls="collapseTwo">
       <i class="fas fa-fw fa-user"></i>
@@ -64,16 +43,49 @@
           Gestionar Personas
         </a>
         <a class="collapse-item text-wrap" href="{{ url_for('familias.ver_familias_asignar') }}">
-          <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+          <i class="fas fa-users fa-sm fa-fw mr-2 text-gray-400"></i>
           Asignar Personas a Familias
         </a>
         <a class="collapse-item text-wrap" href="{{ url_for('ggcc.ver_ggcc_asignar') }}">
-          <i class="fas fa-minus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Asignar Personas a Grupos Caseros
+          <i class="fas fa-people-carry fa-sm fa-fw mr-2 text-gray-400"></i>
+          Asignar Personas a GGCC
         </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.asignar_roles', flag='M') }}">
+            <i class="fas fa-dice-d20 fa-sm fa-fw mr-2 text-gray-400"></i>
+            Asignar Roles a Personas
+        </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.asignar_roles', flag='R') }}">
+            <i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i>
+            Asignar Personas a Ministerios
+        </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('roles.asignar_roles', flag='C') }}">
+            <i class="fas fa-chalkboard-teacher fa-sm fa-fw mr-2 text-gray-400"></i>
+            Asignar Personas a Clases
+        </a>
+
       </div>
     </div>
   </li>
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFam" aria-expanded="true"
+        aria-controls="collapseTwo">
+        <i class="fas fa-fw fa-users"></i>
+        <span>Familias</span>
+      </a>
+      <div id="collapseFam" class="collapse" aria-labelledby="headingFam" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <a class="collapse-item text-wrap" href="{{ url_for('familias.ver_familias') }}">
+            <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+            Gestionar Familias
+          </a>
+          <a class="collapse-item text-wrap" href="{{ url_for('familias.ver_familias_asignar') }}">
+            <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
+            Agregar o quitar integrantes
+          </a>
+        </div>
+      </div>
+    </li>
 
   <!-- Divider -->
   <hr class="sidebar-divider">

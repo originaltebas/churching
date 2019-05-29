@@ -1,17 +1,18 @@
-# app/familias/views.py
+# app/miembros/views.py
 # coding: utf-8
 
 from flask import flash, jsonify
 from flask import redirect, render_template, url_for, request
 from flask_login import current_user, login_required
-from sqlalchemy import func, or_
+from sqlalchemy import func
 
-from app.familias import familias
-from app.familias.forms import FamiliasForm
-from app.familias.forms import DireccionModalForm, AsignacionMiembrosForm
+from app.miembros import miembros
+from app.miembros.forms import MiembroForm, DireccionModalForm
 
 from app import db
-from app.models import Familia, Direccion, Miembro, TipoFamilia
+from app.models import Miembro, Direccion, relacion_miembros_roles
+from app.models import Rol, EstadoCivil, TipoMiembro, RolFamiliar
+from app.models import Familia, GrupoCasero
 
 
 def check_edit_or_admin():
@@ -22,37 +23,46 @@ def check_edit_or_admin():
         return redirect(url_for("home.hub"))
 
 
-@familias.route('/familias', methods=['GET'])
+@miembros.route('/miembros', methods=['GET'])
 @login_required
-def ver_familias():
+def ver_miembros():
     """
-    Ver una lista de todos los familias
+    Ver una lista de todos los miembros
     """
     check_edit_or_admin()
 
     flag_listar = True
 
-    nro_personas = db.session.query(Miembro.id_familia,
-                                    func.count(Miembro.id_familia)
-                                        .label('contar'))\
-                             .group_by(Miembro.id_familia).subquery()
+    nro_roles = db.session.query(Miembro.id,
+                                 func.count(Rol.id).label('contar'))\
+                          .outerjoin(relacion_miembros_roles,
+                                     Miembro.id ==
+                                     relacion_miembros_roles.c.id_miembro)\
+                          .outerjoin(Rol,
+                                     Rol.id ==
+                                     relacion_miembros_roles.c.id_rol)\
+                          .group_by(Miembro).subquery()
 
-    query_familias = db.session.query(Familia)\
-                               .join(Direccion,
-                                     Familia.id_direccion ==
-                                     Direccion.id)\
-                               .outerjoin(nro_personas,
-                                          Familia.id ==
-                                          nro_personas.c.id_familia)\
-                               .outerjoin(TipoFamilia,
-                                          Familia.id_tipofamilia ==
-                                          TipoFamilia.id)\
+    query_miembros = db.session.query(Miembro)\
+                               .outerjoin(Direccion,
+                                          Miembro.id_direccion ==
+                                          Direccion.id)\
+                               .outerjoin(TipoMiembro,
+                                          Miembro.id_tipomiembro ==
+                                          TipoMiembro.id)\
+                               .outerjoin(nro_roles,
+                                          Miembro.id ==
+                                          nro_roles.c.id)\
                                .add_columns(
-                                            Familia.id,
-                                            Familia.apellidos_familia,
-                                            Familia.descripcion_familia,
-                                            Familia.telefono_familia,
-                                            TipoFamilia.tipo_familia,
+                                            Miembro.id,
+                                            Miembro.apellidos,
+                                            Miembro.nombres,
+                                            Miembro.email,
+                                            Miembro.telefono_fijo,
+                                            Miembro.telefono_movil,
+                                            Miembro.id_familia,
+                                            Miembro.id_grupocasero,
+                                            TipoMiembro.nombre_tipomiembro,
                                             Direccion.tipo_via,
                                             Direccion.nombre_via,
                                             Direccion.nro_via,
@@ -61,17 +71,18 @@ def ver_familias():
                                             Direccion.ciudad_via,
                                             Direccion.provincia_via,
                                             Direccion.pais_via,
-                                            nro_personas.c.contar)
+                                            nro_roles.c.contar)
 
-    return render_template('familias/base_familias.html',
-                           familias=query_familias, flag_listar=flag_listar)
+    return render_template('miembros/base_miembros.html',
+                           miembros=query_miembros,
+                           flag_listar=flag_listar)
 
 
-@familias.route('/familias/crear', methods=['GET', 'POST'])
+@miembros.route('/miembros/crear', methods=['GET', 'POST'])
 @login_required
-def crear_familia():
+def crear_miembro():
     """
-    Agregar un familia a la Base de Datos
+    Agregar un miembro a la Base de Datos
     """
     check_edit_or_admin()
 
@@ -79,41 +90,82 @@ def crear_familia():
     flag_crear = True
     flag_listar = False
 
-    form = FamiliasForm()
+    form = MiembroForm()
 
-    form.TipoFamilia.choices = [(row.id, row.tipo_familia)
-                                for row in TipoFamilia.query.all()]
+    form.EstadoCivil.choices = [(row.id, row.nombre_estado)
+                                for row in EstadoCivil.query.all()]
+    form.TipoMiembro.choices = [(row.id, row.nombre_tipomiembro)
+                                for row in TipoMiembro.query.all()]
+    form.RolFamiliar.choices = [(row.id, row.nombre_rolfam)
+                                for row in RolFamiliar.query.all()]
+    form.Familia.choices = [(row.id, row.apellidos_familia)
+                            for row in Familia.query.all()]
+    form.GrupoCasero.choices = [(row.id, row.nombre_grupo)
+                                for row in GrupoCasero.query.all()]
 
-    if form.validate_on_submit():
-        obj_familia = Familia(
-                        apellidos_familia=form.apellidos_familia.data,
-                        descripcion_familia=form.descripcion_familia.data,
-                        telefono_familia=form.telefono_familia.data,
-                        id_tipofamilia=form.TipoFamilia.data,
-                        id_direccion=form.id_direccion.data)
-        try:
-            db.session.add(obj_familia)
-            db.session.commit()
-            flash('Has guardado los datos correctamente', 'success')
-            status = 'ok'
-        except Exception as e:
-            flash('Error: ' + str(e), 'danger')
-            status = 'ko'
+    print("1.- JUST BEFORE -- POST")
+    print(request.method)
+    if request.method == "POST":
+        if form.validate_on_submit():
+            print("3.- JUST VALIDATE -- POST")
+            obj_miembro = Miembro(nombres=form.nombres.data,
+                                  apellidos=form.apellidos.data,
+                                  dni_doc=form.dni_doc.data,
+                                  email=form.email.data,
+                                  telefono_movil=form.telefono_movil.data,
+                                  telefono_fijo=form.telefono_fijo.data,
+                                  fecha_nac=form.fecha_nac.data,
+                                  fecha_inicio_icecha=form.fecha_inicio_icecha.data,
+                                  fecha_miembro=form.fecha_miembro.data,
+                                  fecha_bautismo=form.fecha_bautismo.data,
+                                  lugar_bautismo=form.lugar_bautismo.data,
+                                  hoja_firmada=form.hoja_firmada.data,
+                                  nro_hoja=form.nro_hoja.data,
+                                  observaciones=form.observaciones.data,
+                                  id_estadocivil=form.EstadoCivil.data,
+                                  id_tipomiembro=form.TipoMiembro.data,
+                                  id_rolfamiliar=form.RolFamiliar.data,
+                                  id_familia=form.Familia.data,
+                                  id_grupocasero=form.GrupoCasero.data,
+                                  id_direccion=form.id_direccion.data)
+            try:
+                db.session.add(obj_miembro)
+                db.session.commit()
+                flash('Has guardado los datos correctamente', 'success')
+                status = 'ok'
+            except Exception as e:
+                flash('Error: ' + str(e), 'danger')
+                status = 'ko'
 
-        url = url_for('familias.ver_familias')
-        return jsonify(status=status, url=url)
+            # return submited y validated
+            url = url_for('miembros.ver_miembros')
+            return jsonify(status=status, url=url)
+        else:
+            # validation error
+            status = 'val'
+            url = url_for('miembros.crear_miembro')
+            er = ""
+            for field, errors in form.errors.items():
+                for error in errors:
+                    er = er + "Campo: " +\
+                         getattr(form, field).label.text +\
+                         " - Error: " +\
+                         error + "<br/>"
 
-    return render_template('familias/base_familias.html',
-                           flag_crear=flag_crear,
-                           flag_listar=flag_listar, form=form)
+            return jsonify(status=status, url=url, errors=er)
+    else:
+        # get
+        print("5.- ELSE POST -- GET")
+        return render_template('miembros/base_miembros.html',
+                               flag_crear=flag_crear,
+                               flag_listar=flag_listar, form=form)
 
-
-@familias.route('/familias/modificar/<int:id>',
+@miembros.route('/miembros/modificar/<int:id>',
                 methods=['GET', 'POST'])
 @login_required
-def modif_familia(id):
+def modif_miembro(id):
     """
-    Modificar un familia
+    Modificar un miembro
     """
     check_edit_or_admin()
 
@@ -122,24 +174,24 @@ def modif_familia(id):
 
     # lo hago por partes para actualizar más facil
     # la dir si se crea una nueva
-    obj_familia = Familia.query.get_or_404(id)
+    obj_miembro = Miembro.query.get_or_404(id)
 
-    form_familia = FamiliasForm(obj=obj_familia)
-    form_familia.TipoFamilia.choices = [(row.id, row.tipo_familia)
-                                        for row in TipoFamilia.query.all()]
+    form_miembro = MiembroForm(obj=obj_miembro)
+    form_miembro.TipoMiembro.choices = [(row.id, row.tipo_miembro)
+                                        for row in TipoMiembro.query.all()]
 
     if request.method == 'GET':
-        obj_dir = Direccion.query.get_or_404(obj_familia.id_direccion)
+        obj_dir = Direccion.query.get_or_404(obj_miembro.id_direccion)
         form_dir = DireccionModalForm(obj=obj_dir)
-        form_familia.TipoFamilia.data = obj_familia.id_tipofamilia
-        form_familia.id_direccion.data = obj_familia.id_direccion
+        form_miembro.TipoMiembro.data = obj_miembro.id_tipomiembro
+        form_miembro.id_direccion.data = obj_miembro.id_direccion
 
-    if form_familia.validate_on_submit():
-        obj_familia.apellidos_familia = form_familia.apellidos_familia.data
-        obj_familia.descripcion_familia = form_familia.descripcion_familia.data
-        obj_familia.telefono_familia = form_familia.telefono_familia.data
-        obj_familia.id_tipofamilia = form_familia.TipoFamilia.data
-        obj_familia.id_direccion = form_familia.id_direccion.data
+    if form_miembro.validate_on_submit():
+        obj_miembro.apellidos_miembro = form_miembro.apellidos_miembro.data
+        obj_miembro.descripcion_miembro = form_miembro.descripcion_miembro.data
+        obj_miembro.telefono_miembro = form_miembro.telefono_miembro.data
+        obj_miembro.id_tipomiembro = form_miembro.TipoMiembro.data
+        obj_miembro.id_direccion = form_miembro.id_direccion.data
         try:
             # confirmo todos los datos en la db
             db.session.commit()
@@ -149,67 +201,67 @@ def modif_familia(id):
             flash('Error: ' + str(e), 'danger')
             status = 'ko'
 
-        url = url_for('familias.ver_familias')
+        url = url_for('miembros.ver_miembros')
         return jsonify(status=status, url=url)
 
-    return render_template('familias/base_familias.html',
+    return render_template('miembros/base_miembros.html',
                            flag_crear=flag_crear,
                            flag_listar=flag_listar,
-                           form_familia=form_familia,
+                           form_miembro=form_miembro,
                            form_dir=form_dir)
 
 
-@familias.route('/familias/borrar/<int:id>',
+@miembros.route('/miembros/borrar/<int:id>',
                 methods=['GET'])
 @login_required
-def borrar_familia(id):
+def borrar_miembro(id):
     """
-    Borrar una familia
+    Borrar una miembro
     """
     check_edit_or_admin()
 
-    obj_familia = Familia.query.get_or_404(id)
+    obj_miembro = Miembro.query.get_or_404(id)
     try:
-        db.session.delete(obj_familia)
+        db.session.delete(obj_miembro)
         db.session.commit()
         flash('Has borrado los datos correctamente.', 'success')
     except Exception as e:
         flash('Error: ' + str(e), 'danger')
 
-    return redirect(url_for('familias.ver_familias'))
+    return redirect(url_for('miembros.ver_miembros'))
 
 
-@familias.route('/familias/asignar', methods=['GET'])
+@miembros.route('/miembros/asignar', methods=['GET'])
 @login_required
-def ver_familias_asignar():
+def ver_miembros_asignar():
     """
-    Asignar miembros a un familia
+    Asignar miembros a un miembro
     """
     check_edit_or_admin()
 
     flag_listar = True
 
-    nro_personas = db.session.query(Miembro.id_familia,
-                                    func.count(Miembro.id_familia)
+    nro_personas = db.session.query(Miembro.id_miembro,
+                                    func.count(Miembro.id_miembro)
                                         .label('contar'))\
-                             .group_by(Miembro.id_familia).subquery()
+                             .group_by(Miembro.id_miembro).subquery()
 
-    query_familias = db.session.query(Familia)\
+    query_miembros = db.session.query(Miembro)\
                                .join(Direccion,
-                                     Familia.id_direccion ==
+                                     Miembro.id_direccion ==
                                      Direccion.id)\
                                .outerjoin(nro_personas,
-                                          Familia.id ==
-                                          nro_personas.c.id_familia)\
-                               .outerjoin(TipoFamilia,
-                                          Familia.id_tipofamilia ==
-                                          TipoFamilia.id)\
+                                          Miembro.id ==
+                                          nro_personas.c.id_miembro)\
+                               .outerjoin(TipoMiembro,
+                                          Miembro.id_tipomiembro ==
+                                          TipoMiembro.id)\
                                .add_columns(
-                                            Familia.id,
-                                            Familia.apellidos_familia,
-                                            Familia.descripcion_familia,
-                                            Familia.telefono_familia,
-                                            TipoFamilia.tipo_familia,
+                                            Miembro.id,
+                                            Miembro.apellidos_miembro,
+                                            Miembro.descripcion_miembro,
+                                            Miembro.telefono_miembro,
+                                            TipoMiembro.tipo_miembro,
                                             Direccion.tipo_via,
                                             Direccion.nombre_via,
                                             Direccion.nro_via,
@@ -220,87 +272,6 @@ def ver_familias_asignar():
                                             Direccion.pais_via,
                                             nro_personas.c.contar)
 
-    return render_template('familias/base_familias_asignar.html',
-                           familias=query_familias,
+    return render_template('miembros/base_miembros_asignar.html',
+                           miembros=query_miembros,
                            flag_listar=flag_listar)
-
-
-@familias.route('/familias/asignar/miembros/<int:id>',
-                methods=['GET', 'POST'])
-@login_required
-def asignar_miembros(id):
-    """
-    Asignar miembros a una Familia
-    """
-    check_edit_or_admin()
-
-    flag_listar = False
-    FormMiembros = AsignacionMiembrosForm()
-
-    if request.method == 'GET':
-        obj_familia = Familia.query.get_or_404(id)
-        form_familia = FamiliasForm(obj=obj_familia)
-
-        obj_miembros_in = db.session.query(Miembro.id, Miembro.nombres,
-                                           Miembro.apellidos)\
-                                    .filter(Miembro.id_familia == id)\
-                                    .all()
-
-        obj_miembros_out = db.session.query(Miembro.id, Miembro.nombres,
-                                            Miembro.apellidos)\
-                                     .filter(or_(
-                                          Miembro.id_familia == 0,
-                                          Miembro.id_familia.is_(None)))\
-                                     .all()
-
-        # genero una cadena de ids con los datos de los miembros
-        # incluídos para guardarlos en un Hidden Field
-        FormMiembros.ids_in.data = ""
-        for idm in obj_miembros_in:
-            FormMiembros.ids_in.data = str(FormMiembros.ids_in.data
-                                           ) + str(idm.id) + ","
-        # genero una cadena de ids con los datos de los miembros
-        # incluídos para guardarlos en un Hidden Field
-        FormMiembros.ids_out.data = ""
-        for idm in obj_miembros_out:
-            FormMiembros.ids_out.data = str(FormMiembros.ids_out.data)\
-                                      + str(idm.id) + ","
-
-        return render_template('familias/base_familias_asignar.html',
-                               form_familia=form_familia,
-                               miembros_in=obj_miembros_in,
-                               miembros_out=obj_miembros_out,
-                               flag_listar=flag_listar,
-                               FormMiembros=FormMiembros)
-
-    elif FormMiembros.validate_on_submit():
-        ids_in = FormMiembros.ids_in.data[:-1].split(",")
-        ids_out = FormMiembros.ids_out.data[:-1].split(",")
-
-        obj_in = Miembro.query.filter(Miembro.id.in_(ids_in))
-        obj_out = Miembro.query.filter(
-                                or_(Miembro.id.in_(ids_out),
-                                    Miembro.id.is_(None)))
-
-        # Para borrar las relaciones de los antiguos
-        for o in obj_out:
-            o.id_familia = None
-
-        # Para agregar a los recien asignados
-        for m in obj_in:
-            m.id_familia = id
-
-        try:
-            db.session.commit()
-            flash('Has guardado los datos correctamente', 'success')
-        except Exception as e:
-            flash('Error: ', e, 'danger')
-
-        url = url_for('familias.ver_familias_asignar')
-        return jsonify(url=url)
-    else:
-        # Es Post pero no pasa el validate.
-        flash('Los datos de miembros no han podido modificarse', 'danger')
-        return redirect(url_for('familias.ver_familias_asignar'))
-        url = url_for('familias.ver_familias_asignar')
-        return jsonify(url=url)

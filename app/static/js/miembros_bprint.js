@@ -20,7 +20,11 @@ function miembrosElements(e) {
      * Par de funciones para Crear (Guardar) datos Miembro
      *  */
     function after_miembros_submitted(data) {
-      window.location.href = data.url;
+      if (data.status == 'val') {
+        document.getElementById("formerrors").innerHTML = data.errors;
+      } else {
+        window.location.href = data.url;
+      }
     }
 
     $(document).on('click', '#btnCrearMiembro', function (e) {
@@ -46,7 +50,11 @@ function miembrosElements(e) {
      * Par de funciones para Modificar (Guardar) datos Miembro
      *  */
     function after_miembros_submitted(data) {
-      window.location.href = data.url;
+      if (data.status == 'val') {
+        document.getElementById("formerrors").innerHTML = data.errors;
+      } else {
+        window.location.href = data.url;
+      }
     }
 
     $(document).on('click', '#btnModificarMiembro', function (e) {
@@ -60,7 +68,8 @@ function miembrosElements(e) {
         success: after_miembros_submitted,
         dataType: 'json'
       });
-    })
+    });
+
     /**
      * Fin Par funciones Modificar Miembro
      */

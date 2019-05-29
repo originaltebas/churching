@@ -50,11 +50,11 @@
                         <tr class="text-center">
                             <th scope="col">Id</th>
                             <th scope="col">Nombres y Apellidos</th>
-                            <th scope="col">Descripci&oacute;n</th>
-                            <th scope="col">Tel&eacute;fono</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Tel&eacute;fonos</th>
                             <th scope="col">Tipo de Miembro</th>
                             <th scope="col">Direcci&oacute;n</th>
-                            <th scope="col"># de Personas</th>
+                            <th scope="col">Vinculado a</th>
                             <th scope="col">Modificar</th>
                             <th scope="col">Borrar</th>
                         </tr>
@@ -63,10 +63,15 @@
                         {% for miembro in miembros %}
                         <tr  class="text-center">
                             <td scope="row"> {{ miembro.id }} </td>
-                            <td> {{ miembro.apellidos_miembro }} </td>
-                            <td> {{ miembro.descripcion_miembro }} </td>
-                            <td> {{ miembro.telefono_miembro }} </td>
-                            <td> {{ miembro.tipo_miembro }} </td>
+                            <td> {{ miembro.nombres }} {{ miembro.apellidos }} </td>
+                            <td> {{ miembro.email }} </td>
+                            <td> {% if miembro.telefono_movil %}
+                                 <b>M&oacute;vil:</b> {{ miembro.telefono_movil }} </br>
+                                 {% endif %}
+                                 {% if miembro.telefono_fijo %}
+                                <b>Fijo:</b> {{ miembro.telefono_fijo }}
+                                {% endif %} </td>
+                            <td>{{miembro.nombre_tipomiembro}}</td>
                             <td>
                                 {{ miembro.tipo_via }} {{ miembro.nombre_via }}, {{ miembro.nro_via }}.
                                 {% if miembro.portalescalotros_via %}
@@ -75,10 +80,20 @@
                                 {{ miembro.cp_via }}. {{ miembro.ciudad_via }}. {{ miembro.provincia_via }}. {{ miembro.pais_via }}.
                             </td>
                             <td>
-                                {% if miembro.contar %}
-                                {{ miembro.contar }}
+                                {% if miembro.id_familia %}
+                                    <b>Familia:</b> Sí (id:{{miembro.id_familia}})</br>
                                 {% else %}
-                                0
+                                    <b>Familia:</b> No</br>
+                                {% endif %}
+                                {% if miembro.id_grupocasero %}
+                                    <b>Grupo Casero:</b> Sí (id:{{miembro.id_grupocasero}})</br>
+                                {% else %}
+                                    <b>Grupo Casero:</b> No</br>
+                                {% endif %}
+                                {% if miembro.contar %}
+                                    <b>Roles:</b> Sí (Cantidad:{{miembro.contar}})</br>
+                                {% else %}
+                                    <b>Roles:</b> No
                                 {% endif %}
                             </td>
                             <td>
