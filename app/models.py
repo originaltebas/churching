@@ -5,6 +5,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
+from sqlalchemy.orm import column_property
 
 
 # Tablas intemedias para Relaciones N:N
@@ -33,6 +34,8 @@ class Miembro(db.Model):
     # CAMPOS DESCRIPTIVOS
     nombres = db.Column(db.String(100), index=True, nullable=False)
     apellidos = db.Column(db.String(100), index=True, nullable=False)
+    fullname = column_property(nombres + " " + apellidos)
+
     dni_doc = db.Column(db.String(20))
     # he quitado lo de unique porque los niños no tiene email
     email = db.Column(db.String(60), index=True)
@@ -285,8 +288,10 @@ class Seguimiento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # CAMPOS DESCRIPTIVOS
-    fecha_seg = db.Column(db.DateTime, nullable=False)
-    comentarios_seg = db.Column(db.Boolean, nullable=False)
+    fecha_seg = db.Column(db.Date, nullable=False)
+    comentarios_seg = db.Column(db.String(1000), nullable=False)
+    # L=llamada, M=Mensaje, P=Presencial, O=Otro
+    tipo_seg = db.Column(db.Integer, nullable=False)
 
     # 1 miembro muchos seguimientos
     id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'),

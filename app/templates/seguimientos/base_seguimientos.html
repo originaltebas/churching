@@ -1,16 +1,16 @@
-<!-- app/templates/extras/estadosciviles/base_estadosciviles.html -->
+<!-- app/templates/seguimientos/base_seguimientos.html -->
 
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
-{% block title %}Churching - Estados Civiles{% endblock %}
+{% block title %}Churching - Seguimientos - Solo Administradores{% endblock %}
 
 {% block body %}
 {% if current_user.is_authenticated %}
-  {# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
-  {% if current_user.get_urole() >= 1 %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() == 2 %}
 
-  {% include "home/_sidebar.html" %}
+{% include "home/_sidebar.html" %}
 
 <!-- Content Wrapper -->
 <div id="content-wrapper" class="d-flex flex-column">
@@ -21,10 +21,9 @@
     {% include "home/_topbar.html" %}
 
     {% if flag_listar %}
-      {% include "extras/estadosciviles/tabla_estadosciviles.html" %}
-      <script src="{{ url_for('static', filename='js/extras_bprint.min.js') }}"></script>
+      {% include "seguimientos/tabla_seguimientos.html" %}
     {% else %}
-      {% include "extras/estadosciviles/agregar_editar_estadocivil.html" %}
+      {% include "seguimientos/agregar_editar_seguimiento.html" %}
     {% endif %}
   </div>
   <!-- End of Main Content -->
@@ -35,4 +34,5 @@
 <!-- End of Content Wrapper -->
 {% endif %}
 {% endif %}
+<script src="{{ url_for('static', filename='js/seguimientos_bprint.min.js') }}"></script>
 {% endblock %}

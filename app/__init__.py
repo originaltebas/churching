@@ -58,4 +58,7 @@ def create_app(config_name):
     from .extras import extras as extras_blueprint
     app.register_blueprint(extras_blueprint)
 
+    from .seguimientos import seguimientos as seguimientos_blueprint
+    app.register_blueprint(seguimientos_blueprint)
+
     return app

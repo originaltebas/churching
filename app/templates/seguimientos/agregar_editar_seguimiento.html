@@ -1,0 +1,70 @@
+<!-- app/templates/seguimientos/agregar_editar_seguimiento.html -->
+
+{% if current_user.is_authenticated %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() == 2 %}
+
+
+{% set nombre = "Seguimiento" %}
+{% if add_seguimiento %}
+{% set modo = 'Agregar' %}
+{% else %}
+{% set modo = 'Modificar' %}
+{% endif %}
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 class="h3 my-3 alert alert-primary"> {{modo}} {{nombre}} </h1>
+  <div class="col-12">
+    <div class="card shadow">
+      <h5 class="card-header py-3">
+          Datos
+        </h5>
+      <div class="card-body">
+        <form class="user" method="POST" role="form" action="">
+          {{ form.csrf_token }}
+          {{ form.id_miembro }}
+          <div class="form-group">
+            {{form.nomyape.label}}
+            {% if add_seguimiento %}
+            {{ form.nomyape(class_="form-control form-control-user") }}
+            {% else %}
+              <input class="form-control form-control-user" id="nombre" name="nombre" value="{{ miembro.fullname }}" readonly>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <div class="col-6">
+            {{ form.fecha_seg.label}}
+            {{ form.fecha_seg(class_="form-control", type="date") }}
+            </div>
+            <div class="col-6">
+              {{ form.tipo_seg.label}}
+              {{ form.tipo_seg(class_="form-control custom-select text-lg") }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{form.comentarios_seg.label}}
+            {{ form.comentarios_seg(class_="form-control") }}
+          </div>
+          <div class="row">
+            <div class="col-2"></div>
+            <div class="col-4">
+              <input type="submit" id="submit" name="submit" class="font-weight-bold btn btn-primary btn-block btn-lg"
+                value="Guardar" />
+            </div>
+            <div class="col-4">
+              <a class="font-weight-bold btn btn-danger btn-lg btn-block"
+                href="{{ url_for("seguimientos.ver_seguimientos")}}">Cancelar</a>
+            </div>
+            <div class="col-2"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endif %}
