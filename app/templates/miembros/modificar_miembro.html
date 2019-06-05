@@ -1,11 +1,11 @@
-<!-- app/templates/familias/modificar_familia.html -->
+<!-- app/templates/miembros/modificar_miembro.html -->
 
 {% if current_user.is_authenticated %}
 {# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
 {% if current_user.get_urole() >= 1 %}
 
-{%     set nombre = 'Familia' %}
-{%     set nombres = 'Familias' %}
+{%     set nombre = 'Miembro' %}
+{%     set nombres = 'Miembros' %}
 {%     set modo = 'Modificar' %}
 
 <!-- Begin Page Content -->
@@ -18,35 +18,111 @@
         Datos Generales
       </h5>
       <div class="card-body">
-        <form id="tbModificarFamilia" class="user" method="POST" role="form" action="">
-          {{ form_familia.csrf_token }}
-          {{ form_familia.id_direccion }}
-          {{ form_familia.id }}
-          <div class="form-group">
-            {{ form_familia.apellidos_familia.label(class_="pl-3") }}
-            {{ form_familia.apellidos_familia(class_="form-control form-control-user") }}
-          </div>
-          <div class="form-group">
-            {{ form_familia.descripcion_familia.label(class_="pl-3") }}
-            {{ form_familia.descripcion_familia(class_="form-control form-control-user") }}
+        <form id="tbModificarMiembro" method="POST" role="form" action="">
+          {{ form.csrf_token }}
+          {{ form.id_direccion }}
+          {{ form.id }}
+          <div class="form-group row">
+            <div class="col-5">
+              {{ form.nombres.label(class_="pl-3") }}
+              {{ form.nombres(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-5">
+              {{ form.apellidos.label(class_="pl-3") }}
+              {{ form.apellidos(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-2">
+              {{ form.dni_doc.label(class_="pl-3") }}
+              {{ form.dni_doc(class_="form-control form-control-user") }}
+            </div>
           </div>
           <div class="form-group row">
             <div class="col-6">
-              {{ form_familia.telefono_familia.label(class_="pl-3") }}
-              {{ form_familia.telefono_familia(class_="form-control form-control-user") }}
+              {{ form.email.label(class_="pl-3") }}
+              {{ form.email(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-3">
+              {{ form.telefono_movil.label(class_="pl-3") }}
+              {{ form.telefono_movil(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-3">
+              {{ form.telefono_fijo.label(class_="pl-3") }}
+              {{ form.telefono_fijo(class_="form-control form-control-user") }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-3">
+              {{ form.fecha_nac.label(class_="pl-3") }}
+              {{ form.fecha_nac(class_="form-control", type="date") }}
+            </div>
+            <div class="col-3">
+              {{ form.fecha_inicio_icecha.label(class_="pl-3") }}
+              {{ form.fecha_inicio_icecha(class_="form-control", type="date") }}
+            </div>
+            <div class="col-3">
+              {{ form.fecha_miembro.label(class_="pl-3") }}
+              {{ form.fecha_miembro(class_="form-control", type="date") }}
+            </div>
+            <div class="col-3">
+              {{ form.fecha_bautismo.label(class_="pl-3") }}
+              {{ form.fecha_bautismo(class_="form-control", type="date") }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-6">
+              {{ form.lugar_bautismo.label(class_="pl-3") }}
+              {{ form.lugar_bautismo(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-2">
+              {{ form.hoja_firmada.label(class_="pl-3") }}
+              {{ form.hoja_firmada(class_="form-control form-control-user") }}
+            </div>
+            <div class="col-4">
+              {{ form.nro_hoja.label(class_="pl-3") }}
+              {{ form.nro_hoja(class_="form-control form-control-user") }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-4 input-group-lg">
+              {{ form.EstadoCivil.label(class_="pl-3") }}
+              {{ form.EstadoCivil(class_="form-control custom-select text-lg") }}
+            </div>
+            <div class="col-4 input-group-lg">
+              {{ form.TipoMiembro.label(class_="pl-3") }}
+              {{ form.TipoMiembro(class_="form-control custom-select text-lg") }}
+            </div>
+            <div class="col-4 input-group-lg">
+              {{ form.RolFamiliar.label(class_="pl-3") }}
+              {{ form.RolFamiliar(class_="form-control custom-select text-lg") }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-6 input-group-lg">
+              {{ form.Familia.label(class_="pl-3") }}
+              {{ form.Familia(class_="form-control custom-select text-lg") }}
             </div>
             <div class="col-6 input-group-lg">
-              {{ form_familia.TipoFamilia.label(class_="pl-3") }}
-              {{ form_familia.TipoFamilia(class_="form-control custom-select text-lg") }}
+              {{ form.GrupoCasero.label(class_="pl-3") }}
+              {{ form.GrupoCasero(class_="form-control custom-select text-lg") }}
             </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12">
+              {{ form.observaciones.label(class_="pl-3") }}
+              {{ form.observaciones(class_="form-control form-control-user") }}
+            </div>
+          </div>
+          <div class="form-group row">
+              <div id="formerrors" class="col-12 text-danger">
+              </div>
           </div>
 
           <div class="form-group row d-none mt-5" id="cardBodyButtons">
             <div class="col-3"></div>
-            <a class="btn btn-primary col-2 text-white font-weight-bold" id="btnModificarFamilia">Guardar {{nombre}}</a>
+            <input type="submit" class="btn btn-primary col-2 text-white font-weight-bold" id="btnModificarMiembro" value="Modificar {{nombre}}">
             <div class="col-2"></div>
             <a class="btn btn-danger col-2 text-white font-weight-bold"
-              href='{{ url_for("familias.ver_familias") }}'>Cancelar</a>
+              href='{{ url_for("miembros.ver_miembros") }}'>Cancelar</a>
             <div class="col-3"></div>
           </div>
         </form>

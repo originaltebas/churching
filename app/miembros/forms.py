@@ -42,7 +42,7 @@ class MiembroForm(FlaskForm):
     hoja_firmada = BooleanField(u'¿Tiene firmada la hoja de membresía?')
     nro_hoja = StringField(u'# de Hoja de Membresía (formato AAAA-NRO)')
     observaciones = StringField(u'Observaciones',
-                                validators=[Length(min=0, max=15)])
+                                validators=[Length(min=0, max=500)])
     EstadoCivil = SelectField(u'Estado Civil', coerce=int)
     TipoMiembro = SelectField(u'Tipo de Miembro', coerce=int)
     RolFamiliar = SelectField(u'Rol Familiar', coerce=int)

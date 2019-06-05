@@ -14,7 +14,7 @@ function miembrosElements(e) {
     });
   }
 
-  // FUNCIONALIDADES DE CREAR GRUPO CASERO
+  // FUNCIONALIDADES DE CREAR MIEMBROS
   if ($('#tbCrearMiembro').length != 0) {
     /**
      * Par de funciones para Crear (Guardar) datos Miembro
@@ -44,7 +44,7 @@ function miembrosElements(e) {
   }
 
 
-  // FUNCIONALIDADES DE Modificar GRUPO CASERO
+  // FUNCIONALIDADES DE Modificar MIEMBROS
   if ($('#tbModificarMiembro').length != 0) {
     /**
      * Par de funciones para Modificar (Guardar) datos Miembro
@@ -60,6 +60,7 @@ function miembrosElements(e) {
     $(document).on('click', '#btnModificarMiembro', function (e) {
       e.preventDefault();
       const id = $('#id').val();
+      console.log(id);
       const url = '/miembros/modificar/' + id
       $.ajax({
         type: "POST",

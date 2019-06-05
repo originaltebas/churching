@@ -103,11 +103,8 @@ def crear_miembro():
     form.GrupoCasero.choices = [(row.id, row.nombre_grupo)
                                 for row in GrupoCasero.query.all()]
 
-    print("1.- JUST BEFORE -- POST")
-    print(request.method)
     if request.method == "POST":
         if form.validate_on_submit():
-            print("3.- JUST VALIDATE -- POST")
             obj_miembro = Miembro(nombres=form.nombres.data,
                                   apellidos=form.apellidos.data,
                                   dni_doc=form.dni_doc.data,
@@ -155,10 +152,10 @@ def crear_miembro():
             return jsonify(status=status, url=url, errors=er)
     else:
         # get
-        print("5.- ELSE POST -- GET")
         return render_template('miembros/base_miembros.html',
                                flag_crear=flag_crear,
                                flag_listar=flag_listar, form=form)
+
 
 @miembros.route('/miembros/modificar/<int:id>',
                 methods=['GET', 'POST'])
@@ -175,40 +172,84 @@ def modif_miembro(id):
     # lo hago por partes para actualizar más facil
     # la dir si se crea una nueva
     obj_miembro = Miembro.query.get_or_404(id)
-
     form_miembro = MiembroForm(obj=obj_miembro)
-    form_miembro.TipoMiembro.choices = [(row.id, row.tipo_miembro)
+
+    form_miembro.EstadoCivil.choices = [(row.id, row.nombre_estado)
+                                        for row in EstadoCivil.query.all()]
+    form_miembro.TipoMiembro.choices = [(row.id, row.nombre_tipomiembro)
                                         for row in TipoMiembro.query.all()]
+    form_miembro.RolFamiliar.choices = [(row.id, row.nombre_rolfam)
+                                        for row in RolFamiliar.query.all()]
+    form_miembro.Familia.choices = [(row.id, row.apellidos_familia)
+                                    for row in Familia.query.all()]
+    form_miembro.GrupoCasero.choices = [(row.id, row.nombre_grupo)
+                                        for row in GrupoCasero.query.all()]
 
     if request.method == 'GET':
         obj_dir = Direccion.query.get_or_404(obj_miembro.id_direccion)
         form_dir = DireccionModalForm(obj=obj_dir)
-        form_miembro.TipoMiembro.data = obj_miembro.id_tipomiembro
         form_miembro.id_direccion.data = obj_miembro.id_direccion
 
-    if form_miembro.validate_on_submit():
-        obj_miembro.apellidos_miembro = form_miembro.apellidos_miembro.data
-        obj_miembro.descripcion_miembro = form_miembro.descripcion_miembro.data
-        obj_miembro.telefono_miembro = form_miembro.telefono_miembro.data
-        obj_miembro.id_tipomiembro = form_miembro.TipoMiembro.data
-        obj_miembro.id_direccion = form_miembro.id_direccion.data
-        try:
-            # confirmo todos los datos en la db
-            db.session.commit()
-            flash('Has guardado los datos correctamente', 'success')
-            status = 'ok'
-        except Exception as e:
-            flash('Error: ' + str(e), 'danger')
-            status = 'ko'
+        form_miembro.EstadoCivil.data = obj_miembro.id_estadocivil
+        form_miembro.TipoMiembro.data = obj_miembro.id_tipomiembro
+        form_miembro.RolFamiliar.data = obj_miembro.id_rolfamiliar
+        form_miembro.Familia.data = obj_miembro.id_familia
+        form_miembro.GrupoCasero.data = obj_miembro.id_grupocasero
 
-        url = url_for('miembros.ver_miembros')
-        return jsonify(status=status, url=url)
+        return render_template('miembros/base_miembros.html',
+                               flag_crear=flag_crear,
+                               flag_listar=flag_listar,
+                               form=form_miembro,
+                               form_dir=form_dir)
 
-    return render_template('miembros/base_miembros.html',
-                           flag_crear=flag_crear,
-                           flag_listar=flag_listar,
-                           form_miembro=form_miembro,
-                           form_dir=form_dir)
+    elif request.method == "POST":
+        if form_miembro.validate_on_submit():
+            obj_miembro.nombres = form_miembro.nombres.data
+            obj_miembro.apellidos = form_miembro.apellidos.data
+            obj_miembro.dni_doc = form_miembro.dni_doc.data
+            obj_miembro.email = form_miembro.email.data
+            obj_miembro.telefono_movil = form_miembro.telefono_movil.data
+            obj_miembro.telefono_fijo = form_miembro.telefono_fijo.data
+            obj_miembro.fecha_nac = form_miembro.fecha_nac.data
+            obj_miembro.fecha_inicio_icecha = form_miembro.fecha_inicio_icecha.data
+            obj_miembro.fecha_miembro = form_miembro.fecha_miembro.data
+            obj_miembro.fecha_bautismo = form_miembro.fecha_bautismo.data
+            obj_miembro.lugar_bautismo = form_miembro.lugar_bautismo.data
+            obj_miembro.hoja_firmada = form_miembro.hoja_firmada.data
+            obj_miembro.nro_hoja = form_miembro.nro_hoja.data
+            obj_miembro.observaciones = form_miembro.observaciones.data
+            obj_miembro.id_estadocivil = form_miembro.EstadoCivil.data
+            obj_miembro.id_tipomiembro = form_miembro.TipoMiembro.data
+            obj_miembro.id_rolfamiliar = form_miembro.RolFamiliar.data
+            obj_miembro.id_familia = form_miembro.Familia.data
+            obj_miembro.id_grupocasero = form_miembro.GrupoCasero.data
+            obj_miembro.id_direccion = form_miembro.id_direccion.data
+
+            try:
+                # confirmo todos los datos en la db
+                db.session.commit()
+                flash('Has guardado los datos correctamente', 'success')
+                status = 'ok'
+            except Exception as e:
+                flash('Error: ' + str(e), 'danger')
+                status = 'ko'
+                # return submited y validated
+
+            url = url_for('miembros.ver_miembros')
+            return jsonify(status=status, url=url)
+        else:
+            # validation error
+            status = 'val'
+            url = url_for('miembros.ver_miembros')
+            er = ""
+            for field, errors in form_miembro.errors.items():
+                for error in errors:
+                    er = er + "Campo: " +\
+                         getattr(form_miembro, field).label.text +\
+                         " - Error: " +\
+                         error + "<br/>"
+
+            return jsonify(status=status, url=url, errors=er)
 
 
 @miembros.route('/miembros/borrar/<int:id>',
@@ -229,49 +270,3 @@ def borrar_miembro(id):
         flash('Error: ' + str(e), 'danger')
 
     return redirect(url_for('miembros.ver_miembros'))
-
-
-@miembros.route('/miembros/asignar', methods=['GET'])
-@login_required
-def ver_miembros_asignar():
-    """
-    Asignar miembros a un miembro
-    """
-    check_edit_or_admin()
-
-    flag_listar = True
-
-    nro_personas = db.session.query(Miembro.id_miembro,
-                                    func.count(Miembro.id_miembro)
-                                        .label('contar'))\
-                             .group_by(Miembro.id_miembro).subquery()
-
-    query_miembros = db.session.query(Miembro)\
-                               .join(Direccion,
-                                     Miembro.id_direccion ==
-                                     Direccion.id)\
-                               .outerjoin(nro_personas,
-                                          Miembro.id ==
-                                          nro_personas.c.id_miembro)\
-                               .outerjoin(TipoMiembro,
-                                          Miembro.id_tipomiembro ==
-                                          TipoMiembro.id)\
-                               .add_columns(
-                                            Miembro.id,
-                                            Miembro.apellidos_miembro,
-                                            Miembro.descripcion_miembro,
-                                            Miembro.telefono_miembro,
-                                            TipoMiembro.tipo_miembro,
-                                            Direccion.tipo_via,
-                                            Direccion.nombre_via,
-                                            Direccion.nro_via,
-                                            Direccion.portalescalotros_via,
-                                            Direccion.cp_via,
-                                            Direccion.ciudad_via,
-                                            Direccion.provincia_via,
-                                            Direccion.pais_via,
-                                            nro_personas.c.contar)
-
-    return render_template('miembros/base_miembros_asignar.html',
-                           miembros=query_miembros,
-                           flag_listar=flag_listar)
