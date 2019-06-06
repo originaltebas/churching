@@ -21,6 +21,20 @@ relacion_miembros_roles = db.Table('relacion_miembros_roles',
                                              primary_key=True)
                                    )
 
+# Tablas intemedias para Relaciones N:N
+# Miembros con Reuniones para definir asistencias
+# (1 miembro->varias asist, 1 reunien -> varios miembros)
+asistencias = db.Table('asistencias',
+                       db.Column('id_miembro',
+                                 db.Integer,
+                                 db.ForeignKey('miembros.id'),
+                                 primary_key=True),
+                       db.Column('id_reunion',
+                                 db.Integer,
+                                 db.ForeignKey('reuniones.id'),
+                                 primary_key=True)
+                       )
+
 
 class Miembro(db.Model):
     "TABLA BASE DEL MODELO - MIEMBROS DE LA IGLESIA"
@@ -69,8 +83,6 @@ class Miembro(db.Model):
     id_familia = db.Column(db.Integer, db.ForeignKey('familias.id'))
 
     # RELACIONES N:1 [BACKREF]
-    # Asistencia (1 miembro, muchas asistencias)
-    asistencias = db.relationship('Asistencia', backref='miembro', lazy=True)
     # Seguimiento (1 miembro, muchos Seguimientos)
     seguimientos = db.relationship('Seguimiento', backref='miembro', lazy=True)
 
@@ -79,6 +91,9 @@ class Miembro(db.Model):
     # ministerio alabanza, etc)
     roles = db.relationship("Rol", secondary=relacion_miembros_roles,
                             back_populates="miembros")
+    reuniones = db.relationship("Reunion",
+                                secondary=asistencias,
+                                back_populates="miembros")
 
     def __repr__(self):
         return '<Miembro: %s ' ' %s>' % (self.nombres, self.apellidos)
@@ -255,26 +270,31 @@ class TipoFamilia(db.Model):
         return '<Tipo Familia: {}>'.format(self.tipo_familia)
 
 
-class Asistencia(db.Model):
-    "TABLA DE ASISTENCIAS - PARA SABER QUIEN FALTA Y PODER CONTACTARLO"
-
+class Reunion(db.Model):
+    """
+    TABLA DE REUNIONES PARA
+    CONTROLAR ASISTENCIAS -
+    PARA SABER QUIEN FALTA Y PODER CONTACTARLO
+    """
     # NOMBRE DE TABLA EN MYSQL
-    __tablename__ = 'asistencias'
+    __tablename__ = 'reuniones'
 
     # CLAVE PRIMARIA
     id = db.Column(db.Integer, primary_key=True)
 
     # CAMPOS DESCRIPTIVOS
-    fecha_culto = db.Column(db.DateTime, nullable=False)
-    asistio = db.Column(db.Boolean, nullable=False)
+    fecha_culto = db.Column(db.Date, nullable=False)
+    nombre_culto = db.Column(db.String(20), nullable=False)
+    comentarios = db.Column(db.String(100))
 
-    # 1 miembro muchas asistencias
-    id_miembro = db.Column(db.Integer, db.ForeignKey('miembros.id'),
-                           nullable=False)
+    # RELACIONES N:N [TABLA INTERMEDIA]
+    miembros = db.relationship("Miembro",
+                               secondary=asistencias,
+                               back_populates="reuniones")
 
     def __repr__(self):
         return '<Asistencia: %s>' '%s' % (self.fecha_culto,
-                                          self.asistio)
+                                          self.nombre_culto)
 
 
 class Seguimiento(db.Model):

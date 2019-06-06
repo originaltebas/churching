@@ -2,6 +2,6 @@
 
 from flask import Blueprint
 
-seguimientos = Blueprint('seguimientos', __name__)
+asistencias = Blueprint('asistencias', __name__)
 
 from . import views
