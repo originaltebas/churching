@@ -196,22 +196,22 @@
     <div id="collapseSeg" class="collapse" aria-labelledby="headingSeg" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         {% if current_user.get_urole() == 2 %}
-        <a class="collapse-item text-wrap" href="buttons.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('seguimientos.ver_seguimientos') }}">
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Crear una entrada de Seguimiento
+          Gestionar Seguimientos
         </a>
-        <a class="collapse-item text-wrap" href="buttons.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('seguimientos.consulta_seguimientos') }}">
           <i class="fas fa-glasses fa-sm fa-fw mr-2 text-gray-400"></i>
-          Revisar entradas de Seguimiento
+          Consultar Seguimientos
         </a>
         {% endif %}
         <a class="collapse-item text-wrap" href="cards.html">
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Registrar a asistencia
+          Gestionar Asistencia
         </a>
         <a class="collapse-item text-wrap" href="cards.html">
           <i class="fas fa-calendar fa-sm fa-fw mr-2 text-gray-400"></i>
-          Revisar asistencia
+          Consultar Asistencia
         </a>
       </div>
     </div>

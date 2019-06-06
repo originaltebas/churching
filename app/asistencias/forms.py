@@ -30,13 +30,3 @@ class SeguimientoForm(FlaskForm):
                                   widget=TextArea())
 
     submit = SubmitField(u'Aceptar')
-
-
-class ConsultaSegForm(FlaskForm):
-    """
-    Consulta de seguimientos
-    """
-
-    id_miembro = HiddenField("idDir")
-    nomyape = StringField(u'Nombres y Apellidos de la Persona:')
-    submit = SubmitField(u'Buscar')

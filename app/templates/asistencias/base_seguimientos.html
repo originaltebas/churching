@@ -22,8 +22,6 @@
 
     {% if flag_listar %}
       {% include "seguimientos/tabla_seguimientos.html" %}
-    {% elif flag_consultar %}
-      {% include "seguimientos/consulta_seguimientos.html" %}
     {% else %}
       {% include "seguimientos/agregar_editar_seguimiento.html" %}
     {% endif %}

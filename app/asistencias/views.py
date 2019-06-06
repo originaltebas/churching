@@ -6,9 +6,9 @@ from flask import redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 
 from app.seguimientos import seguimientos
-from app.seguimientos.forms import SeguimientoForm, ConsultaSegForm
+from app.seguimientos.forms import SeguimientoForm
 from app import db
-from sqlalchemy import desc, false
+from sqlalchemy import desc
 from app.models import Seguimiento, Miembro
 
 
@@ -39,8 +39,6 @@ def ver_seguimientos():
 
     # de arranque carga el listado
     flag_listar = True
-    # flag_crear = False
-    # flag_consultar = False
 
     query_seguimientos = db.session.query(Seguimiento)\
                                    .join(Miembro,
@@ -68,9 +66,8 @@ def crear_seguimiento():
     check_edit_or_admin()
 
     # Variable para el template. Para decirle si es Alta o Modif
-    flag_listar = False
     flag_crear = True
-    # flag_consultar = False
+    flag_listar = False
 
     form = SeguimientoForm()
 
@@ -104,7 +101,6 @@ def modif_seguimiento(id):
 
     flag_crear = False
     flag_listar = False
-    # flag_consultar = False
 
     obj_seg = Seguimiento.query.get_or_404(id)
 
@@ -167,34 +163,6 @@ def borrar_seguimiento(id):
         flash('Error: ' + str(e), 'danger')
 
     return redirect(url_for('seguimientos.ver_seguimientos'))
-
-
-@seguimientos.route('/seguimientos/consultas',
-                    methods=['GET', 'POST'])
-@login_required
-def consulta_seguimientos():
-    """
-    Consultar los seguimientos de una persona
-    """
-    check_only_admin()
-
-    # flag_crear = False
-    # flag_listar = False
-    flag_consultar = True
-
-    form = ConsultaSegForm()
-
-    if form.validate_on_submit():
-        listado_segs = Seguimiento.query.filter(Seguimiento.id_miembro ==
-                                                form.id_miembro.data).all()
-        return render_template(
-                'seguimientos/base_seguimientos.html',
-                flag_consultar=flag_consultar, form=form,
-                seguimientos=listado_segs, flag_seguimientos=True)
-
-    return render_template(
-                'seguimientos/base_seguimientos.html',
-                flag_consultar=flag_consultar, form=form)
 
 
 def Convert(tup, di):
