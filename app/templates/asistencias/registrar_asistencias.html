@@ -1,0 +1,107 @@
+<!-- app/templates/asistencias/consultas_asistencias.html -->
+
+{% if current_user.is_authenticated %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
+
+
+{% set nombre = "Asitencia" %}
+{% set nombres = "Asistencias" %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 my-3 alert alert-primary"> {{nombres}} </h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <!-- <strong>Title</strong> --> {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-5">
+                Para registrar los miembros que asistieron a una reuni&oacute;n, simplemente seleccionalos de la tabla de m&aacute;s
+                abajo. Cuando tengas todos seleccionados pincha en el boton de guardar. Si la reuni&oacute;n ya ten&iacute;a miembros
+                registrados estos aparecer&aacute;n seleccionados.
+            </h5>
+
+            <label for="nombre_reunion">Datos de la Reuni&oacute;n</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="label_nombre_reunion">Nombre</span>
+              </div>
+              <input type="text" class="form-control mr-1" id="nombre_reunion" value="{{reunion.nombre_reunion}}"
+                     aria-describedby="label_nombre_reunion" readonly>
+
+
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="label_nombre_reunion">Fecha</span>
+                </div>
+                <input type="text" class="form-control mr-1" id="nombre_reunion" value="{{reunion.fecha_reunion}}"
+                       aria-describedby="label_nombre_reunion" readonly>
+
+
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="label_nombre_reunion">Comentarios</span>
+                    </div>
+                    <input type="text" class="form-control" id="nombre_reunion" value="{{reunion.comentarios_reunion}}"
+                           aria-describedby="label_nombre_reunion" readonly>
+            </div>
+
+
+            <div class="table-responsive">
+              <table id="tblistarAsistencias" class="table table-bordered table-striped" id="dataTable"
+                  width="100%" cellspacing="0">
+                  <thead class="thead-dark">
+                      <tr class="text-center">
+                          <th scope="col">Id</th>
+                          <th scope="col">Nombres y Apellidos</th>
+                          <th scope="col">Email</th>
+                          <th scope="col">Tel&eacute;fono</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for miembro in miembros %}
+                      {% if miembro.seleccionado != None %}
+                            {% set sel = "selected" %}
+                      {% endif %}
+                      <tr class="text-center {{ sel }}">
+                          <td scope="row"> {{ miembro.id }} </td>
+                          <td scope="row"> {{ miembro.fullname}} </td>
+                          <td scope="row"> {{ miembro.email }}</td>
+                          <td scope="row"> {{ miembro.telefono_movil }} </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+              </table>
+            </div>
+            <div class="form-group row">
+              <div id="formerrors" class="col-12 text-danger">
+              </div>
+          </div>
+            <form id="frmRegistrarAsistencia" method="POST" role="form" action="">
+              {{ form.csrf_token }}
+              {{ form.id_miembros }}
+              <input type="hidden" name="id_reunion" id="id_reunion" value="{{ reunion.id }}"/>
+            <div class="form-group row mt-5" id="cardBodyButtons">
+                <div class="col-3"></div>
+                <input type="submit" class="btn btn-primary col-2 text-white font-weight-bold"
+                       id="btnRegistrarAsistencia" value="Guardar Datos">
+                <div class="col-2"></div>
+                <a class="btn btn-danger col-2 text-white font-weight-bold"
+                  href='{{ url_for("asistencias.ver_asistencias") }}'>Cancelar</a>
+                <div class="col-3"></div>
+              </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}

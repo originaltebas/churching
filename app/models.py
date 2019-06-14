@@ -24,16 +24,16 @@ relacion_miembros_roles = db.Table('relacion_miembros_roles',
 # Tablas intemedias para Relaciones N:N
 # Miembros con Reuniones para definir asistencias
 # (1 miembro->varias asist, 1 reunien -> varios miembros)
-asistencias = db.Table('asistencias',
-                       db.Column('id_miembro',
-                                 db.Integer,
-                                 db.ForeignKey('miembros.id'),
-                                 primary_key=True),
-                       db.Column('id_reunion',
-                                 db.Integer,
-                                 db.ForeignKey('reuniones.id'),
-                                 primary_key=True)
-                       )
+relacion_asistencias = db.Table('relacion_asistencias',
+                                db.Column('id_miembro',
+                                          db.Integer,
+                                          db.ForeignKey('miembros.id'),
+                                          primary_key=True),
+                                db.Column('id_reunion',
+                                          db.Integer,
+                                          db.ForeignKey('reuniones.id'),
+                                          primary_key=True)
+                                )
 
 
 class Miembro(db.Model):
@@ -92,7 +92,7 @@ class Miembro(db.Model):
     roles = db.relationship("Rol", secondary=relacion_miembros_roles,
                             back_populates="miembros")
     reuniones = db.relationship("Reunion",
-                                secondary=asistencias,
+                                secondary=relacion_asistencias,
                                 back_populates="miembros")
 
     def __repr__(self):
@@ -283,18 +283,18 @@ class Reunion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # CAMPOS DESCRIPTIVOS
-    fecha_culto = db.Column(db.Date, nullable=False)
-    nombre_culto = db.Column(db.String(20), nullable=False)
-    comentarios = db.Column(db.String(100))
+    fecha_reunion = db.Column(db.Date, nullable=False)
+    nombre_reunion = db.Column(db.String(20), nullable=False)
+    comentarios_reunion = db.Column(db.String(100))
 
     # RELACIONES N:N [TABLA INTERMEDIA]
     miembros = db.relationship("Miembro",
-                               secondary=asistencias,
+                               secondary=relacion_asistencias,
                                back_populates="reuniones")
 
     def __repr__(self):
-        return '<Asistencia: %s>' '%s' % (self.fecha_culto,
-                                          self.nombre_culto)
+        return '<Reunion: %s>' '%s' % (self.fecha_culto,
+                                       self.nombre_culto)
 
 
 class Seguimiento(db.Model):

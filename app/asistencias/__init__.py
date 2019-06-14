@@ -1,4 +1,4 @@
-# app/extras/__init__.py
+# app/asistencias/__init__.py
 
 from flask import Blueprint
 

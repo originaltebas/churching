@@ -1,12 +1,12 @@
-<!-- app/templates/seguimientos/consultas_seguimientos.html -->
+<!-- app/templates/asistencias/consultas_asistencias.html -->
 
 {% if current_user.is_authenticated %}
 {# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
 {% if current_user.get_urole() == 2 %}
 
 
-{% set nombre = "Seguimiento" %}
-{% set nombres = "Seguimientos" %}
+{% set nombre = "Asitencia" %}
+{% set nombres = "Asistencias" %}
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -28,7 +28,8 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <h5 class="card-title">
-                Puedes consultar seguimientos de una persona. A esta secci&oacute;n <span class="font-weight-bold text-primary">S&Oacute;LO PUEDEN ACCEDER ADMINISTRADORES</span>
+                Puedes consultar las {{nombres}} de una persona. Esta es la manera m&aacute;s sencilla de
+                poder saber si una persona no est&aacute; viniendo a la iglesia y poder ponerse en contacto con ella.
             </h5>
             <form class="user" method="POST" role="form" action="">
                 {{ form.csrf_token }}
@@ -44,7 +45,7 @@
                 </div>
             </form>
             <div class="text-right mu-2 mb-4">
-                    <a href="{{url_for("seguimientos.crear_seguimiento")}}" class="btn btn-primary btn-icon-split">
+                    <a href="{{url_for("asistencias.registrar_asistencias")}}" class="btn btn-primary btn-icon-split">
                         <span class="icon text-white-50">
                             <i class="fa fa-plus centered"></i>
                         </span>
@@ -52,7 +53,7 @@
                     </a>
                     </div>
 
-            {% if flag_seguimientos %}
+            {% if flag_asistencias %}
             <div class="table-responsive">
               <table id="tblistarSeguimientos" class="table table-bordered table-striped" id="dataTable"
                   width="100%" cellspacing="0">
@@ -60,28 +61,19 @@
                       <tr class="text-center">
                           <th scope="col">Id</th>
                           <th scope="col">Miembro</th>
-                          <th scope="col">Fecha Entrada</th>
-                          <th scope="col">Tipo Contacto</th>
-                          <th scope="col">Comentarios</th>
+                          <th scope="col">Nombre Reuni&oacute;n</th>
+                          <th scope="col">Fecha Reuni&oacute;n</th>
+                          <th scope="col">Comentarios Reuni&oacute;n</th>
                       </tr>
                   </thead>
                   <tbody>
-                    {% for seguimiento in seguimientos %}
+                    {% for asistencia in asistencias %}
                       <tr class="text-center">
-                          <td scope="row" class="text-center"> {{ seguimiento.id }} </td>
-                          <td> {{ seguimiento.fullname}} </td>
-                          <td> {{ seguimiento.fecha_seg }} </td>
-                          <td> {% if seguimiento.tipo_seg == 0: %}
-                                      LLAMADA
-                               {% elif seguimiento.tipo_seg == 1: %}
-                                      MENSAJE
-                               {% elif seguimiento.tipo_seg == 2: %}
-                                      PRESENCIAL
-                               {% elif seguimiento.tipo_seg == 3: %}
-                                      OTRO
-                               {% endif %}
-                               </td>
-                          <td> {{ seguimiento.comentarios_seg }} </td>
+                          <td scope="row" class="text-center"> {{ asistencias.id }} </td>
+                          <td> {{ asistencias.fullname}} </td>
+                          <td> {{ asistencias.nombre_reunion }}</td>
+                          <td> {{ asistencias.fecha_reunion }} </td>
+                          <td> {{ asistencias.comentarios_reunion }} </td>
                       </tr>
                       {% endfor %}
                   </tbody>
@@ -89,7 +81,7 @@
           </div>
           {% else %}
           <div class="text-center py-5">
-              <h4> No hay datos de seguimiento. Intente con otro nombre o cree una nueva entrada </h4>
+              <h4> No hay datos de seguimiento. Intente con otro nombre o cree una nueva entrada de asistencia </h4>
               <hr class="intro-divider">
           </div>
           {% endif %}

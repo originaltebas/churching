@@ -2333,7 +2333,7 @@ pre code {
 
 .form-control:disabled,
 .form-control[readonly] {
-  background-color: #eaecf4;
+  background-color: transparent;
   opacity: 1;
 }
 

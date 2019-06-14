@@ -1,15 +1,16 @@
-# app/seguimientos/views.py
+# app/asistencias/views.py
 # coding: utf-8
 
 from flask import flash, jsonify
 from flask import redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 
-from app.seguimientos import seguimientos
-from app.seguimientos.forms import SeguimientoForm, ConsultaSegForm
+from app.asistencias import asistencias
+from app.asistencias.forms import ReunionForm
+from app.asistencias.forms import AsistenciaForm, ConsultaAsistenciasForm
 from app import db
-from sqlalchemy import desc, false
-from app.models import Seguimiento, Miembro
+from sqlalchemy import desc
+from app.models import Reunion, Miembro, relacion_asistencias
 
 
 def check_edit_or_admin():
@@ -28,40 +29,30 @@ def check_only_admin():
         return redirect(url_for("home.hub"))
 
 
-@seguimientos.route('/seguimientos', methods=['GET'])
+@asistencias.route('/asistencias', methods=['GET'])
 @login_required
-def ver_seguimientos():
+def ver_asistencias():
     """
-    Lista de los seguimientos realizados a las personas
-    SOLO ACCESIBLE A ADMINISTRADORES
+    Lista de los reuniones para seguimiento de asistencias
     """
-    check_only_admin()
+    check_edit_or_admin()
 
     # de arranque carga el listado
     flag_listar = True
     # flag_crear = False
     # flag_consultar = False
 
-    query_seguimientos = db.session.query(Seguimiento)\
-                                   .join(Miembro,
-                                         Seguimiento.id_miembro ==
-                                         Miembro.id)\
-                                   .add_columns(Seguimiento.fecha_seg,
-                                                Seguimiento.comentarios_seg,
-                                                Seguimiento.tipo_seg,
-                                                Seguimiento.id,
-                                                Seguimiento.id_miembro,
-                                                Miembro.fullname)\
-                                   .order_by(desc(Seguimiento.fecha_seg))
+    query_asistencias = db.session.query(Reunion)\
+                                  .order_by(desc(Reunion.fecha_reunion)).all()
 
-    return render_template('seguimientos/base_seguimientos.html',
-                           seguimientos=query_seguimientos,
+    return render_template('asistencias/base_asistencias.html',
+                           reuniones=query_asistencias,
                            flag_listar=flag_listar)
 
 
-@seguimientos.route('/seguimientos/crear', methods=['GET', 'POST'])
+@asistencias.route('/asistencias/reunion/crear', methods=['GET', 'POST'])
 @login_required
-def crear_seguimiento():
+def crear_reunion():
     """
     Crear una entrada de seguimiento
     """
@@ -72,45 +63,42 @@ def crear_seguimiento():
     flag_crear = True
     # flag_consultar = False
 
-    form = SeguimientoForm()
+    form = ReunionForm()
 
     if form.validate_on_submit():
-        obj_seg = Seguimiento(fecha_seg=form.fecha_seg.data,
-                              comentarios_seg=form.comentarios_seg.data,
-                              id_miembro=form.id_miembro.data,
-                              tipo_seg=form.tipo_seg.data)
+        obj_reu = Reunion(nombre_reunion=form.nombre_reunion.data,
+                          fecha_reunion=form.fecha_reunion.data,
+                          comentarios_reunion=form.comentarios_reunion.data)
         try:
-            db.session.add(obj_seg)
+            db.session.add(obj_reu)
             db.session.commit()
             flash('Has guardado los datos correctamente', 'success')
         except Exception as e:
             flash('Error:' + str(e), 'danger')
 
-        return redirect(url_for('seguimientos.ver_seguimientos'))
+        return redirect(url_for('asistencias.ver_asistencias'))
 
     return render_template(
-                'seguimientos/base_seguimientos.html',
-                add_seguimiento=flag_crear, flag_listar=flag_listar, form=form)
+                'asistencias/base_asistencias.html',
+                add_asistencias=flag_crear, flag_listar=flag_listar, form=form)
 
 
-@seguimientos.route('/seguimientos/modif/<int:id>',
-                    methods=['GET', 'POST'])
+@asistencias.route('/asistencias/reunion/modif/<int:id>',
+                   methods=['GET', 'POST'])
 @login_required
-def modif_seguimiento(id):
+def modif_reunion(id):
     """
-    Modificar un seguimiento
+    Modificar una reunion para dar seguimiento
     """
-    check_only_admin()
+    check_edit_or_admin()
 
     flag_crear = False
     flag_listar = False
     # flag_consultar = False
 
-    obj_seg = Seguimiento.query.get_or_404(id)
+    obj = Reunion.query.get_or_404(id)
 
-    miembro = Miembro.query.get_or_404(obj_seg.id_miembro)
-
-    form = SeguimientoForm(obj=obj_seg)
+    form = ReunionForm(obj=obj)
 
     # print('req: ', request.method)
     # print('sub: ', form.is_submitted())
@@ -125,56 +113,128 @@ def modif_seguimiento(id):
     # print(er)
 
     if request.method == 'GET':
-        form.fecha_seg.data = obj_seg.fecha_seg
-        form.comentarios_seg.data = obj_seg.comentarios_seg
-        form.tipo_seg.data = obj_seg.tipo_seg
-        form.id_miembro.data = obj_seg.id_miembro
+        form.nombre_reunion.data = obj.nombre_reunion
+        form.fecha_reunion.data = obj.fecha_reunion
+        form.comentarios_reunion.data = obj.comentarios_reunion
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            obj_seg.fecha_seg = form.fecha_seg.data
-            obj_seg.comentarios_seg = form.comentarios_seg.data
-            obj_seg.tipo_seg = form.tipo_seg.data
-            obj_seg.id_miembro = form.id_miembro.data
+            obj.nombre_reunion = form.nombre_reunion.data
+            obj.fecha_reunion = form.fecha_reunion.data
+            obj.comentarios_reunion = form.comentarios_reunion.data
             try:
                 db.session.commit()
                 flash('Has modificado los datos correctamente', 'success')
             except Exception as e:
                 flash('Error: ' + str(e), 'danger')
 
-            return redirect(url_for('seguimientos.ver_seguimientos'))
+            return redirect(url_for('asistencias.ver_asistencias'))
 
     return render_template(
-                'seguimientos/base_seguimientos.html', miembro=miembro,
-                add_seguimiento=flag_crear, flag_listar=flag_listar, form=form)
+                'asistencias/base_asistencias.html',
+                add_asistencias=flag_crear, flag_listar=flag_listar, form=form)
 
 
-@seguimientos.route('/seguimientos/borrar/<int:id>',
-                    methods=['GET'])
+@asistencias.route('/asistencias/reunion/borrar/<int:id>',
+                   methods=['GET'])
 @login_required
-def borrar_seguimiento(id):
+def borrar_reunion(id):
     """
-    Borrar una entrada de seguimiento
+    Borrar una reunion de seguimiento de asistencias
     """
-    check_only_admin()
+    check_edit_or_admin()
 
-    obj_seg = Seguimiento.query.get_or_404(id)
+    obj = Reunion.query.get_or_404(id)
+
     try:
-        db.session.delete(obj_seg)
+        db.session.delete(obj)
         db.session.commit()
         flash('Has borrado los datos correctamente', 'success')
     except Exception as e:
         flash('Error: ' + str(e), 'danger')
 
-    return redirect(url_for('seguimientos.ver_seguimientos'))
+    return redirect(url_for('asistencias.ver_asistencias'))
 
 
-@seguimientos.route('/seguimientos/consultas',
-                    methods=['GET', 'POST'])
+@asistencias.route('/asistencias/registrar/<int:id>',
+                   methods=['GET', 'POST'])
 @login_required
-def consulta_seguimientos():
+def registrar_asistencias(id):
     """
-    Consultar los seguimientos de una persona
+    Registrar asistencia a una reunion
+    """
+    check_edit_or_admin()
+
+    # flag_crear = False
+    # flag_listar = False
+    # flag_consultar = False
+    flag_registrar = True
+
+    form = AsistenciaForm()
+
+    if request.method == 'GET':
+        query_reunion = Reunion.query.get_or_404(id)
+
+        m_sel = db.session.query(Miembro.id,
+                                 relacion_asistencias.c.id_miembro
+                                 .label('seleccionado'))\
+                          .outerjoin(relacion_asistencias,
+                                     Miembro.id ==
+                                     relacion_asistencias.c.id_miembro)\
+                          .filter(relacion_asistencias.c.id_reunion == id)\
+                          .subquery()
+
+        query_miembros = db.session.query(Miembro)\
+                                   .outerjoin(m_sel,
+                                              m_sel.c.id == Miembro.id)\
+                                   .add_columns(Miembro.id,
+                                                Miembro.fullname,
+                                                Miembro.email,
+                                                Miembro.telefono_movil,
+                                                m_sel.c.seleccionado
+                                                )
+
+        return render_template(
+                'asistencias/base_asistencias.html',
+                reunion=query_reunion, miembros=query_miembros,
+                flag_registrar=flag_registrar, form=form)
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            id_ms = form.id_miembros.data[:].split(",")
+            id_r = form.id_reunion.data
+
+            obj_del = db.session.query(Miembro.id,
+                                       relacion_asistencias.c.id_miembro
+                                       .label('seleccionado'))\
+                                .outerjoin(relacion_asistencias,
+                                           Miembro.id ==
+                                           relacion_asistencias.c.id_miembro)\
+                                .filter(relacion_asistencias.c.id_reunion
+                                        == id_r)
+
+            for o in obj_del:
+                db.session.delete(o)
+
+            for id in id_ms:
+                obj = relacion_asistencias(id_reunion=id_r,
+                                           id_miembro=id)
+                try:
+                    db.session.add(obj)
+                    flash(u'Se ha creado correctamente el usuario.', 'success')
+                except Exception as e:
+                    # error
+                    flash('Error:', e, 'danger')
+
+            url = url_for('asistencias.ver_asistencias')
+            return jsonify(url=url)
+
+@asistencias.route('/asistencias/consultas',
+                   methods=['GET', 'POST'])
+@login_required
+def consulta_asistencias():
+    """
+    Consultar los asistencias de una persona
     """
     check_only_admin()
 
@@ -182,19 +242,21 @@ def consulta_seguimientos():
     # flag_listar = False
     flag_consultar = True
 
-    form = ConsultaSegForm()
+    # solo
+    form = ConsultaAsistenciasForm()
 
     if form.validate_on_submit():
-        listado_segs = Seguimiento.query.filter(Seguimiento.id_miembro ==
-                                                form.id_miembro.data).all()
+        listado_miembros = relacion_asistencias.query\
+                                      .filter(relacion_asistencias.id_miembro
+                                              == form.id_miembro.data).all()
         return render_template(
-                'seguimientos/base_seguimientos.html',
+                'asistencias/base_asistencias.html',
                 flag_consultar=flag_consultar, form=form,
-                seguimientos=listado_segs, flag_seguimientos=True)
+                asistencias=listado_miembros, flag_asistencias=True)
 
     return render_template(
-                'seguimientos/base_seguimientos.html',
-                flag_consultar=flag_consultar, form=form)
+                'asistencias/base_asistencias.html',
+                flag_asistencias=flag_consultar, form=form)
 
 
 def Convert(tup, di):
@@ -204,7 +266,7 @@ def Convert(tup, di):
     return di
 
 
-@seguimientos.route('/seguimientos/autocomplete', methods=['GET'])
+@asistencias.route('/asistencias/autocomplete', methods=['GET'])
 def autocomplete():
     search = request.args.get('q')
     # query = db.session.query(Miembro)\
