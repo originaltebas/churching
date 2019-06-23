@@ -201,33 +201,46 @@ def registrar_asistencias(id):
 
     if request.method == 'POST':
         if form.validate_on_submit():
+
             id_ms = form.id_miembros.data[:].split(",")
             id_r = form.id_reunion.data
 
-            obj_del = db.session.query(Miembro.id,
-                                       relacion_asistencias.c.id_miembro
-                                       .label('seleccionado'))\
-                                .outerjoin(relacion_asistencias,
-                                           Miembro.id ==
-                                           relacion_asistencias.c.id_miembro)\
+            # Traigo el objeto reunion
+            reunion = db.session.query(Reunion).filter(Reunion.id == id_r)\
+                                .first()
+
+            # Cojo los actuales para eliminarlos
+            obj_del = db.session.query(Miembro)\
+                                .join(relacion_asistencias,
+                                      Miembro.id ==
+                                      relacion_asistencias.c.id_miembro)\
                                 .filter(relacion_asistencias.c.id_reunion
-                                        == id_r)
+                                        == id_r).all()
+
+            # Cojo los nuevos para agregarlos
+            obj_add = db.session.query(Miembro)\
+                                .filter(Miembro.id.in_(id_ms))\
+                                .all()
 
             for o in obj_del:
-                db.session.delete(o)
+                reunion.miembros.remove(o)
+                db.session.delete(reunion)
 
-            for id in id_ms:
-                obj = relacion_asistencias(id_reunion=id_r,
-                                           id_miembro=id)
-                try:
-                    db.session.add(obj)
-                    flash(u'Se ha creado correctamente el usuario.', 'success')
-                except Exception as e:
-                    # error
-                    flash('Error:', e, 'danger')
+            for i in obj_add:
+                reunion.miembros.append(i)
+                db.session.add(reunion)
 
-            url = url_for('asistencias.ver_asistencias')
-            return jsonify(url=url)
+            try:
+                db.session.commit()
+
+                flash(u'Se ha registrado la asistencia correctamente.',
+                      'success')
+            except Exception as e:
+                # error
+                flash('Error:', e, 'danger')
+
+        url = url_for('asistencias.ver_asistencias')
+        return jsonify(url=url)
 
 @asistencias.route('/asistencias/consultas',
                    methods=['GET', 'POST'])

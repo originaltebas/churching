@@ -46,7 +46,7 @@ function asistenciasElements(e) {
   }
 
 
-  $(document).on('click', '#tbRegistrarAsistencia', function (e) {
+  $(document).on('click', '#btnRegistrarAsistencia', function (e) {
     e.preventDefault();
 
     let oTab = $('#tblistarAsistencias').DataTable();
@@ -58,8 +58,9 @@ function asistenciasElements(e) {
         dataArr.push(value[0]); //"name" being the value of your first column.
     });
     $('#id_miembros').val(dataArr);
+    console.log($('#id_miembros').val());
 
-    const url = '/assitencias/registrar/' + id
+    const url = '/asistencias/registrar/' + id
       $.ajax({
         type: "POST",
         url: url,
