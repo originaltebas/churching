@@ -259,17 +259,30 @@ def consulta_asistencias():
     form = ConsultaAsistenciasForm()
 
     if form.validate_on_submit():
-        listado_miembros = relacion_asistencias.query\
-                                      .filter(relacion_asistencias.id_miembro
-                                              == form.id_miembro.data).all()
+        listado = db.session.query(Miembro)\
+                             .join(relacion_asistencias,
+                                   Miembro.id ==
+                                   relacion_asistencias.c.id_miembro)\
+                             .join(Reunion,
+                                   Reunion.id ==
+                                   relacion_asistencias.c.id_reunion)\
+                             .filter(Miembro.id == form.id_miembro.data)\
+                             .add_columns(Miembro.fullname,
+                                          Miembro.id.label("id_m"),
+                                          Reunion.id.label("id_r"),
+                                          Reunion.nombre_reunion,
+                                          Reunion.fecha_reunion,
+                                          Reunion.comentarios_reunion)\
+                             .all()
+
         return render_template(
                 'asistencias/base_asistencias.html',
                 flag_consultar=flag_consultar, form=form,
-                asistencias=listado_miembros, flag_asistencias=True)
+                asistencias=listado, flag_asistencias=True)
 
     return render_template(
                 'asistencias/base_asistencias.html',
-                flag_asistencias=flag_consultar, form=form)
+                flag_consultar=flag_consultar, form=form)
 
 
 def Convert(tup, di):
