@@ -63,10 +63,10 @@
                     {% for asistencia in asistencias %}
                       <tr class="text-center">
                           <td scope="row" class="text-center"> {{ asistencia.id_r }} - {{ asistencia.id_m }} </td>
-                          <td> {{ asistencia.fullname}} </td>
-                          <td> {{ asistencia.nombre_reunion }}</td>
-                          <td> {{ asistencia.fecha_reunion }} </td>
-                          <td> {{ asistencia.comentarios_reunion }} </td>
+                          <td scope="row" class="text-center"> {{ asistencia.fullname }} </td>
+                          <td scope="row" class="text-center"> {{ asistencia.nombre_reunion }}</td>
+                          <td scope="row" class="text-center"> {{ asistencia.fecha_reunion }} </td>
+                          <td scope="row" class="text-center"> {{ asistencia.comentarios_reunion }} </td>
                       </tr>
                       {% endfor %}
                   </tbody>

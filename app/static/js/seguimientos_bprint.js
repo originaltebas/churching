@@ -1,13 +1,13 @@
 function seguimientosElements(e) {
 
-  // EXTRAS -> Estados Civiles
   if ($('#tblistarSeguimientos').length != 0) {
     $(tblistarSeguimientos).dataTable({
       "language": {
         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
         "decimal": ",",
-        "thousands": "."
-      }
+        "thousands": ".",
+      },
+      "order": [],
     });
   }
 

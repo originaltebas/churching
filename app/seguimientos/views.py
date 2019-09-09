@@ -8,7 +8,6 @@ from flask_login import current_user, login_required
 from app.seguimientos import seguimientos
 from app.seguimientos.forms import SeguimientoForm, ConsultaSegForm
 from app import db
-from sqlalchemy import desc, false
 from app.models import Seguimiento, Miembro
 
 
@@ -52,7 +51,7 @@ def ver_seguimientos():
                                                 Seguimiento.id,
                                                 Seguimiento.id_miembro,
                                                 Miembro.fullname)\
-                                   .order_by(desc(Seguimiento.fecha_seg))
+                                   .order_by(Seguimiento.fecha_seg.desc())
 
     return render_template('seguimientos/base_seguimientos.html',
                            seguimientos=query_seguimientos,
@@ -185,8 +184,20 @@ def consulta_seguimientos():
     form = ConsultaSegForm()
 
     if form.validate_on_submit():
-        listado_segs = Seguimiento.query.filter(Seguimiento.id_miembro ==
-                                                form.id_miembro.data).all()
+        listado_segs = db.session.query(Seguimiento)\
+                                  .join(Miembro,
+                                        Seguimiento.id_miembro ==
+                                        Miembro.id)\
+                                  .add_columns(Seguimiento.fecha_seg,
+                                               Seguimiento.comentarios_seg,
+                                               Seguimiento.tipo_seg,
+                                               Seguimiento.id,
+                                               Seguimiento.id_miembro,
+                                               Miembro.fullname)\
+                                  .order_by(Seguimiento.fecha_seg.desc())\
+                                  .filter(Seguimiento.id_miembro ==
+                                          form.id_miembro.data).all()
+
         return render_template(
                 'seguimientos/base_seguimientos.html',
                 flag_consultar=flag_consultar, form=form,
