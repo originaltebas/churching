@@ -59,6 +59,7 @@
                         </div>
                         <div class="card border-dark mb-3">
                         <form id="tbFiltroPersonas" method="POST" role="form" action="">
+                          {{ form.csrf_token}}
                           <div class="card-header bg-primary text-white"><h4>Filtros</h4></div>
                           <div class="card-body">
                           <div class="form-group row">
@@ -121,10 +122,10 @@
                         <tr class="text-center">
                             <td scope="row" class="text-center"> {{ informe.id }}</td>
                             <td> {{ informe.fullname}} </td>
-                            <td> Fecha Nac: {{ informe.fecha_nac }}</br>
-                                 Fecha Inicio: {{ informe.fecha_inicio_icecha }} </br>
-                                 Fecha Bautismo: {{ informe.fecha_bautismo }}
-                                 Fecha Miembro:: {{ informe.fecha_miembro}}
+                            <td> Nacimiento: {{ informe.fecha_nac.strftime('%d-%m-%Y') }}</br>
+                                 Inicio Icecha: {{ informe.fecha_inicio_icecha.strftime('%d-%m-%Y') }} </br>
+                                 Bautismo: {{ informe.fecha_bautismo.strftime('%d-%m-%Y') }}</br>
+                                 Membres&iacute;a: {{ informe.fecha_miembro.strftime('%d-%m-%Y')}}
                             </td>
                             <td>{{ informe.email }}</td>
                             <td> M&oacute;vil: {{ informe.telefono_movil }} </br>

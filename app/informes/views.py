@@ -12,6 +12,7 @@ from app.models import relacion_miembros_roles, Direccion
 from app.models import TipoMiembro, GrupoCasero, Rol, RolFamiliar
 
 from sqlalchemy import func
+from sqlalchemy_filters import apply_filters
 
 # Dentro de los informes hay algunos que tienen acceso
 # de editor y otros que tienen solo administrador (Seg y Asis)
@@ -65,7 +66,6 @@ def informe_personas():
             '''
             cuando entrar filtros
             '''
-
             roles = db.session.query(Rol).join(relacion_miembros_roles,
                                                relacion_miembros_roles.c.id_rol ==
                                                Rol.id)\
@@ -87,53 +87,71 @@ def informe_personas():
                                         relacion_miembros_roles.c.id_rol)\
                                   .group_by(Miembro).subquery()
 
-            query_miembros = db.session.query(Miembro)\
-                                       .outerjoin(Direccion,
-                                                  Miembro.id_direccion ==
-                                                  Direccion.id)\
-                                       .outerjoin(TipoMiembro,
-                                                  Miembro.id_tipomiembro ==
-                                                  TipoMiembro.id)\
-                                       .outerjoin(nro_roles,
-                                                  Miembro.id ==
-                                                  nro_roles.c.id)\
-                                       .outerjoin(Familia,
-                                                  Miembro.id_familia ==
-                                                  Familia.id)\
-                                       .outerjoin(GrupoCasero,
-                                                  Miembro.id_grupocasero ==
-                                                  GrupoCasero.id)\
-                                       .add_columns(
-                                            Miembro.id,
-                                            Miembro.fullname,
-                                            Miembro.email,
-                                            Miembro.telefono_fijo,
-                                            Miembro.telefono_movil,
-                                            Miembro.fecha_nac,
-                                            Miembro.fecha_inicio_icecha,
-                                            Miembro.fecha_miembro,
-                                            Miembro.fecha_bautismo,
-                                            Familia.apellidos_familia,
-                                            GrupoCasero.nombre_grupo,
-                                            TipoMiembro.nombre_tipomiembro,
-                                            Direccion.tipo_via,
-                                            Direccion.nombre_via,
-                                            Direccion.nro_via,
-                                            Direccion.portalescalotros_via,
-                                            Direccion.cp_via,
-                                            Direccion.ciudad_via,
-                                            Direccion.provincia_via,
-                                            Direccion.pais_via,
-                                            nro_roles.c.contar)
+            query = db.session.query(Miembro)\
+                              .outerjoin(Direccion,
+                                         Miembro.id_direccion ==
+                                         Direccion.id)\
+                              .outerjoin(TipoMiembro,
+                                         Miembro.id_tipomiembro ==
+                                         TipoMiembro.id)\
+                              .outerjoin(nro_roles,
+                                         Miembro.id ==
+                                         nro_roles.c.id)\
+                              .outerjoin(Familia,
+                                         Miembro.id_familia ==
+                                         Familia.id)\
+                              .outerjoin(GrupoCasero,
+                                         Miembro.id_grupocasero ==
+                                         GrupoCasero.id)\
+                              .add_columns(
+                                Miembro.id,
+                                Miembro.fullname,
+                                Miembro.email,
+                                Miembro.telefono_fijo,
+                                Miembro.telefono_movil,
+                                Miembro.fecha_nac,
+                                Miembro.fecha_inicio_icecha,
+                                Miembro.fecha_miembro,
+                                Miembro.fecha_bautismo,
+                                Miembro.id_estadocivil,
+                                Familia.apellidos_familia,
+                                GrupoCasero.nombre_grupo,
+                                TipoMiembro.nombre_tipomiembro,
+                                Direccion.tipo_via,
+                                Direccion.nombre_via,
+                                Direccion.nro_via,
+                                Direccion.portalescalotros_via,
+                                Direccion.cp_via,
+                                Direccion.ciudad_via,
+                                Direccion.provincia_via,
+                                Direccion.pais_via,
+                                nro_roles.c.contar)
 
             if form.EstadoCivil.data != 0:
-                filter_spec = [{'field': 'name', 'op': '==', 'value': 'name_1'}]
-            filtered_query = apply_filters(query, filter_spec)
+                user_attribute = getattr(Miembro, 'id_estadocivil')
+                user_filter = user_attribute == form.EstadoCivil.data
+                query = query.filter(user_filter)
 
-            more_filters = [{'field': 'foo_id', 'op': 'is_not_null'}]
-            filtered_query = apply_filters(filtered_query, more_filters)
+            if form.TipoFamilia.data != 0:
+                user_attribute = getattr(Miembro, 'id_tipofamilia')
+                user_filter = user_attribute == form.TipoFamilia.data
+                query = query.filter(user_filter)
 
-            result = filtered_query.all()
+            if form.RolFamiliar.data != 0:
+                user_attribute = getattr(Miembro, 'id_rolfamiliar')
+                user_filter = user_attribute == form.RolFamiliar.data
+                query = query.filter(user_filter)
+
+            if form.TipoMiembro.data != 0:
+                user_attribute = getattr(Miembro, 'id_tipomiembro')
+                user_filter = user_attribute == form.TipoMiembro.data
+                query = query.filter(user_filter)
+
+            if form.GrupoCasero.data != 0:
+                user_attribute = getattr(Miembro, 'id_grupocasero')
+                user_filter = user_attribute == form.GrupoCasero.data
+
+        query_miembros = query.all()
 
     else:
         # get
@@ -199,8 +217,7 @@ def informe_personas():
                                             nro_roles.c.contar)
 
     return render_template('informes/informe_personas.html',
-                           form=form, informes=query_miembros, roles=roles,
-                           jsAsignarRoles=True)
+                           form=form, informes=query_miembros, roles=roles)
 
 
 @informes.route('/informes/generar_pdf',
