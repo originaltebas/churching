@@ -64,7 +64,7 @@ def crear_seguimiento():
     """
     Crear una entrada de seguimiento
     """
-    check_edit_or_admin()
+    check_only_admin()
 
     # Variable para el template. Para decirle si es Alta o Modif
     flag_listar = False

@@ -1,4 +1,4 @@
-# app/ggcc/forms.py
+# app/miembros/forms.py
 # coding: utf-8
 
 from flask_wtf import FlaskForm
@@ -86,3 +86,13 @@ class DireccionModalForm(FlaskForm):
                                        Length(min=1, max=50)])
 
     submit = SubmitField(u'Crear Dirección')
+
+
+class AsignarRolesForm(FlaskForm):
+
+    id_persona = HiddenField("id")
+    flag_rol = HiddenField("flag")
+
+    preselectedoptions = SelectField('Ids IN')
+
+    btnAsignarRoles = SubmitField(u'Aceptar')

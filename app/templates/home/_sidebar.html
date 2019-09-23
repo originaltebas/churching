@@ -50,17 +50,17 @@
           <i class="fas fa-people-carry fa-sm fa-fw mr-2 text-gray-400"></i>
           Asignar Personas a GGCC
         </a>
-        <a class="collapse-item text-wrap" href="{{ url_for('roles.asignar_roles', flag='R') }}">
+        <a class="collapse-item text-wrap" href="{{ url_for('miembros.listar_asignar_roles') }}">
             <i class="fas fa-dice-d20 fa-sm fa-fw mr-2 text-gray-400"></i>
             Asignar Roles a Personas
         </a>
-        <a class="collapse-item text-wrap" href="{{ url_for('roles.asignar_roles', flag='M') }}">
+        <a class="collapse-item text-wrap" href="{{ url_for('miembros.listar_asignar_roles') }}">
             <i class="fas fa-project-diagram fa-sm fa-fw mr-2 text-gray-400"></i>
             Asignar Personas a Ministerios
         </a>
-        <a class="collapse-item text-wrap" href="{{ url_for('roles.asignar_roles', flag='C') }}">
+        <a class="collapse-item text-wrap" href="{{ url_for('miembros.listar_asignar_roles') }}">
             <i class="fas fa-chalkboard-teacher fa-sm fa-fw mr-2 text-gray-400"></i>
-            Asignar Personas a Clases
+            Asignar Personas a Clases/Talleres
         </a>
 
       </div>
@@ -227,22 +227,32 @@
     </a>
     <div id="collapseInf" class="collapse" aria-labelledby="headingInf" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item text-wrap" href="buttons.html">
+        <a class="collapse-item text-wrap" href="{{ url_for('informes.informe_personas') }}">
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Informe a
+          Informe Personas
         </a>
         <a class="collapse-item text-wrap" href="buttons.html">
           <i class="fas fa-glasses fa-sm fa-fw mr-2 text-gray-400"></i>
-          Informe a
+          Informe Familias
         </a>
         <a class="collapse-item text-wrap" href="cards.html">
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-          Informe a
+          Informe Grupos Caseros
         </a>
         <a class="collapse-item text-wrap" href="cards.html">
           <i class="fas fa-calendar fa-sm fa-fw mr-2 text-gray-400"></i>
-          Informe a
+          Informe Ministerios y Responsables
         </a>
+        {% if current_user.get_urole() == 2 %}
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-calendar fa-sm fa-fw mr-2 text-gray-400"></i>
+          Informe Asistencias
+        </a>
+        <a class="collapse-item text-wrap" href="cards.html">
+          <i class="fas fa-calendar fa-sm fa-fw mr-2 text-gray-400"></i>
+          Informe Seguimientos
+        </a>
+        {% endif %}
       </div>
     </div>
   </li>

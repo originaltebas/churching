@@ -344,7 +344,7 @@ class Rol(db.Model):
     # tipo rol (ej. pastor) o tipo ministerio (ej. obra social),
     # o clase (ej. 3-5años)
     # si es rol es un cargo, si es un ministerio es que participa en...
-    tipo_rol = db.Column(db.String(60), nullable=False)
+    tipo_rol = db.Column(db.String(1), nullable=False)
     descripcion_rol = db.Column(db.String(200))
 
     # RELACIONES N:N [TABLA INTERMEDIA]

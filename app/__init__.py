@@ -64,4 +64,7 @@ def create_app(config_name):
     from .asistencias import asistencias as asistencias_blueprint
     app.register_blueprint(asistencias_blueprint)
 
+    from .informes import informes as informes_blueprint
+    app.register_blueprint(informes_blueprint)
+
     return app

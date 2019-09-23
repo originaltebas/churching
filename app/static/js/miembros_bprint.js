@@ -14,6 +14,16 @@ function miembrosElements(e) {
     });
   }
 
+  if ($('#tblistarPersonasRoles').length != 0) {
+    $(tblistarPersonasRoles).dataTable({
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+        "decimal": ",",
+        "thousands": "."
+      }
+    });
+  }
+
   // FUNCIONALIDADES DE CREAR MIEMBROS
   if ($('#tbCrearMiembro').length != 0) {
     /**
@@ -220,6 +230,34 @@ function miembrosElements(e) {
   $(document).on('focus', "form#nDirForm .form-control-user", function (e) {
     $(this).removeClass('is-invalid');
   });
+
+  function after_asignacion_submitted(data) {
+    if (data.status == 'val') {
+      document.getElementById("formerrors").innerHTML = data.errors;
+    } else {
+      window.location.href = data.url;
+    }
+  }
+
+  if ($('#preselectedoptions').length != 0) {
+
+    $('#preselectedoptions').multiSelect({});
+  }
+
+
+    $(document).on('click', '#btnAsignarRoles', function (e) {
+      e.preventDefault();
+      const url = '/miembros/asignar/rol/guardar'
+      console.log($('#tbAsignarRoles').serialize());
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: $('#tbAsignarRoles').serialize(),
+        success: after_asignacion_submitted, //uso la misma funcion que en crear
+        dataType: 'json'
+      });
+    })
+
 
   /**
    * Fin par funciones para crear direccion

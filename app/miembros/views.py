@@ -8,6 +8,7 @@ from sqlalchemy import func
 
 from app.miembros import miembros
 from app.miembros.forms import MiembroForm, DireccionModalForm
+from app.miembros.forms import AsignarRolesForm
 
 from app import db
 from app.models import Miembro, Direccion, relacion_miembros_roles
@@ -270,3 +271,169 @@ def borrar_miembro(id):
         flash('Error: ' + str(e), 'danger')
 
     return redirect(url_for('miembros.ver_miembros'))
+
+
+@miembros.route('/miembros/asignar/rol/listar',
+                methods=['GET'])
+@login_required
+def listar_asignar_roles():
+    """
+    Ver una lista de todos los miembros
+    """
+    check_edit_or_admin()
+
+    roles = db.session.query(Rol).outerjoin(relacion_miembros_roles,
+                                            relacion_miembros_roles.c.id_rol ==
+                                            Rol.id)\
+                                 .outerjoin(Miembro,
+                                            Miembro.id ==
+                                            relacion_miembros_roles.c.id_miembro)\
+                                 .add_columns(
+                                     Miembro.id,
+                                     Rol.nombre_rol
+                                 )
+
+    query_miembros = db.session.query(Miembro)\
+                               .outerjoin(Direccion,
+                                          Miembro.id_direccion ==
+                                          Direccion.id)\
+                               .outerjoin(TipoMiembro,
+                                          Miembro.id_tipomiembro ==
+                                          TipoMiembro.id)\
+                               .add_columns(Miembro.id,
+                                            Miembro.fullname,
+                                            Miembro.email,
+                                            Miembro.telefono_fijo,
+                                            Miembro.telefono_movil,
+                                            TipoMiembro.nombre_tipomiembro,
+                                            Direccion.tipo_via,
+                                            Direccion.nombre_via,
+                                            Direccion.nro_via,
+                                            Direccion.portalescalotros_via,
+                                            Direccion.cp_via,
+                                            Direccion.ciudad_via,
+                                            Direccion.provincia_via,
+                                            Direccion.pais_via)
+
+    return render_template('miembros/listado_asignar_roles.html',
+                           informes=query_miembros, roles=roles)
+
+
+@miembros.route('/miembros/asignar/rol/<string:flag>/<int:id>',
+                methods=['GET'])
+@login_required
+def asignar_roles(flag, id):
+    """
+    Ver una lista de todos los miembros
+    """
+    check_edit_or_admin()
+
+    form = AsignarRolesForm()
+
+    if flag == 'R':
+        tiporol_s = 'Responsabilidad'
+        tiporol_p = 'Responsabilidades'
+    elif flag == 'M':
+        tiporol_s = 'Ministerio'
+        tiporol_p = 'Ministerios'
+    else:
+        tiporol_s = 'Clase'
+        tiporol_p = 'Clases'
+
+    roles = db.session.query(Rol)\
+                      .filter(Rol.tipo_rol == flag)\
+                      .add_columns(Rol.id,
+                                   Rol.nombre_rol).all()
+
+    persona = db.session.query(Miembro)\
+                        .filter(Miembro.id == id)\
+                        .add_columns(Miembro.id,
+                                     Miembro.fullname)\
+                        .one()
+
+    roles_persona = db.session.query(relacion_miembros_roles)\
+                              .join(Rol,
+                                    Rol.id ==
+                                    relacion_miembros_roles.c.id_rol)\
+                              .join(Miembro,
+                                    Miembro.id ==
+                                    relacion_miembros_roles.c.id_miembro)\
+                              .filter(Miembro.id == id)\
+                              .add_columns(relacion_miembros_roles.c.id_rol,
+                                           relacion_miembros_roles.c.id_miembro)\
+                              .all()
+
+    return render_template('miembros/asignar_roles_a_persona.html',
+                           roles=roles, persona=persona,
+                           roles_persona=roles_persona,
+                           tiporol_s=tiporol_s, tiporol_p=tiporol_p,
+                           form=form, flag=flag)
+
+
+@miembros.route('/miembros/asignar/rol/guardar',
+                methods=['GET', 'POST'])
+@login_required
+def guardar_roles():
+    """
+    Ver una lista de todos los miembros
+    """
+    check_edit_or_admin()
+
+    form = AsignarRolesForm()
+
+    if request.method == "POST":
+        if form.is_submitted():
+
+            persona = db.session.query(Miembro)\
+                                .filter(Miembro.id ==
+                                        form.id_persona.data).one()
+
+            # Cojo los actuales para eliminarlos
+            objdel = db.session.query(Rol)\
+                               .join(relacion_miembros_roles,
+                                     Rol.id ==
+                                     relacion_miembros_roles.c.id_rol)\
+                               .filter(relacion_miembros_roles.c.id_miembro ==
+                                       form.id_persona.data)\
+                               .filter(Rol.tipo_rol == form.flag_rol.data)\
+                               .all()
+
+            # Cojo los nuevos para agregarlos
+            objadd = db.session.query(Rol)\
+                               .filter(Rol.id.in_(
+                                   str(request.
+                                       form.
+                                       getlist('preselectedoptions'))
+                                   .strip('[]')))\
+                               .all()
+
+            for o in objdel:
+                persona.roles.remove(o)
+                db.session.delete(persona)
+
+            for i in objadd:
+                persona.roles.append(i)
+                db.session.add(persona)
+
+            try:
+                db.session.commit()
+                status = 'ok'
+            except Exception as e:
+                flash('Error: ' + str(e), 'danger')
+                status = 'ko'
+
+            url = url_for('miembros.listar_asignar_roles')
+            return jsonify(status=status, url=url)
+        else:
+            # validation error
+            status = 'val'
+            url = url_for('miembros.asignar_roles')
+            er = ""
+            for field, errors in form.errors.items():
+                for error in errors:
+                    er = er + "Campo: " +\
+                         getattr(form, field).label.text +\
+                         " - Error: " +\
+                         error + "<br/>"
+
+            return jsonify(status=status, url=url, errors=er)

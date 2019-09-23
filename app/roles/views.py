@@ -135,13 +135,3 @@ def borrar_rol(id, flag):
     return redirect(url_for('roles.ver_roles', flag=flag))
 
 
-@roles.route('/roles/asignar/<string:flag>',
-             methods=['GET'])
-@login_required
-def asignar_roles(flag):
-    """
-    Asignar un rol a un miembro
-    """
-    check_edit_or_admin()
-
-    return redirect(url_for('roles.ver_roles', flag=flag))
