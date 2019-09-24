@@ -38,7 +38,7 @@ class MiembroForm(FlaskForm):
     fecha_miembro = DateField(u'Fecha de Membresía', validators=[Optional()])
     fecha_bautismo = DateField(u'Fecha de Bautismo', validators=[Optional()])
     lugar_bautismo = StringField(u'Lugar de Bautismo',
-                                 validators=[Length(min=0, max=15)])
+                                 validators=[Length(min=0, max=50)])
     hoja_firmada = BooleanField(u'¿Tiene firmada la hoja de membresía?')
     nro_hoja = StringField(u'# de Hoja de Membresía (formato AAAA-NRO)')
     observaciones = StringField(u'Observaciones',

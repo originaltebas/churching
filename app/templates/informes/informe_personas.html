@@ -101,7 +101,7 @@
                         </div>
 
              {% if informes %}
-              <div class="table-responsive">
+              <div class="table-responsive table w-auto medium">
                 <table id="tblistarInfPersonas" class="table table-bordered table-striped" id="dataTable"
                     width="100%" cellspacing="0">
                     <thead class="thead-dark">
@@ -112,6 +112,8 @@
                             <th scope="col">Email</th>
                             <th scope="col">Tel&eacute;fonos</th>
                             <th scope="col">Tipo Miembro</th>
+                            <th scope="col">Estado Civil</th>
+                            <th scope="col">Rol Familiar</th>
                             <th scope="col">Grupo Casero</th>
                             <th scope="col">Roles</th>
                             <th scope="col">Direcci&oacute;n</th>
@@ -132,6 +134,8 @@
                                  Fijo: {{ informe.telefono_fijo }} </br>
                             </td>
                             <td>{{ informe.nombre_tipomiembro }}</td>
+                            <td>{{ informe.nombre_estado }}</td>
+                            <td>{{ informe.nombre_rolfam }}</td>
                             <td> {{ informe.nombre_grupo }}</td>
                             <td>
                             {% if roles %}

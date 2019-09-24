@@ -103,6 +103,12 @@ def informe_personas():
                               .outerjoin(GrupoCasero,
                                          Miembro.id_grupocasero ==
                                          GrupoCasero.id)\
+                              .outerjoin(EstadoCivil,
+                                         Miembro.id_estadocivil ==
+                                         EstadoCivil.id)\
+                              .outerjoin(RolFamiliar,
+                                         Miembro.id_rolfamiliar ==
+                                         RolFamiliar.id)\
                               .add_columns(
                                 Miembro.id,
                                 Miembro.fullname,
@@ -113,7 +119,8 @@ def informe_personas():
                                 Miembro.fecha_inicio_icecha,
                                 Miembro.fecha_miembro,
                                 Miembro.fecha_bautismo,
-                                Miembro.id_estadocivil,
+                                EstadoCivil.nombre_estado,
+                                RolFamiliar.nombre_rolfam,
                                 Familia.apellidos_familia,
                                 GrupoCasero.nombre_grupo,
                                 TipoMiembro.nombre_tipomiembro,
@@ -133,7 +140,7 @@ def informe_personas():
                 query = query.filter(user_filter)
 
             if form.TipoFamilia.data != 0:
-                user_attribute = getattr(Miembro, 'id_tipofamilia')
+                user_attribute = getattr(Familia, 'id_tipofamilia')
                 user_filter = user_attribute == form.TipoFamilia.data
                 query = query.filter(user_filter)
 
@@ -193,28 +200,36 @@ def informe_personas():
                                    .outerjoin(GrupoCasero,
                                               Miembro.id_grupocasero ==
                                               GrupoCasero.id)\
+                                   .outerjoin(EstadoCivil,
+                                              Miembro.id_estadocivil ==
+                                              EstadoCivil.id)\
+                                   .outerjoin(RolFamiliar,
+                                              Miembro.id_rolfamiliar ==
+                                              RolFamiliar.id)\
                                    .add_columns(
-                                            Miembro.id,
-                                            Miembro.fullname,
-                                            Miembro.email,
-                                            Miembro.telefono_fijo,
-                                            Miembro.telefono_movil,
-                                            Miembro.fecha_nac,
-                                            Miembro.fecha_inicio_icecha,
-                                            Miembro.fecha_miembro,
-                                            Miembro.fecha_bautismo,
-                                            Familia.apellidos_familia,
-                                            GrupoCasero.nombre_grupo,
-                                            TipoMiembro.nombre_tipomiembro,
-                                            Direccion.tipo_via,
-                                            Direccion.nombre_via,
-                                            Direccion.nro_via,
-                                            Direccion.portalescalotros_via,
-                                            Direccion.cp_via,
-                                            Direccion.ciudad_via,
-                                            Direccion.provincia_via,
-                                            Direccion.pais_via,
-                                            nro_roles.c.contar)
+                                        Miembro.id,
+                                        Miembro.fullname,
+                                        Miembro.email,
+                                        Miembro.telefono_fijo,
+                                        Miembro.telefono_movil,
+                                        Miembro.fecha_nac,
+                                        Miembro.fecha_inicio_icecha,
+                                        Miembro.fecha_miembro,
+                                        Miembro.fecha_bautismo,
+                                        EstadoCivil.nombre_estado,
+                                        RolFamiliar.nombre_rolfam,
+                                        Familia.apellidos_familia,
+                                        GrupoCasero.nombre_grupo,
+                                        TipoMiembro.nombre_tipomiembro,
+                                        Direccion.tipo_via,
+                                        Direccion.nombre_via,
+                                        Direccion.nro_via,
+                                        Direccion.portalescalotros_via,
+                                        Direccion.cp_via,
+                                        Direccion.ciudad_via,
+                                        Direccion.provincia_via,
+                                        Direccion.pais_via,
+                                        nro_roles.c.contar)
 
     return render_template('informes/informe_personas.html',
                            form=form, informes=query_miembros, roles=roles)
