@@ -85,10 +85,10 @@
                   </td>
                   <td>{{ informe.tipo_familia }}</td>
                   {% if integrantes %}
-                  <td><table><thead class="thead-dark">
+                  <td><table><thead class="thead-dark"><tr>
                       <th>Nombre</th>
                       <th>Rol Familiar</th>
-                      <th>Direccion Diferente?</th></thead>
+                      <th>Direccion Diferente?</th></tr></thead><tbody>
                     {% for r in integrantes %}
                     <tr>
                       {% if r.id_familia == informe.id  %} {# si el id del miembro coincide con el de la familia#}
@@ -103,7 +103,7 @@
                       {% endif %}
                     </tr>
                     {% endfor %}
-                  </table></td>
+                  </tbody></table></td>
                   {% else %}
                   Sin Integrantes
                   {% endif %}

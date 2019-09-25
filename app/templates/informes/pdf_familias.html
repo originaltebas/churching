@@ -90,29 +90,25 @@
           </td>
           <td>{{ informe.tipo_familia }}</td>
           {% if integrantes %}
-          <td>
-            <table>
-              <thead class="thead-dark">
-                <th>Nombre</th>
-                <th>Rol Familiar</th>
-                <th>Direccion Diferente?</th>
-              </thead>
-              {% for r in integrantes %}
-              <tr>
-                {% if r.id_familia == informe.id  %} {# si el id del miembro coincide con el de la familia#}
-                <td>{{ r.fullname }}</td>
-                <td>{{ r.nombre_rolfam }}</td>
-                <td>{% if r.dir_miembro == r.dir_familia %}
-                  NO
-                  {%else%}
-                  S&Iacute;
-                  {%endif%}
-                </td>
-                {% endif %}
-              </tr>
-              {% endfor %}
-            </table>
-          </td>
+          <td><table><thead class="thead-dark"><tr>
+              <th>Nombre</th>
+              <th>Rol Familiar</th>
+              <th>Direccion Diferente?</th></tr></thead><tbody>
+            {% for r in integrantes %}
+            <tr>
+              {% if r.id_familia == informe.id  %} {# si el id del miembro coincide con el de la familia#}
+              <td>{{ r.fullname }}</td>
+              <td>{{ r.nombre_rolfam }}</td>
+              <td>{% if r.dir_miembro == r.dir_familia %}
+                NO
+                {%else%}
+                S&Iacute;
+                {%endif%}
+              </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody></table></td>
           {% else %}
           Sin Integrantes
           {% endif %}
