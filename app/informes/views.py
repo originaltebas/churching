@@ -6,13 +6,13 @@ from flask_login import current_user, login_required
 
 from app.informes import informes
 from app.informes.forms import FiltroInformePersonas
+from app.informes.forms import FiltroInformeFamilias
 from app import db
 from app.models import Miembro, EstadoCivil, TipoFamilia, Familia
 from app.models import relacion_miembros_roles, Direccion
 from app.models import TipoMiembro, GrupoCasero, Rol, RolFamiliar
 
 from sqlalchemy import func
-from sqlalchemy_filters import apply_filters
 
 # Dentro de los informes hay algunos que tienen acceso
 # de editor y otros que tienen solo administrador (Seg y Asis)
@@ -367,5 +367,121 @@ def pdf_personas():  # flag de generar pdf
     salida = render_template('informes/pdf_personas.html',
                              informes=query_miembros,
                              roles=roles)
+
+    return render_pdf(HTML(string=salida))
+
+
+@informes.route('/informes/familias',
+                methods=['GET', 'POST'])
+@login_required
+def informe_familias():
+    """
+    Listado de familias
+    """
+    check_edit_or_admin()
+
+    integrantes = db.session.query(Miembro)\
+                            .join(Familia,
+                                  Familia.id ==
+                                  Miembro.id_familia)\
+                            .join(RolFamiliar,
+                                  RolFamiliar.id ==
+                                  Miembro.id_rolfamiliar)\
+                            .add_columns(
+                                        Miembro.id_familia,
+                                        Miembro.fullname,
+                                        RolFamiliar.nombre_rolfam,
+                                        Miembro.id_direccion
+                                               .label('dir_miembro'),
+                                        Familia.id_direccion
+                                               .label('dir_familia')
+                                    )
+
+    query = db.session.query(Familia)\
+                      .join(Direccion,
+                            Familia.id_direccion ==
+                            Direccion.id)\
+                      .join(TipoFamilia,
+                            Familia.id_tipofamilia ==
+                            TipoFamilia.id)\
+                      .add_columns(
+                            Familia.id,
+                            Familia.id_direccion,
+                            Familia.apellidos_familia,
+                            Familia.descripcion_familia,
+                            Familia.telefono_familia,
+                            Direccion.tipo_via,
+                            Direccion.nombre_via,
+                            Direccion.nro_via,
+                            Direccion.portalescalotros_via,
+                            Direccion.cp_via,
+                            Direccion.ciudad_via,
+                            Direccion.provincia_via,
+                            Direccion.pais_via,
+                            TipoFamilia.tipo_familia
+                            )
+
+    query_miembros = query.all()
+
+    return render_template('informes/informe_familias.html',
+                           informes=query_miembros, integrantes=integrantes)
+
+
+@informes.route('/informes/pdf_familias',
+                methods=['GET'])
+@login_required
+def pdf_familias():  # flag de generar pdf
+    """
+    Listado de familias
+    """
+    check_edit_or_admin()
+
+    integrantes = db.session.query(Miembro)\
+                            .join(Familia,
+                                  Familia.id ==
+                                  Miembro.id_familia)\
+                            .join(RolFamiliar,
+                                  RolFamiliar.id ==
+                                  Miembro.id_rolfamiliar)\
+                            .add_columns(
+                                        Miembro.id_familia,
+                                        Miembro.fullname,
+                                        RolFamiliar.nombre_rolfam,
+                                        Miembro.id_direccion
+                                               .label('dir_miembro'),
+                                        Familia.id_direccion
+                                               .label('dir_familia')
+                                    )
+
+    query = db.session.query(Familia)\
+                      .join(Direccion,
+                            Familia.id_direccion ==
+                            Direccion.id)\
+                      .join(TipoFamilia,
+                            Familia.id_tipofamilia ==
+                            TipoFamilia.id)\
+                      .add_columns(
+                            Familia.id,
+                            Familia.id_direccion,
+                            Familia.apellidos_familia,
+                            Familia.descripcion_familia,
+                            Familia.telefono_familia,
+                            Direccion.tipo_via,
+                            Direccion.nombre_via,
+                            Direccion.nro_via,
+                            Direccion.portalescalotros_via,
+                            Direccion.cp_via,
+                            Direccion.ciudad_via,
+                            Direccion.provincia_via,
+                            Direccion.pais_via,
+                            TipoFamilia.tipo_familia
+                            )
+
+    query_miembros = query.all()
+
+    from flask_weasyprint import HTML, render_pdf
+
+    salida = render_template('informes/pdf_familias.html',
+                             informes=query_miembros, integrantes=integrantes)
 
     return render_pdf(HTML(string=salida))

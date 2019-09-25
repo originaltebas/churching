@@ -13,3 +13,10 @@ class FiltroInformePersonas(FlaskForm):
     GrupoCasero = SelectField(u'Grupo Casero', coerce=int)
 
     submit = SubmitField(u'Aceptar')
+
+
+class FiltroInformeFamilias(FlaskForm):
+    TipoFamilia = SelectField(u'Tipo Familia', coerce=int)
+    GrupoCasero = SelectField(u'Grupo Casero', coerce=int)
+
+    submit = SubmitField(u'Aceptar')

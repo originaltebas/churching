@@ -1,0 +1,132 @@
+<!-- app/templates/informes/pdf_personas.html -->
+<!doctype html>
+<html>
+{% block layout_style %}
+
+<link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+<style>
+  @page {
+    size: letter landscape;
+    margin: 2cm;
+  }
+
+  @charset "UTF-8";
+
+  /* Table of tests */
+
+  html {
+    font-family: 'Raleway', sans-serif;
+  }
+
+  table {
+    border-collapse: collapse;
+    text-align: center;
+  }
+
+  th,
+  td {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.2em;
+    font-size: 0.6em;
+  }
+
+  th[scope="rowgroup"] {
+    border-left-color: transparent;
+    border-right-color: transparent;
+    padding-top: 0.5em;
+
+  }
+
+  thead tr:first-child {
+    background: black;
+    color: #FFF;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: lightgray;
+  }
+
+  tr:nth-child(odd) {
+    background-color: white;
+  }
+
+  td {
+    font-size: 0.6em;
+  }
+</style>
+
+{% endblock %}
+
+<body>
+  {% if informes %}
+  <div class="table-responsive table w-auto medium">
+    <table id="tblistarInfPersonas" class="table table-bordered table-striped" id="dataTable" width="100%"
+      cellspacing="0">
+      <thead class="thead-dark">
+        <tr class="text-center">
+          <th>ID</th>
+          <th>Apellidos</th>
+          <th>Descripci&oacute;n</th>
+          <th>Tel&eacute;fono</th>
+          <th>Direcci&oacute;n</th>
+          <th>Tipo Familia</th>
+          <th>Integrantes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for informe in informes %}
+        <tr class="text-center">
+          <td scope="row" class="text-center"> {{ informe.id }}</td>
+          <td> {{ informe.apellidos_familia}} </td>
+          <td> {{ informe.descripcion_familia}} </td>
+          <td>{{ informe.telefono_familia }}</td>
+          <td>
+            {{ informe.tipo_via }} {{ informe.nombre_via }}, {{ informe.nro_via }}.
+            {% if informe.portalescalotros_via %}
+            {{informe.portalescalotros_via }}.
+            {% endif %}
+            {{ informe.cp_via }}. {{ informe.ciudad_via }}. {{ informe.provincia_via }}. {{ informe.pais_via }}.
+          </td>
+          <td>{{ informe.tipo_familia }}</td>
+          {% if integrantes %}
+          <td>
+            <table>
+              <thead class="thead-dark">
+                <th>Nombre</th>
+                <th>Rol Familiar</th>
+                <th>Direccion Diferente?</th>
+              </thead>
+              {% for r in integrantes %}
+              <tr>
+                {% if r.id_familia == informe.id  %} {# si el id del miembro coincide con el de la familia#}
+                <td>{{ r.fullname }}</td>
+                <td>{{ r.nombre_rolfam }}</td>
+                <td>{% if r.dir_miembro == r.dir_familia %}
+                  NO
+                  {%else%}
+                  S&Iacute;
+                  {%endif%}
+                </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </table>
+          </td>
+          {% else %}
+          Sin Integrantes
+          {% endif %}
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% endif %}
+
+
+</body>
+
+</html>
