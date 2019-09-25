@@ -485,3 +485,103 @@ def pdf_familias():  # flag de generar pdf
                              informes=query_miembros, integrantes=integrantes)
 
     return render_pdf(HTML(string=salida))
+
+
+@informes.route('/informes/ggcc',
+                methods=['GET', 'POST'])
+@login_required
+def informe_ggcc():
+    """
+    Listado de ggcc
+    """
+    check_edit_or_admin()
+
+    integrantes = db.session.query(Miembro)\
+                            .join(GrupoCasero,
+                                  GrupoCasero.id ==
+                                  Miembro.id_grupocasero)\
+                            .join(TipoMiembro,
+                                  TipoMiembro.id ==
+                                  Miembro.id_tipomiembro)\
+                            .add_columns(
+                                        Miembro.id_grupocasero,
+                                        Miembro.id,
+                                        Miembro.fullname,
+                                        TipoMiembro.nombre_tipomiembro
+                                    )
+
+    query = db.session.query(GrupoCasero)\
+                      .join(Direccion,
+                            GrupoCasero.id_direccion ==
+                            Direccion.id)\
+                      .add_columns(
+                            GrupoCasero.id,
+                            GrupoCasero.id_direccion,
+                            GrupoCasero.nombre_grupo,
+                            GrupoCasero.descripcion_grupo,
+                            Direccion.tipo_via,
+                            Direccion.nombre_via,
+                            Direccion.nro_via,
+                            Direccion.portalescalotros_via,
+                            Direccion.cp_via,
+                            Direccion.ciudad_via,
+                            Direccion.provincia_via,
+                            Direccion.pais_via,
+                            )
+
+    query_miembros = query.all()
+
+    return render_template('informes/informe_ggcc.html',
+                           informes=query_miembros, integrantes=integrantes)
+
+
+@informes.route('/informes/pdf_ggcc',
+                methods=['GET'])
+@login_required
+def pdf_ggcc():  # flag de generar pdf
+    """
+    Listado de ggcc
+    """
+    check_edit_or_admin()
+
+    integrantes = db.session.query(Miembro)\
+                            .join(GrupoCasero,
+                                  GrupoCasero.id ==
+                                  Miembro.id_grupocasero)\
+                            .join(TipoMiembro,
+                                  TipoMiembro.id ==
+                                  Miembro.id_tipomiembro)\
+                            .add_columns(
+                                        Miembro.id_grupocasero,
+                                        Miembro.id,
+                                        Miembro.fullname,
+                                        TipoMiembro.nombre_tipomiembro
+                                    )
+
+    query = db.session.query(GrupoCasero)\
+                      .join(Direccion,
+                            GrupoCasero.id_direccion ==
+                            Direccion.id)\
+                      .add_columns(
+                            GrupoCasero.id,
+                            GrupoCasero.id_direccion,
+                            GrupoCasero.nombre_grupo,
+                            GrupoCasero.descripcion_grupo,
+                            Direccion.tipo_via,
+                            Direccion.nombre_via,
+                            Direccion.nro_via,
+                            Direccion.portalescalotros_via,
+                            Direccion.cp_via,
+                            Direccion.ciudad_via,
+                            Direccion.provincia_via,
+                            Direccion.pais_via,
+                            )
+
+    query_miembros = query.all()
+
+    from flask_weasyprint import HTML, render_pdf
+
+    salida = render_template('informes/pdf_ggcc.html',
+                             informes=query_miembros, integrantes=integrantes)
+    print(salida)
+    return render_pdf(HTML(string=salida))
