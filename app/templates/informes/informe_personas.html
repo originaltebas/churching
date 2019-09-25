@@ -50,12 +50,12 @@
 
 
                     <div class="text-right mu-2 mb-4">
-                        <a href="{{url_for("informes.generar_pdf")}}" class="btn btn-danger btn-icon-split">
+                        <button id="btn_PDF_P" class="btn btn-danger btn-icon-split">
                             <span class="icon text-white-50">
                                 <i class="fa fa-file-pdf centered"></i>
                             </span>
                             <span class="text">Generar PDF</span>
-                        </a>
+                          </button>
                         </div>
                         <div class="card border-dark mb-3">
                         <form id="tbFiltroPersonas" method="POST" role="form" action="">
@@ -94,7 +94,7 @@
                                   name="btnfiltrar" id="btnbtnfiltrar" value="Aceptar">
                               <div class="col-2"></div>
                               <a class="btn btn-danger col-2 text-white font-weight-bold"
-                                  href='{{ url_for("informes.informe_personas") }}'>Limpiar Filtro</a>
+                                  href="{{ url_for('informes.informe_personas') }}">Limpiar Filtro</a>
                               <div class="col-3"></div>
                           </div>
                         </form>
@@ -180,5 +180,5 @@
 <!-- End of Content Wrapper -->
 {% endif %}
 {% endif %}
-<script src="{{ url_for('static', filename='js/informes_bprint.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/informes_bprint.min.js', _external=True) }}"></script>
 {% endblock %}

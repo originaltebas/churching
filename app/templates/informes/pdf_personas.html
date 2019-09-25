@@ -1,0 +1,117 @@
+<!-- app/templates/informes/pdf_personas.html -->
+<!doctype html>
+<html>
+  {% block layout_style %}
+
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <style> @page { size: letter landscape; margin: 2cm; }
+    @charset "UTF-8";
+
+/* Table of tests */
+
+html {
+  font-family: 'Raleway', sans-serif;
+}
+table {
+  border-collapse: collapse;
+  text-align: center;
+}
+
+th, td {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.2em;
+  font-size: 0.6em;
+}
+
+th[scope="rowgroup"] {
+  border-left-color: transparent;
+  border-right-color: transparent;
+  padding-top: 0.5em;
+
+}
+
+thead tr:first-child {
+  background:black;
+  color:#FFF;
+}
+
+tbody tr:nth-child(even){
+  background-color: lightgray;
+}
+
+tr:nth-child(odd){
+  background-color: white;
+}
+
+td {
+  font-size: 0.6em;
+}
+  </style>
+
+  {% endblock %}
+<body>
+  {% if informes %}
+  <div>
+    <table>
+      <thead class="thead-dark">
+        <tr class="text-center">
+          <th scope="col">Id Miembro</th>
+          <th scope="col">Nombre y Apellidos</th>
+          <th scope="col">Fechas</th>
+          <th scope="col">Email</th>
+          <th scope="col">Tel&eacute;fonos</th>
+          <th scope="col">Tipo Miembro</th>
+          <th scope="col">Estado Civil</th>
+          <th scope="col">Rol Familiar</th>
+          <th scope="col">Grupo Casero</th>
+          <th scope="col">Roles</th>
+          <th scope="col">Direcci&oacute;n</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for informe in informes %}
+        <tr class="text-center">
+          <td scope="row" class="text-center"> {{ informe.id }}</td>
+          <td> {{ informe.fullname}} </td>
+          <td> Nacimiento: {{ informe.fecha_nac.strftime('%d-%m-%Y') }}</br>
+            Inicio Icecha: {{ informe.fecha_inicio_icecha.strftime('%d-%m-%Y') }} </br>
+            Bautismo: {{ informe.fecha_bautismo.strftime('%d-%m-%Y') }}</br>
+            Membres&iacute;a: {{ informe.fecha_miembro.strftime('%d-%m-%Y')}}
+          </td>
+          <td>{{ informe.email }}</td>
+          <td> M&oacute;vil: {{ informe.telefono_movil }} </br>
+            Fijo: {{ informe.telefono_fijo }} </br>
+          </td>
+          <td>{{ informe.nombre_tipomiembro }}</td>
+          <td>{{ informe.nombre_estado }}</td>
+          <td>{{ informe.nombre_rolfam }}</td>
+          <td> {{ informe.nombre_grupo }}</td>
+          <td>
+            {% if roles %}
+            {% for r in roles %}
+            {% if r.id == informe.id  %} {# si el id miembro coicide pongo su rol #}
+            Rol: {{ r.nombre_rol }}</br>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            Sin Roles asignados
+            {% endif %}
+          </td>
+
+          <td>
+            {{ informe.tipo_via }} {{ informe.nombre_via }}, {{ informe.nro_via }}.
+            {% if informe.portalescalotros_via %}
+            {{informe.portalescalotros_via }}.
+            {% endif %}
+            {{ informe.cp_via }}. {{ informe.ciudad_via }}. {{ informe.provincia_via }}. {{ informe.pais_via }}.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</body>
+
+</html>
