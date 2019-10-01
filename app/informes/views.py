@@ -614,6 +614,9 @@ def informe_responsables():
                       .outerjoin(relacion_miembros_roles,
                                  Miembro.id ==
                                  relacion_miembros_roles.c.id_miembro)\
+                      .outerjoin(Rol,
+                                 Rol.id ==
+                                 relacion_miembros_roles.c.id_rol)\
                       .outerjoin(Direccion,
                                  Miembro.id_direccion ==
                                  Direccion.id)\
@@ -623,6 +626,7 @@ def informe_responsables():
                       .outerjoin(EstadoCivil,
                                  Miembro.id_estadocivil ==
                                  EstadoCivil.id)\
+                      .filter(Rol.tipo_rol == 'R')\
                       .add_columns(
                               Miembro.id,
                               Miembro.fullname,
@@ -655,8 +659,6 @@ def pdf_responsables():  # flag de generar pdf
     """
     check_edit_or_admin()
 
-    check_edit_or_admin()
-
     roles = db.session.query(Rol).filter(Rol.tipo_rol == 'R')\
                                  .join(relacion_miembros_roles,
                                        relacion_miembros_roles.c.id_rol ==
@@ -672,6 +674,9 @@ def pdf_responsables():  # flag de generar pdf
                       .outerjoin(relacion_miembros_roles,
                                  Miembro.id ==
                                  relacion_miembros_roles.c.id_miembro)\
+                      .outerjoin(Rol,
+                                 Rol.id ==
+                                 relacion_miembros_roles.c.id_rol)\
                       .outerjoin(Direccion,
                                  Miembro.id_direccion ==
                                  Direccion.id)\
@@ -681,6 +686,7 @@ def pdf_responsables():  # flag de generar pdf
                       .outerjoin(EstadoCivil,
                                  Miembro.id_estadocivil ==
                                  EstadoCivil.id)\
+                      .filter(Rol.tipo_rol == 'R')\
                       .add_columns(
                               Miembro.id,
                               Miembro.fullname,
@@ -703,6 +709,257 @@ def pdf_responsables():  # flag de generar pdf
     from flask_weasyprint import HTML, render_pdf
 
     salida = render_template('informes/pdf_responsables.html',
+                             informes=query_miembros,
+                             roles=roles)
+
+    return render_pdf(HTML(string=salida))
+
+
+@informes.route('/informes/ministerios',
+                methods=['GET', 'POST'])
+@login_required
+def informe_ministerios():
+    """
+    Listado de personas
+    """
+
+    check_edit_or_admin()
+
+    roles = db.session.query(Rol).filter(Rol.tipo_rol == 'M')\
+                                 .join(relacion_miembros_roles,
+                                       relacion_miembros_roles.c.id_rol ==
+                                       Rol.id)\
+                                 .join(Miembro,
+                                       Miembro.id ==
+                                       relacion_miembros_roles.c.id_miembro)\
+                                 .add_columns(
+                                     Miembro.id,
+                                     Rol.nombre_rol)
+
+    query = db.session.query(Miembro)\
+                      .outerjoin(relacion_miembros_roles,
+                                 Miembro.id ==
+                                 relacion_miembros_roles.c.id_miembro)\
+                      .outerjoin(Rol,
+                                 Rol.id ==
+                                 relacion_miembros_roles.c.id_rol)\
+                      .outerjoin(Direccion,
+                                 Miembro.id_direccion ==
+                                 Direccion.id)\
+                      .outerjoin(TipoMiembro,
+                                 Miembro.id_tipomiembro ==
+                                 TipoMiembro.id)\
+                      .outerjoin(EstadoCivil,
+                                 Miembro.id_estadocivil ==
+                                 EstadoCivil.id)\
+                      .filter(Rol.tipo_rol == 'M')\
+                      .add_columns(
+                              Miembro.id,
+                              Miembro.fullname,
+                              Miembro.email,
+                              Miembro.telefono_fijo,
+                              Miembro.telefono_movil,
+                              EstadoCivil.nombre_estado,
+                              TipoMiembro.nombre_tipomiembro,
+                              Direccion.tipo_via,
+                              Direccion.nombre_via,
+                              Direccion.nro_via,
+                              Direccion.portalescalotros_via,
+                              Direccion.cp_via,
+                              Direccion.ciudad_via,
+                              Direccion.provincia_via,
+                              Direccion.pais_via)
+
+    query_miembros = query.all()
+
+    return render_template('informes/informe_ministerios.html',
+                           informes=query_miembros, roles=roles)
+
+
+@informes.route('/informes/pdf_ministerios',
+                methods=['GET', 'POST'])
+@login_required
+def pdf_ministerios():  # flag de generar pdf
+    """
+    Listado de personas
+    """
+    check_edit_or_admin()
+
+    roles = db.session.query(Rol).filter(Rol.tipo_rol == 'M')\
+                                 .join(relacion_miembros_roles,
+                                       relacion_miembros_roles.c.id_rol ==
+                                       Rol.id)\
+                                 .join(Miembro,
+                                       Miembro.id ==
+                                       relacion_miembros_roles.c.id_miembro)\
+                                 .add_columns(
+                                     Miembro.id,
+                                     Rol.nombre_rol)
+
+    query = db.session.query(Miembro)\
+                      .outerjoin(relacion_miembros_roles,
+                                 Miembro.id ==
+                                 relacion_miembros_roles.c.id_miembro)\
+                      .outerjoin(Rol,
+                                 Rol.id ==
+                                 relacion_miembros_roles.c.id_rol)\
+                      .outerjoin(Direccion,
+                                 Miembro.id_direccion ==
+                                 Direccion.id)\
+                      .outerjoin(TipoMiembro,
+                                 Miembro.id_tipomiembro ==
+                                 TipoMiembro.id)\
+                      .outerjoin(EstadoCivil,
+                                 Miembro.id_estadocivil ==
+                                 EstadoCivil.id)\
+                      .filter(Rol.tipo_rol == 'M')\
+                      .add_columns(
+                              Miembro.id,
+                              Miembro.fullname,
+                              Miembro.email,
+                              Miembro.telefono_fijo,
+                              Miembro.telefono_movil,
+                              EstadoCivil.nombre_estado,
+                              TipoMiembro.nombre_tipomiembro,
+                              Direccion.tipo_via,
+                              Direccion.nombre_via,
+                              Direccion.nro_via,
+                              Direccion.portalescalotros_via,
+                              Direccion.cp_via,
+                              Direccion.ciudad_via,
+                              Direccion.provincia_via,
+                              Direccion.pais_via)
+
+    query_miembros = query.all()
+
+    from flask_weasyprint import HTML, render_pdf
+
+    salida = render_template('informes/pdf_ministerios.html',
+                             informes=query_miembros,
+                             roles=roles)
+
+    return render_pdf(HTML(string=salida))
+
+
+@informes.route('/informes/clases',
+                methods=['GET', 'POST'])
+@login_required
+def informe_clases():
+    """
+    Listado de personas
+    """
+    check_edit_or_admin()
+
+    roles = db.session.query(Rol).filter(Rol.tipo_rol == 'C')\
+                                 .join(relacion_miembros_roles,
+                                       relacion_miembros_roles.c.id_rol ==
+                                       Rol.id)\
+                                 .join(Miembro,
+                                       Miembro.id ==
+                                       relacion_miembros_roles.c.id_miembro)\
+                                 .add_columns(
+                                     Miembro.id,
+                                     Rol.nombre_rol)
+
+    query = db.session.query(Miembro)\
+                      .outerjoin(relacion_miembros_roles,
+                                 Miembro.id ==
+                                 relacion_miembros_roles.c.id_miembro)\
+                      .outerjoin(Rol,
+                                 Rol.id ==
+                                 relacion_miembros_roles.c.id_rol)\
+                      .outerjoin(Direccion,
+                                 Miembro.id_direccion ==
+                                 Direccion.id)\
+                      .outerjoin(TipoMiembro,
+                                 Miembro.id_tipomiembro ==
+                                 TipoMiembro.id)\
+                      .outerjoin(EstadoCivil,
+                                 Miembro.id_estadocivil ==
+                                 EstadoCivil.id)\
+                      .filter(Rol.tipo_rol == 'C')\
+                      .add_columns(
+                              Miembro.id,
+                              Miembro.fullname,
+                              Miembro.email,
+                              Miembro.telefono_fijo,
+                              Miembro.telefono_movil,
+                              EstadoCivil.nombre_estado,
+                              TipoMiembro.nombre_tipomiembro,
+                              Direccion.tipo_via,
+                              Direccion.nombre_via,
+                              Direccion.nro_via,
+                              Direccion.portalescalotros_via,
+                              Direccion.cp_via,
+                              Direccion.ciudad_via,
+                              Direccion.provincia_via,
+                              Direccion.pais_via)
+
+    query_miembros = query.all()
+
+    return render_template('informes/informe_clases.html',
+                           informes=query_miembros, roles=roles)
+
+
+@informes.route('/informes/pdf_clases',
+                methods=['GET', 'POST'])
+@login_required
+def pdf_clases():  # flag de generar pdf
+    """
+    Listado de personas
+    """
+    check_edit_or_admin()
+
+    roles = db.session.query(Rol).filter(Rol.tipo_rol == 'C')\
+                                 .join(relacion_miembros_roles,
+                                       relacion_miembros_roles.c.id_rol ==
+                                       Rol.id)\
+                                 .join(Miembro,
+                                       Miembro.id ==
+                                       relacion_miembros_roles.c.id_miembro)\
+                                 .add_columns(
+                                     Miembro.id,
+                                     Rol.nombre_rol)
+
+    query = db.session.query(Miembro)\
+                      .outerjoin(relacion_miembros_roles,
+                                 Miembro.id ==
+                                 relacion_miembros_roles.c.id_miembro)\
+                      .outerjoin(Rol,
+                                 Rol.id ==
+                                 relacion_miembros_roles.c.id_rol)\
+                      .outerjoin(Direccion,
+                                 Miembro.id_direccion ==
+                                 Direccion.id)\
+                      .outerjoin(TipoMiembro,
+                                 Miembro.id_tipomiembro ==
+                                 TipoMiembro.id)\
+                      .outerjoin(EstadoCivil,
+                                 Miembro.id_estadocivil ==
+                                 EstadoCivil.id)\
+                      .filter(Rol.tipo_rol == 'C')\
+                      .add_columns(
+                              Miembro.id,
+                              Miembro.fullname,
+                              Miembro.email,
+                              Miembro.telefono_fijo,
+                              Miembro.telefono_movil,
+                              EstadoCivil.nombre_estado,
+                              TipoMiembro.nombre_tipomiembro,
+                              Direccion.tipo_via,
+                              Direccion.nombre_via,
+                              Direccion.nro_via,
+                              Direccion.portalescalotros_via,
+                              Direccion.cp_via,
+                              Direccion.ciudad_via,
+                              Direccion.provincia_via,
+                              Direccion.pais_via)
+
+    query_miembros = query.all()
+
+    from flask_weasyprint import HTML, render_pdf
+
+    salida = render_template('informes/pdf_clases.html',
                              informes=query_miembros,
                              roles=roles)
 
