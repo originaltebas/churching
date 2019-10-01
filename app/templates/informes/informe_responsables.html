@@ -1,0 +1,129 @@
+<!-- app/templates/seguimientos/base_seguimientos.html -->
+
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}Churching - Informes - Responsables{% endblock %}
+
+{% block body %}
+{% if current_user.is_authenticated %}
+{# En general a todo menos a Seguimiento y Ausencias pueden acceder Editores y Admin #}
+{% if current_user.get_urole() >= 1 %}
+
+{% include "home/_sidebar.html" %}
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
+
+  <!-- Main Content -->
+  <div id="content">
+
+    {% include "home/_topbar.html" %}
+
+    {% set nombre = "Informe" %}
+    {% set nombres = "Informes" %}
+    {% set nombre_inf = "Responsables" %}
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+      <!-- Page Heading -->
+      <h1 class="h3 my-3 alert alert-primary"> {{nombre}} {{ nombre_inf }} </h1>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        <!-- <strong>Title</strong> --> {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          <h5 class="card-title">
+            Informe de Responsables de todas las áreas
+          </h5>
+
+          <div class="text-right mu-2 mb-4">
+            <a href="{{url_for('informes.pdf_responsables')}}" class="btn btn-danger btn-icon-split">
+              <span class="icon text-white-50">
+                <i class="fa fa-file-pdf centered"></i>
+              </span>
+              <span class="text">Generar PDF</span>
+            </a>
+          </div>
+
+          {% if informes %}
+          <div class="table-responsive table w-auto medium">
+            <table id="tblistarInfPersonas" class="table table-bordered table-striped" id="dataTable" width="100%"
+              cellspacing="0">
+              <thead class="thead-dark">
+                <tr class="text-center">
+                  <th scope="col">Id Miembro</th>
+                  <th scope="col">Nombre y Apellidos</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Tel&eacute;fonos</th>
+                  <th scope="col">Direcci&oacute;n</th>
+                  <th scope="col">Tipo Miembro</th>
+                  <th scope="col">Estado Civil</th>
+                  <th scope="col">Roles</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for informe in informes %}
+                <tr class="text-center">
+                  <td scope="row" class="text-center"> {{ informe.id }}</td>
+                  <td> {{ informe.fullname}} </td>
+                  <td>{{ informe.email }}</td>
+                  <td> M&oacute;vil: {{ informe.telefono_movil }} </br>
+                    Fijo: {{ informe.telefono_fijo }} </br>
+                  </td>
+                  <td>
+                    {{ informe.tipo_via }} {{ informe.nombre_via }}, {{ informe.nro_via }}.
+                    {% if informe.portalescalotros_via %}
+                    {{informe.portalescalotros_via }}.
+                    {% endif %}
+                    {{ informe.cp_via }}. {{ informe.ciudad_via }}. {{ informe.provincia_via }}. {{ informe.pais_via }}.
+                  </td>
+                  <td>{{ informe.nombre_tipomiembro }}</td>
+                  <td>{{ informe.nombre_estado }}</td>
+                  <td>
+                    {% if roles %}
+                    {% for r in roles %}
+                    {% if r.id == informe.id  %} {# si el id miembro coicide pongo su rol #}
+                    Rol: {{ r.nombre_rol }}</br>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    Sin Roles asignados
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-5">
+            <h4> No se han agregado datos </h4>
+            <hr class="intro-divider">
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+  <!-- End of Main Content -->
+
+  {% include "home/_footer.html" %}
+
+</div>
+<!-- End of Content Wrapper -->
+{% endif %}
+{% endif %}
+<script src="{{ url_for('static', filename='js/informes_bprint.min.js', _external=True) }}"></script>
+{% endblock %}

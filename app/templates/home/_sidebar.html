@@ -239,6 +239,10 @@
           <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
           Informe Grupos Caseros
         </a>
+        <a class="collapse-item text-wrap" href="{{ url_for('informes.informe_responsables') }}">
+          <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+          Informe Responsables
+        </a>
         {% if current_user.get_urole() == 2 %}
         <a class="collapse-item text-wrap" href="cards.html">
           <i class="fas fa-calendar fa-sm fa-fw mr-2 text-gray-400"></i>
