@@ -82,8 +82,14 @@
                                         {% if roles %}
                                         {% set entrar = [] %}
                                         {% for r in roles %}
-                                        {% if r.id == informe.id  %} {# si el id miembro coicide pongo su rol #}
-                                        Rol {{ loop.index }}: {{ r.nombre_rol }}</br>
+                                        {% if r.id == informe.id  %}
+                                            {% if r.tipo_rol == 'R' %} {# si el id miembro coicide pongo su rol #}
+                                        <b>Rol:</b> {{ r.nombre_rol }}</br>
+                                            {% elif r.tipo_rol == 'M' %}
+                                        <b>Ministerio:</b> {{ r.nombre_rol }}</br>
+                                            {% elif r.tipo_rol == 'C' %}
+                                        <b>Clase:</b> {{ r.nombre_rol }}</br>
+                                            {% endif %}
                                         {% do entrar.append(1) %}
                                         {% endif %}
                                         {% endfor %}

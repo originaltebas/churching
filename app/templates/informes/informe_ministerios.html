@@ -94,7 +94,7 @@
                     {% if roles %}
                     {% for r in roles %}
                     {% if r.id == informe.id  %} {# si el id miembro coicide pongo su rol #}
-                    Rol: {{ r.nombre_rol }}</br>
+                    <b>Ministerio:</b> {{ r.nombre_rol }}</br>
                     {% endif %}
                     {% endfor %}
                     {% else %}

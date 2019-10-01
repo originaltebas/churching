@@ -290,7 +290,8 @@ def listar_asignar_roles():
                                             relacion_miembros_roles.c.id_miembro)\
                                  .add_columns(
                                      Miembro.id,
-                                     Rol.nombre_rol
+                                     Rol.nombre_rol,
+                                     Rol.tipo_rol
                                  )
 
     query_miembros = db.session.query(Miembro)\
@@ -359,6 +360,7 @@ def asignar_roles(flag, id):
                                     Miembro.id ==
                                     relacion_miembros_roles.c.id_miembro)\
                               .filter(Miembro.id == id)\
+                              .filter(Rol.tipo_rol == flag)\
                               .add_columns(relacion_miembros_roles.c.id_rol,
                                            relacion_miembros_roles.c.id_miembro)\
                               .all()
@@ -398,14 +400,11 @@ def guardar_roles():
                                .filter(Rol.tipo_rol == form.flag_rol.data)\
                                .all()
 
+            ids = request.form.getlist('preselectedoptions')
+
             # Cojo los nuevos para agregarlos
             objadd = db.session.query(Rol)\
-                               .filter(Rol.id.in_(
-                                   str(request.
-                                       form.
-                                       getlist('preselectedoptions'))
-                                   .strip('[]')))\
-                               .all()
+                               .filter(Rol.id.in_(ids)).all()
 
             for o in objdel:
                 persona.roles.remove(o)
