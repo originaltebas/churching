@@ -22,6 +22,7 @@ class ProductionConfig(Config):
     """
 
     DEBUG = False
+    SQLALCHEMY_ECHO = True
 
 
 app_config = {
