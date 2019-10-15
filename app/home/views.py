@@ -3,9 +3,11 @@
 
 
 from flask_login import current_user, login_required, user_logged_in
-from flask import redirect, url_for, render_template
+from flask import redirect, url_for, render_template, request
 
-from . import home
+from app.home import home
+
+from app.home.forms import BusquedaForm
 
 
 @home.route('/')
@@ -46,7 +48,7 @@ def hub():
         return redirect(url_for('home.noaccess'))
 
 
-@home.route('/dashboard_admin')
+@home.route('/dashboard_admin', methods=['GET', 'POST'])
 @login_required
 def dashboard_admin():
     """
@@ -57,7 +59,8 @@ def dashboard_admin():
     if not current_user.is_admin():
         return redirect(url_for('home.noaccess'))
 
-    return render_template('home/index_admin.html')
+    form = BusquedaForm()
+    return render_template('home/index_admin.html', form=form)
 
 
 @home.route('/dashboard_editor')
@@ -72,3 +75,16 @@ def dashboard_editor():
         return redirect(url_for('home.noaccess'))
 
     return render_template('home/index_editor.html')
+
+
+@home.route('/busqueda', methods=['POST'])
+@login_required
+def busqueda_rapida():
+    form = BusquedaForm()
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+
+            if form.cadena.data != "":
+                return redirect(url_for('miembros.ver_miembros',
+                                        cadena=form.cadena.data))

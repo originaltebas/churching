@@ -24,9 +24,10 @@ def check_edit_or_admin():
         return redirect(url_for("home.hub"))
 
 
-@miembros.route('/miembros', methods=['GET'])
+@miembros.route('/miembros', defaults={'cadena': ""}, methods=['GET'])
+@miembros.route('/miembros/<string:cadena>', methods=['GET'])
 @login_required
-def ver_miembros():
+def ver_miembros(cadena):
     """
     Ver una lista de todos los miembros
     """
@@ -73,6 +74,9 @@ def ver_miembros():
                                             Direccion.provincia_via,
                                             Direccion.pais_via,
                                             nro_roles.c.contar)
+
+    if cadena != "":
+        query_miembros = query_miembros.filter(Miembro.fullname.like(cadena))
 
     return render_template('miembros/base_miembros.html',
                            miembros=query_miembros,
