@@ -7,18 +7,17 @@
                 </button>
 
                 <!-- Topbar Search -->
-                <form method="POST" role="form" action="{{ url_for('home.busqueda_rapida') }}"
-                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                    {{ form.csrf_token }}
                     <div class="input-group">
-                    <input name="cadena" id="cadena" type="text" class="form-control bg-light border-0 small" placeholder="Buscar personas" aria-label="Search" aria-describedby="basic-addon2">
+                    <input name="topsearch_texto" id="topsearch_texto"
+                           type="text" class="form-control bg-light border-0 small"
+                           placeholder="Buscar personas" aria-label="Search" aria-describedby="basic-addon2">
                     <div class="input-group-append">
-                      <button type="submit" class="btn btn-primary btn-block" type="button">
+                      <button name="topsearch_button" id="topsearch_button" class="btn btn-primary btn-block">
                         <i class="fas fa-search fa-sm"></i>
                       </button>
                     </div>
                   </div>
-                </form>
+
 
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">

@@ -23,7 +23,6 @@ def check_edit_or_admin():
     if not current_user.get_urole() >= 1:
         return redirect(url_for("home.hub"))
 
-
 @miembros.route('/miembros', defaults={'cadena': ""}, methods=['GET'])
 @miembros.route('/miembros/<string:cadena>', methods=['GET'])
 @login_required
@@ -76,6 +75,7 @@ def ver_miembros(cadena):
                                             nro_roles.c.contar)
 
     if cadena != "":
+        cadena = "%{}%".format(cadena)
         query_miembros = query_miembros.filter(Miembro.fullname.like(cadena))
 
     return render_template('miembros/base_miembros.html',

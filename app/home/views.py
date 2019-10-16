@@ -7,8 +7,6 @@ from flask import redirect, url_for, render_template, request
 
 from app.home import home
 
-from app.home.forms import BusquedaForm
-
 
 @home.route('/')
 def homepage():
@@ -59,8 +57,7 @@ def dashboard_admin():
     if not current_user.is_admin():
         return redirect(url_for('home.noaccess'))
 
-    form = BusquedaForm()
-    return render_template('home/index_admin.html', form=form)
+    return render_template('home/index_admin.html')
 
 
 @home.route('/dashboard_editor')
@@ -76,15 +73,3 @@ def dashboard_editor():
 
     return render_template('home/index_editor.html')
 
-
-@home.route('/busqueda', methods=['POST'])
-@login_required
-def busqueda_rapida():
-    form = BusquedaForm()
-
-    if request.method == 'POST':
-        if form.validate_on_submit():
-
-            if form.cadena.data != "":
-                return redirect(url_for('miembros.ver_miembros',
-                                        cadena=form.cadena.data))
