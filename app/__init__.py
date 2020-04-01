@@ -32,7 +32,7 @@ def create_app(config_name):
     app.config['VISIBLE_PAGE_COUNT'] = 10
 
     login_manager.init_app(app)
-    login_manager.login_message = "Debes estar logado para ver esta pagina"
+    # login_manager.login_message = "Debes estar logado para ver esta pagina"
     login_manager.login_view = "auth.login"
     migrate = Migrate(app, db)
 
