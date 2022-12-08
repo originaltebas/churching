@@ -5,7 +5,7 @@ attrs==19.3.0
 backports.functools-lru-cache==1.6.1
 cairocffi==1.1.0
 CairoSVG==2.5.1
-certifi==2019.11.28
+certifi==2022.12.7
 cffi==1.13.2
 Click==7.0
 configparser==4.0.2
